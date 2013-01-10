@@ -11,6 +11,8 @@ SLOW_BUILDS += \
 	mozjs \
 	sharegl \
 	skia \
+	pixman \
+	cairo \
 	$(NULL)
 
 # NOTE: the make magic can only compute transitive build dependencies,
@@ -79,6 +81,10 @@ CFLAGS_rust-mozjs += \
 DEPS_libcss += \
 	libwapcaplet \
 	libparserutils \
+	$(NULL)
+
+DEPS_cairo += \
+	pixman \
 	$(NULL)
 
 # Platform-specific dependencies
