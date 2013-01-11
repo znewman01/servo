@@ -435,6 +435,11 @@ then
     cd ${CFG_BUILD_DIR}
 fi
 
+# Cairo expects to use an installed pixman, but we want to override that
+# behavior to use our version
+export pixman_CFLAGS="-I${CFG_SRC_DIR}src/pixman/pixman -I${CFG_BUILD_DIR}src/pixman/pixman"
+export pixman_LDFLAGS="-I${CFG_BUILD_DIR}src/pixman/pixman/.libs"
+
 for i in ${CFG_SUBMODULES}
 do
     if [ -d ${CFG_BUILD_DIR}src/${i} ]

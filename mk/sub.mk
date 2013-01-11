@@ -15,6 +15,18 @@ SLOW_BUILDS += \
 	cairo \
 	$(NULL)
 
+# Builds that do not require rustc
+NATIVE_BUILDS += \
+	libcss \
+	libhubbub \
+	libparserutils \
+	libwapcaplet \
+	mozjs \
+	skia \
+	pixman \
+	cairo \
+	$(NULL)
+
 # NOTE: the make magic can only compute transitive build dependencies,
 # not transitive link flags. So, if A -> B -> C, must add A as a dep
 # of C so the correct -L/path/to/A flag is generated for building C.
@@ -81,6 +93,11 @@ CFLAGS_rust-mozjs += \
 DEPS_libcss += \
 	libwapcaplet \
 	libparserutils \
+	$(NULL)
+
+ENV_EXTRA_FLAGS_cairo += \
+	pixman_CFLAGS="-I$(B)src/pixman/pixman" \
+	pixman_LDFLAGS="-L$(B)src/pixman/pixman/.libs" \
 	$(NULL)
 
 DEPS_cairo += \
