@@ -440,6 +440,10 @@ fi
 export pixman_CFLAGS="-I${CFG_SRC_DIR}src/pixman/pixman -I${CFG_BUILD_DIR}src/pixman/pixman"
 export pixman_LDFLAGS="-I${CFG_BUILD_DIR}src/pixman/pixman/.libs"
 
+# PIC all the things
+export CFLAGS="${CFLAGS} -fPIC"
+export LDFLAGS="${CFLAGS} -fPIC"
+
 for i in ${CFG_SUBMODULES}
 do
     if [ -d ${CFG_BUILD_DIR}src/${i} ]

@@ -33,6 +33,10 @@ NATIVE_BUILDS += \
 
 # NB. This should not be a problem once a real package system exists.
 
+DEPS_rust-cairo += \
+	cairo \
+	$(NULL)
+
 DEPS_rust-azure += \
 	rust-geom \
 	rust-cairo \
@@ -95,10 +99,9 @@ DEPS_libcss += \
 	libparserutils \
 	$(NULL)
 
-ENV_EXTRA_FLAGS_cairo += \
-	pixman_CFLAGS="-I$(B)src/pixman/pixman" \
-	pixman_LDFLAGS="-L$(B)src/pixman/pixman/.libs" \
-	$(NULL)
+DONE_pixman = "$(B)src/pixman/pixman/.libs/libpixman-1.a"
+
+DONE_cairo = "$(B)src/cairo/src/.libs/libcairo.a"
 
 DEPS_cairo += \
 	pixman \
