@@ -22,7 +22,7 @@ use servo_util::time::{ProfilerChan, profile};
 use servo_util::time;
 use servo_util::task::send_on_failure;
 
-use std::comm::{Chan, Port};
+use std::comm::{channel, Receiver, Sender};
 use std::task;
 use sync::Arc;
 
@@ -43,7 +43,7 @@ pub enum Msg<T> {
     UnusedBufferMsg(~[~LayerBuffer]),
     PaintPermissionGranted,
     PaintPermissionRevoked,
-    ExitMsg(Option<Chan<()>>),
+    ExitMsg(Option<Sender<()>>),
 }
 
 /// A request from the compositor to the renderer for tiles that need to be (re)displayed.
@@ -66,7 +66,7 @@ pub fn BufferRequest(screen_rect: Rect<uint>, page_rect: Rect<f32>) -> BufferReq
 // FIXME(rust#9155): this should be a newtype struct, but
 // generic newtypes ICE when compiled cross-crate
 pub struct RenderChan<T> {
-    chan: Chan<Msg<T>>,
+    chan: Sender<Msg<T>>,
 }
 
 impl<T: Send> Clone for RenderChan<T> {
@@ -78,8 +78,8 @@ impl<T: Send> Clone for RenderChan<T> {
 }
 
 impl<T: Send> RenderChan<T> {
-    pub fn new() -> (Port<Msg<T>>, RenderChan<T>) {
-        let (port, chan) = Chan::new();
+    pub fn new() -> (Receiver<Msg<T>>, RenderChan<T>) {
+        let (chan, port) = channel();
         let render_chan = RenderChan {
             chan: chan,
         };
@@ -104,7 +104,7 @@ enum GraphicsContext {
 
 pub struct RenderTask<C,T> {
     id: PipelineId,
-    port: Port<Msg<T>>,
+    port: Receiver<Msg<T>>,
     compositor: C,
     constellation_chan: ConstellationChan,
     font_ctx: ~FontContext,
@@ -142,13 +142,13 @@ macro_rules! native_graphics_context(
 
 impl<C: RenderListener + Send,T:Send+Freeze> RenderTask<C,T> {
     pub fn create(id: PipelineId,
-                  port: Port<Msg<T>>,
+                  port: Receiver<Msg<T>>,
                   compositor: C,
                   constellation_chan: ConstellationChan,
                   failure_msg: Failure,
                   opts: Opts,
                   profiler_chan: ProfilerChan,
-                  shutdown_chan: Chan<()>) {
+                  shutdown_chan: Sender<()>) {
         let mut builder = task::task().named("RenderTask");
         let ConstellationChan(c) = constellation_chan.clone();
         send_on_failure(&mut builder, FailureMsg(failure_msg), c);
@@ -310,8 +310,8 @@ impl<C: RenderListener + Send,T:Send+Freeze> RenderTask<C,T> {
                         
                         // Draw the display list.
                         profile(time::RenderingDrawingCategory, self.profiler_chan.clone(), || {
-                            let render_layer = self.render_layer.as_ref().unwrap();
-                            render_layer.display_list_collection.get().draw_lists_into_context(&mut ctx);
+                            // XXX XXX let render_layer = self.render_layer.as_ref().unwrap();
+                            // XXX XXX render_layer.display_list_collection.get().draw_lists_into_context(&mut ctx);
                             ctx.draw_target.flush();
                         });
                     }

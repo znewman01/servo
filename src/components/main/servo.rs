@@ -8,6 +8,9 @@
 
 #[feature(globs, macro_rules, managed_boxes, thread_local)];
 
+#[feature(phase)];
+#[phase(syntax, link)] extern crate log;
+
 extern crate alert;
 extern crate azure;
 extern crate geom;
@@ -31,12 +34,12 @@ extern crate sharegl;
 extern crate stb_image;
 
 extern crate collections;
-extern crate extra;
 extern crate green;
 extern crate native;
 extern crate serialize;
 extern crate sync;
 extern crate time;
+extern crate url;
 
 #[cfg(target_os="macos")]
 extern crate core_graphics;
@@ -64,12 +67,12 @@ use servo_util::url::parse_url;
 
 #[cfg(not(test))]
 use std::os;
-#[cfg(not(test))]
-use extra::url::Url;
 #[cfg(not(test), target_os="android")]
 use std::str;
 #[cfg(not(test))]
 use std::task::TaskOpts;
+#[cfg(not(test))]
+use url::Url;
 
 
 #[path="compositing/compositor_task.rs"]
@@ -146,7 +149,7 @@ fn run(opts: opts::Opts) {
     let opts_clone = opts.clone();
     let profiler_chan_clone = profiler_chan.clone();
 
-    let (result_port, result_chan) = Chan::new();
+    let (result_chan, result_port) = channel();
     pool.spawn(TaskOpts::new(), proc() {
         let opts = &opts_clone;
         // Create a Servo instance.
@@ -171,7 +174,7 @@ fn run(opts: opts::Opts) {
                 // As a hack for easier command-line testing,
                 // assume that data URLs are not URL-encoded.
                 Url::new(~"data", None, ~"", None,
-                    filename.slice_from(5).to_owned(), ~[], None)
+                    filename.slice_from(5).to_owned(), Vec::new(), None)
             } else {
                 parse_url(*filename, None)
             };

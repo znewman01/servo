@@ -11,7 +11,7 @@ use servo_util::task::spawn_named;
 //FIXME: https://github.com/mozilla/rust/issues/12892
 static READ_SIZE: uint = 1;
 
-fn read_all(reader: &mut io::Stream, progress_chan: &Chan<ProgressMsg>)
+fn read_all(reader: &mut io::Stream, progress_chan: &Sender<ProgressMsg>)
         -> Result<(), ()> {
     loop {
         let mut buf = ~[];

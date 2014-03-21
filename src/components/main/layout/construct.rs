@@ -50,10 +50,10 @@ use servo_util::url::parse_url;
 use servo_util::url::is_image_data;
 use servo_util::str::is_whitespace;
 
-use extra::url::Url;
 use sync::Arc;
 use std::mem;
 use std::num::Zero;
+use url::Url;
 
 /// The results of flow construction for a DOM node.
 pub enum ConstructionResult {
@@ -604,8 +604,8 @@ impl<'a> FlowConstructor<'a> {
         let parent_box = Box::new(self, parent_node);
         let font_style = parent_box.font_style();
         let font_group = self.font_context().get_resolved_font_for_style(&font_style);
-        let (font_ascent,font_descent) = font_group.borrow().with_mut( |fg| {
-            fg.fonts[0].borrow().with_mut( |font| {
+        let (font_ascent,font_descent) = font_group.with_mut( |fg| {
+            fg.fonts[0].with_mut( |font| {
                 (font.metrics.ascent,font.metrics.descent)
             })
         });

@@ -1363,7 +1363,7 @@ impl Node {
         if copy.is_document() {
             document = DocumentCast::to(&copy).unwrap();
         }
-        assert_eq!(copy.get().owner_doc(), &document);
+        assert!(copy.get().owner_doc() == &document);
 
         // Step 4 (some data already copied in step 2).
         match node.type_id() {

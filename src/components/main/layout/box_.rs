@@ -4,7 +4,6 @@
 
 //! The `Box` type, which represents the leaves of the layout tree.
 
-use extra::url::Url;
 use sync::{MutexArc, Arc};
 use geom::{Point2D, Rect, Size2D, SideOffsets2D};
 use geom::approxeq::ApproxEq;
@@ -28,11 +27,13 @@ use servo_util::str::is_whitespace;
 
 use std::cast;
 use std::cell::RefCell;
+use std::from_str::FromStr;
 use std::num::Zero;
 use style::{ComputedValues, TElement, TNode};
 use style::computed_values::{LengthOrPercentage, LengthOrPercentageOrAuto, overflow, LPA_Auto};
 use style::computed_values::{border_style, clear, font_family, line_height, position};
 use style::computed_values::{text_align, text_decoration, vertical_align, visibility, white_space};
+use url::Url;
 
 use css::node_style::StyledNode;
 use layout::construct::FlowConstructor;

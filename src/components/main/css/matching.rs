@@ -18,7 +18,7 @@ use servo_util::smallvec::{SmallVec, SmallVec0, SmallVec16};
 use servo_util::str::DOMString;
 use std::cast;
 use std::hash::{Hash, sip};
-use std::vec::Items;
+use std::slice::Items;
 use style::{After, Before, ComputedValues, MatchedProperty, Stylist, TElement, TNode, cascade};
 use sync::Arc;
 

@@ -21,7 +21,6 @@ use layout::parallel;
 use layout::util::{LayoutDataAccess, OpaqueNode, LayoutDataWrapper};
 use layout::wrapper::{LayoutNode, TLayoutNode, ThreadSafeLayoutNode};
 
-use extra::url::Url;
 use geom::point::Point2D;
 use geom::rect::Rect;
 use geom::size::Size2D;
@@ -53,13 +52,14 @@ use servo_util::workqueue::WorkQueue;
 use std::cast::transmute;
 use std::cast;
 use std::cell::RefCell;
-use std::comm::Port;
+use std::comm::{channel, Sender, Receiver};
 use std::mem;
 use std::ptr;
 use std::task;
 use style::{AuthorOrigin, ComputedValues, Stylesheet, Stylist};
 use style;
 use sync::{Arc, MutexArc};
+use url::Url;
 
 /// Information needed by the layout task.
 pub struct LayoutTask {
@@ -67,7 +67,7 @@ pub struct LayoutTask {
     id: PipelineId,
 
     /// The port on which we receive messages.
-    port: Port<Msg>,
+    port: Receiver<Msg>,
 
     //// The channel to send messages to ourself.
     chan: LayoutChan,
@@ -246,7 +246,7 @@ impl ImageResponder for LayoutImageResponder {
 impl LayoutTask {
     /// Spawns a new layout task.
     pub fn create(id: PipelineId,
-                  port: Port<Msg>,
+                  port: Receiver<Msg>,
                   chan: LayoutChan,
                   constellation_chan: ConstellationChan,
                   failure_msg: Failure,
@@ -255,7 +255,7 @@ impl LayoutTask {
                   img_cache_task: ImageCacheTask,
                   opts: Opts,
                   profiler_chan: ProfilerChan,
-                  shutdown_chan: Chan<()>) {
+                  shutdown_chan: Sender<()>) {
         let mut builder = task::task().named("LayoutTask");
         let ConstellationChan(con_chan) = constellation_chan.clone();
         send_on_failure(&mut builder, FailureMsg(failure_msg), con_chan);
@@ -278,7 +278,7 @@ impl LayoutTask {
 
     /// Creates a new `LayoutTask` structure.
     fn new(id: PipelineId,
-           port: Port<Msg>,
+           port: Receiver<Msg>,
            chan: LayoutChan,
            constellation_chan: ConstellationChan,
            script_chan: ScriptChan,
@@ -382,7 +382,7 @@ impl LayoutTask {
     /// Enters a quiescent state in which no new messages except for `ReapLayoutDataMsg` will be
     /// processed until an `ExitNowMsg` is received. A pong is immediately sent on the given
     /// response channel.
-    fn prepare_to_exit(&mut self, response_chan: Chan<()>) {
+    fn prepare_to_exit(&mut self, response_chan: Sender<()>) {
         response_chan.send(());
         loop {
             match self.port.recv() {
@@ -407,7 +407,7 @@ impl LayoutTask {
     /// Shuts down the layout task now. If there are any DOM nodes left, layout will now (safely)
     /// crash.
     fn exit_now(&mut self) {
-        let (response_port, response_chan) = Chan::new();
+        let (response_chan, response_port) = channel();
 
         match self.parallel_traversal {
             None => {}

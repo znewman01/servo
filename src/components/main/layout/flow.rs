@@ -50,9 +50,9 @@ use servo_util::smallvec::{SmallVec, SmallVec0};
 use servo_util::geometry::Au;
 use std::cast;
 use std::cell::RefCell;
-use std::sync::atomics::Relaxed;
-use std::vec::MutItems;
 use std::iter::Zip;
+use std::slice::MutItems;
+use std::sync::atomics::Relaxed;
 use style::ComputedValues;
 use style::computed_values::{text_align, position};
 

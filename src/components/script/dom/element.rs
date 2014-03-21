@@ -571,7 +571,7 @@ impl Element {
         let doc = self.node.owner_doc();
         let win = &doc.get().window;
         let node: JS<Node> = NodeCast::from(abstract_self);
-        let (port, chan) = Chan::new();
+        let (chan, port) = channel();
         let addr = node.to_trusted_node_address();
         let rects =
             match win.get().page().query_layout(ContentBoxesQuery(addr, chan), port) {
@@ -595,7 +595,7 @@ impl Element {
         let doc = self.node.owner_doc();
         let win = &doc.get().window;
         let node: JS<Node> = NodeCast::from(abstract_self);
-        let (port, chan) = Chan::new();
+        let (chan, port) = channel();
         let addr = node.to_trusted_node_address();
         match win.get().page().query_layout(ContentBoxQuery(addr, chan), port) {
             ContentBoxResponse(rect) => {

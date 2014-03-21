@@ -17,7 +17,6 @@ use dom::types::*;
 use html::cssparse::{InlineProvenance, StylesheetProvenance, UrlProvenance, spawn_css_parser};
 use script_task::Page;
 
-use extra::url::Url;
 use hubbub::hubbub;
 use servo_msg::constellation_msg::SubpageId;
 use servo_net::resource_task::{Load, Payload, Done, ResourceTask, load_whole_resource};
@@ -28,9 +27,10 @@ use servo_util::url::parse_url;
 use std::ascii::StrAsciiExt;
 use std::cast;
 use std::cell::RefCell;
-use std::comm::{Port, Chan};
+use std::comm::{channel, Sender, Receiver};
 use std::str;
 use style::Stylesheet;
+use url::Url;
 
 macro_rules! handle_element(
     ($document: expr,
@@ -71,7 +71,7 @@ pub enum HtmlDiscoveryMessage {
 }
 
 pub struct HtmlParserResult {
-    discovery_port: Port<HtmlDiscoveryMessage>,
+    discovery_port: Receiver<HtmlDiscoveryMessage>,
 }
 
 trait NodeWrapping {
@@ -103,8 +103,8 @@ spawned, collates them, and sends them to the given result channel.
 * `from_parent` - A port on which to receive new links.
 
 */
-fn css_link_listener(to_parent: Chan<HtmlDiscoveryMessage>,
-                     from_parent: Port<CSSMessage>,
+fn css_link_listener(to_parent: Sender<HtmlDiscoveryMessage>,
+                     from_parent: Receiver<CSSMessage>,
                      resource_task: ResourceTask) {
     let mut result_vec = ~[];
 
@@ -126,8 +126,8 @@ fn css_link_listener(to_parent: Chan<HtmlDiscoveryMessage>,
     }
 }
 
-fn js_script_listener(to_parent: Chan<HtmlDiscoveryMessage>,
-                      from_parent: Port<JSMessage>,
+fn js_script_listener(to_parent: Sender<HtmlDiscoveryMessage>,
+                      from_parent: Receiver<JSMessage>,
                       resource_task: ResourceTask) {
     let mut result_vec = ~[];
 
@@ -256,9 +256,9 @@ pub fn parse_html(page: &Page,
     // Spawn a CSS parser to receive links to CSS style sheets.
     let resource_task2 = resource_task.clone();
 
-    let (discovery_port, discovery_chan) = Chan::new();
+    let (discovery_chan, discovery_port) = channel();
     let stylesheet_chan = discovery_chan.clone();
-    let (css_msg_port, css_chan) = Chan::new();
+    let (css_chan, css_msg_port) = channel();
     spawn_named("parse_html:css", proc() {
         css_link_listener(stylesheet_chan, css_msg_port, resource_task2.clone());
     });
@@ -266,13 +266,13 @@ pub fn parse_html(page: &Page,
     // Spawn a JS parser to receive JavaScript.
     let resource_task2 = resource_task.clone();
     let js_result_chan = discovery_chan.clone();
-    let (js_msg_port, js_chan) = Chan::new();
+    let (js_chan, js_msg_port) = channel();
     spawn_named("parse_html:js", proc() {
         js_script_listener(js_result_chan, js_msg_port, resource_task2.clone());
     });
 
     // Wait for the LoadResponse so that the parser knows the final URL.
-    let (input_port, input_chan) = Chan::new();
+    let (input_chan, input_port) = channel();
     resource_task.send(Load(url.clone(), input_chan));
     let load_response = input_port.recv();
 

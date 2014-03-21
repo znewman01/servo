@@ -18,9 +18,9 @@ use servo_msg::compositor_msg::ScriptListener;
 use servo_msg::constellation_msg::{ConstellationChan, PipelineId};
 use servo_util::opts::Opts;
 use servo_util::time::ProfilerChan;
-use std::comm::{Chan, Port};
+use std::comm::{channel, Sender, Receiver};
 
-use extra::url::Url;
+use url::Url;
 
 #[cfg(target_os="linux")]
 use azure::azure_hl;
@@ -35,7 +35,7 @@ mod headless;
 #[deriving(Clone)]
 pub struct CompositorChan {
     /// A channel on which messages can be sent to the compositor.
-    chan: Chan<Msg>,
+    chan: Sender<Msg>,
 }
 
 /// Implementation of the abstract `ScriptListener` interface.
@@ -54,7 +54,7 @@ impl ScriptListener for CompositorChan {
     }
 
     fn close(&self) {
-        let (port, chan) = Chan::new();
+        let (chan, port) = channel();
         self.chan.send(Exit(chan));
         port.recv();
     }
@@ -67,7 +67,7 @@ impl ScriptListener for CompositorChan {
 /// Implementation of the abstract `RenderListener` interface.
 impl RenderListener for CompositorChan {
     fn get_graphics_metadata(&self) -> Option<NativeGraphicsMetadata> {
-        let (port, chan) = Chan::new();
+        let (chan, port) = channel();
         self.chan.send(GetGraphicsMetadata(chan));
         port.recv()
     }
@@ -104,8 +104,8 @@ impl RenderListener for CompositorChan {
 }
 
 impl CompositorChan {
-    pub fn new() -> (Port<Msg>, CompositorChan) {
-        let (port, chan) = Chan::new();
+    pub fn new() -> (Receiver<Msg>, CompositorChan) {
+        let (chan, port) = channel();
         let compositor_chan = CompositorChan {
             chan: chan,
         };
@@ -119,7 +119,7 @@ impl CompositorChan {
 /// Messages from the painting task and the constellation task to the compositor task.
 pub enum Msg {
     /// Requests that the compositor shut down.
-    Exit(Chan<()>),
+    Exit(Sender<()>),
 
     /// Informs the compositor that the constellation has completed shutdown.
     /// Required because the constellation can have pending calls to make (e.g. SetIds)
@@ -131,7 +131,7 @@ pub enum Msg {
     /// is the pixel format.
     ///
     /// The headless compositor returns `None`.
-    GetGraphicsMetadata(Chan<Option<NativeGraphicsMetadata>>),
+    GetGraphicsMetadata(Sender<Option<NativeGraphicsMetadata>>),
 
     /// Alerts the compositor that there is a new layer to be rendered.
     NewLayer(PipelineId, Size2D<f32>),
@@ -152,7 +152,7 @@ pub enum Msg {
     /// Alerts the compositor to the current status of rendering.
     ChangeRenderState(RenderState),
     /// Sets the channel to the current layout and render tasks, along with their id
-    SetIds(SendableFrameTree, Chan<()>, ConstellationChan),
+    SetIds(SendableFrameTree, Sender<()>, ConstellationChan),
 
     SetUnRenderedColor(PipelineId, Color),
 
@@ -195,7 +195,7 @@ impl CompositorTask {
     }
 
     pub fn create(opts: Opts,
-                  port: Port<Msg>,
+                  port: Receiver<Msg>,
                   constellation_chan: ConstellationChan,
                   profiler_chan: ProfilerChan) {
 

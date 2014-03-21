@@ -3,11 +3,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 use collections::HashMap;
+use rand;
+use rand::Rng;
 use std::hash::{Hash, sip};
-use std::rand::Rng;
-use std::rand;
-use std::vec::Items;
-use std::vec;
+use std::slice;
+use std::slice::Items;
 
 #[cfg(test)]
 use std::cell::Cell;
@@ -188,7 +188,7 @@ impl<K:Clone+Eq+Hash,V:Clone> SimpleHashCache<K,V> {
     pub fn new(cache_size: uint) -> SimpleHashCache<K,V> {
         let mut r = rand::task_rng();
         SimpleHashCache {
-            entries: vec::from_elem(cache_size, None),
+            entries: slice::from_elem(cache_size, None),
             k0: r.gen(),
             k1: r.gen(),
         }

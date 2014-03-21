@@ -2340,12 +2340,12 @@ class CGDefineDOMInterfaceMethod(CGAbstractMethod):
        self.descriptor.name)
         else:
             body += """  js_info.dom_static.attribute_ids.insert(PrototypeList::id::%s as uint,
-                                             vec::cast_to_mut(vec::from_slice(sAttributes_ids)));
+                                             slice::cast_to_mut(slice::from_slice(sAttributes_ids)));
 """ % self.descriptor.name
             body = "" #XXXjdm xray stuff isn't necessary yet
 
-        return (body + """  let cx = js_info.js_context.borrow().ptr;
-  let receiver = js_info.js_compartment.borrow().global_obj;
+        return (body + """  let cx = js_info.js_context.deref().ptr;
+  let receiver = js_info.js_compartment.global_obj;
   let global: *JSObject = JS_GetGlobalForObject(cx, receiver);
   return %s(cx, global, receiver).is_not_null();""" % (getter))
 
@@ -4776,7 +4776,7 @@ class CGBindingRoot(CGThing):
             'std::cmp',
             'std::libc',
             'std::ptr',
-            'std::vec',
+            'std::slice',
             'std::str',
             'std::num',
         ])
@@ -5338,7 +5338,7 @@ class CallbackMember(CGNativeMember):
         if self.argCount > 0:
             replacements["argCount"] = self.argCountStr
             replacements["argvDecl"] = string.Template(
-                "let mut argv = vec::from_elem(${argCount}, UndefinedValue());\n"
+                "let mut argv = slice::from_elem(${argCount}, UndefinedValue());\n"
                 ).substitute(replacements)
         else:
             # Avoid weird 0-sized arrays

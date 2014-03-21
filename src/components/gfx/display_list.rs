@@ -23,7 +23,7 @@ use servo_net::image::base::Image;
 use servo_util::geometry::Au;
 use servo_util::range::Range;
 use std::cast::transmute_region;
-use std::vec::Items;
+use std::slice::Items;
 use style::computed_values::border_style;
 use sync::Arc;
 
@@ -266,12 +266,12 @@ impl<E> DisplayItem<E> {
                 let text_run = text.text_run.get();
                 let font = render_context.font_ctx.get_font_by_descriptor(&text_run.font_descriptor).unwrap();
 
-                let font_metrics = font.borrow().with(|font| {
+                let font_metrics = font.with(|font| {
                     font.metrics.clone()
                 });
                 let origin = text.base.bounds.origin;
                 let baseline_origin = Point2D(origin.x, origin.y + font_metrics.ascent);
-                font.borrow().with_mut(|font| {
+                font.with_mut(|font| {
                     font.draw_text_into_context(render_context,
                                                 text.text_run.get(),
                                                 &text.range,

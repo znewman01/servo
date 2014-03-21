@@ -10,18 +10,21 @@
 
 #[feature(globs, macro_rules, struct_variant, managed_boxes)];
 
+#[feature(phase)];
+#[phase(syntax, link)] extern crate log;
+
 extern crate collections;
 extern crate geom;
 extern crate hubbub;
 extern crate encoding;
 extern crate js;
+extern crate native;
 extern crate serialize;
 extern crate servo_net = "net";
 extern crate servo_util = "util";
 extern crate style;
 extern crate servo_msg = "msg";
-extern crate extra;
-extern crate native;
+extern crate url;
 
 // Macros
 mod macros;
