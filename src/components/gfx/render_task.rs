@@ -140,7 +140,7 @@ macro_rules! native_graphics_context(
     )
 )
 
-impl<C: RenderListener + Send,T:Send+Freeze> RenderTask<C,T> {
+impl<C: RenderListener + Send, T:Send+Share+Freeze> RenderTask<C,T> {
     pub fn create(id: PipelineId,
                   port: Receiver<Msg<T>>,
                   compositor: C,
@@ -310,8 +310,8 @@ impl<C: RenderListener + Send,T:Send+Freeze> RenderTask<C,T> {
                         
                         // Draw the display list.
                         profile(time::RenderingDrawingCategory, self.profiler_chan.clone(), || {
-                            // XXX XXX let render_layer = self.render_layer.as_ref().unwrap();
-                            // XXX XXX render_layer.display_list_collection.get().draw_lists_into_context(&mut ctx);
+                            let render_layer = self.render_layer.as_ref().unwrap();
+                            render_layer.display_list_collection.get().draw_lists_into_context(&mut ctx);
                             ctx.draw_target.flush();
                         });
                     }
