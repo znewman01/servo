@@ -1153,7 +1153,7 @@ impl BlockFlow {
         };
 
         if self.is_fixed() {
-            let lists = lists.borrow_mut();
+            let mut lists = lists.borrow_mut();
             index = lists.lists.len();
             lists.add_list(DisplayList::<E>::new());
         }

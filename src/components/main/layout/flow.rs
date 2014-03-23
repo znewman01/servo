@@ -1023,7 +1023,7 @@ impl<'a> MutableFlowUtils for &'a mut Flow {
             // Find parent ClipDisplayItemClass and push all child display items
             // under it
             let mut child_lists = child_lists.take_unwrap();
-            let lists = lists.borrow_mut();
+            let mut lists = lists.borrow_mut();
             let result = lists.lists[index].list.mut_rev_iter().position(|item| {
                 match *item {
                     ClipDisplayItemClass(ref mut item) => {
