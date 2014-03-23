@@ -213,14 +213,11 @@ impl Profiler {
             });
             let data_len = data.len();
             if data_len > 0 {
-                fn f64_to_i64(x: & &f64) -> i64 {
-                    unsafe { cast::transmute::<f64, i64>(**x) }
-                }
                 let (mean, median, &min, &max) =
                     (data.iter().map(|&x|x).sum() / (data_len as f64),
                      data[data_len / 2],
-                     data.iter().min_by(f64_to_i64).unwrap(),
-                     data.iter().max_by(f64_to_i64).unwrap());
+                     data.iter().fold(f64::INFINITY, |&a, b| a.min(b)),
+                     data.iter().fold(-f64::INFINITY, |&a, b| a.max(b));
                 println!("{:-35s}: {:15.4f} {:15.4f} {:15.4f} {:15.4f} {:15u}",
                          category.format(), mean, median, min, max, data_len);
             }
