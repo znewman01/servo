@@ -166,11 +166,8 @@ impl CompositorLayer {
             match rect {
                 Some(rect) => {
                     container.scissor.set(Some(rect));
-                    container.common.with_mut(|common| {
-                        common.transform = identity().translate(rect.origin.x,
-                                                                rect.origin.y,
-                                                                0f32);
-                    });
+                    container.common.borrow_mut().transform =
+                        identity().translate(rect.origin.x, rect.origin.y, 0f32);
                 }
                 None => {}
             }
@@ -235,11 +232,8 @@ impl CompositorLayer {
                     return false;
                 }
 
-                self.root_layer.common.with_mut(|common| {
-                    common.set_transform(identity().translate(self.scroll_offset.x,
-                                                              self.scroll_offset.y,
-                                                              0.0));
-                });
+                self.root_layer.common.borrow_mut().set_transform(
+                    identity().translate(self.scroll_offset.x, self.scroll_offset.y, 0.0));
                 true
             }
             FixedPosition => false, // Ignore this scroll event.
@@ -351,11 +345,8 @@ impl CompositorLayer {
         match self.children.iter().position(|x| pipeline_id == x.child.pipeline.id) {
             Some(i) => {
                 let child_node = &mut self.children[i];
-                child_node.container.common.with_mut(|common| {
-                    common.set_transform(identity().translate(new_rect.origin.x,
-                                                              new_rect.origin.y,
-                                                              0.0));
-                });
+                child_node.container.common.borrow_mut().set_transform(
+                    identity().translate(new_rect.origin.x, new_rect.origin.y, 0.0));
                 let old_rect = child_node.container.scissor.get().clone();
                 child_node.container.scissor.set(Some(new_rect));
                 match self.quadtree {
@@ -437,11 +428,8 @@ impl CompositorLayer {
                     return false;
                 }
 
-                self.root_layer.common.with_mut(|common| {
-                    common.set_transform(identity().translate(self.scroll_offset.x,
-                                                              self.scroll_offset.y,
-                                                              0.0));
-                });
+                self.root_layer.common.borrow_mut().set_transform(
+                    identity().translate(self.scroll_offset.x, self.scroll_offset.y, 0.0));
                 true
             }
             FixedPosition => false  // Ignore this scroll event.
@@ -590,18 +578,19 @@ impl CompositorLayer {
             let rect = buffer.rect;
             let transform = identity().translate(rect.origin.x, rect.origin.y, 0.0);
             let transform = transform.scale(rect.size.width, rect.size.height, 1.0);
-            texture_layer.common.with_mut(|common| common.set_transform(transform));
+            texture_layer.common.borrow_mut().set_transform(transform);
         }
 
         // Add child layers.
         for child in self.children.mut_iter().filter(|x| !x.child.hidden) {
             current_layer_child = match current_layer_child {
                 None => {
-                    child.container.common.with_mut(|common| {
-                        common.parent = None;
+                    {
+                        let mut common = child.container.common.borrow_mut();
+                        (*common).parent = None;
                         common.prev_sibling = None;
                         common.next_sibling = None;
-                    });
+                    }
                     ContainerLayer::add_child_end(self.root_layer.clone(),
                                                   ContainerLayerKind(child.container.clone()));
                     None

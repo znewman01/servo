@@ -1153,10 +1153,9 @@ impl BlockFlow {
         };
 
         if self.is_fixed() {
-            lists.with_mut(|lists| {
-                index = lists.lists.len();
-                lists.add_list(DisplayList::<E>::new());
-            });
+            let lists = lists.borrow_mut();
+            index = lists.lists.len();
+            lists.add_list(DisplayList::<E>::new());
         }
 
         // Set the absolute position, which will be passed down later as part
@@ -1637,10 +1636,10 @@ trait WidthAndMarginsComputer {
         // The associated box is the border box of this flow.
         let mut position_ref = box_.border_box.borrow_mut();
         // Left border edge.
-        position_ref.get().origin.x = box_.margin.get().left;
+        position_ref.origin.x = box_.margin.borrow().left;
 
         // Border box width
-        position_ref.get().size.width = solution.width + box_.noncontent_width();
+        position_ref.size.width = solution.width + box_.noncontent_width();
     }
 
     /// Set the x coordinate of the given flow if it is absolutely positioned.

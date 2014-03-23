@@ -60,8 +60,8 @@ pub enum NavigationDirection {
     Back,
 }
 
-#[deriving(Clone, Eq, Hash, Encodable)]
+#[deriving(Clone, Eq, TotalEq, Hash, Encodable)]
 pub struct PipelineId(uint);
 
-#[deriving(Clone, Eq, Hash, Encodable)]
+#[deriving(Clone, Eq, TotalEq, Hash, Encodable)]
 pub struct SubpageId(uint);

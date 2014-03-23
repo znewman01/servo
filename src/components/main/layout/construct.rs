@@ -604,17 +604,17 @@ impl<'a> FlowConstructor<'a> {
         let parent_box = Box::new(self, parent_node);
         let font_style = parent_box.font_style();
         let font_group = self.font_context().get_resolved_font_for_style(&font_style);
-        let (font_ascent,font_descent) = font_group.with_mut( |fg| {
-            fg.fonts[0].with_mut( |font| {
-                (font.metrics.ascent,font.metrics.descent)
-            })
-        });
+        let (font_ascent,font_descent) = {
+            let fg = font_group.borrow();
+            let font = fg.fonts[0].borrow();
+            (font.metrics.ascent,font.metrics.descent)
+        };
 
         let boxes_len = boxes.len();
         parent_box.compute_borders(parent_box.style());
 
         for (i,box_) in boxes.iter().enumerate() {
-            if box_.inline_info.with( |data| data.is_none() ) {
+            if { box_.inline_info.borrow().is_none() } {
                 box_.inline_info.set(Some(InlineInfo::new()));
             }
 
@@ -627,7 +627,7 @@ impl<'a> FlowConstructor<'a> {
             }
 
             let mut info = box_.inline_info.borrow_mut();
-            match info.get() {
+            match &mut *info {
                 &Some(ref mut info) => {
                     // TODO(ksh8281) compute margin,padding
                     info.parent_info.push(
@@ -819,20 +819,20 @@ impl<'ln> NodeUtils for ThreadSafeLayoutNode<'ln> {
     #[inline(always)]
     fn set_flow_construction_result(&self, result: ConstructionResult) {
         let mut layout_data_ref = self.mutate_layout_data();
-        match *layout_data_ref.get() {
-            Some(ref mut layout_data) => layout_data.data.flow_construction_result = result,
-            None => fail!("no layout data"),
+        match &mut *layout_data_ref {
+            &Some(ref mut layout_data) => layout_data.data.flow_construction_result = result,
+            &None => fail!("no layout data"),
         }
     }
 
     #[inline(always)]
     fn swap_out_construction_result(&self) -> ConstructionResult {
         let mut layout_data_ref = self.mutate_layout_data();
-        match *layout_data_ref.get() {
-            Some(ref mut layout_data) => {
+        match &mut *layout_data_ref {
+            &Some(ref mut layout_data) => {
                 mem::replace(&mut layout_data.data.flow_construction_result, NoConstructionResult)
             }
-            None => fail!("no layout data"),
+            &None => fail!("no layout data"),
         }
     }
 }

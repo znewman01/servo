@@ -950,7 +950,7 @@ impl<'a> MutableFlowUtils for &'a mut Flow {
             InlineFlowClass => self.as_inline().build_display_list_inline(builder, container_block_size, dirty, index, lists),
         };
 
-        if lists.with_mut(|lists| lists.lists[index].list.len() == 0) {
+        if { lists.borrow_mut().lists[index].list.len() } == 0 {
             return true;
         }
 
@@ -1022,24 +1022,23 @@ impl<'a> MutableFlowUtils for &'a mut Flow {
             let mut child_lists = Some(child_lists.unwrap());
             // Find parent ClipDisplayItemClass and push all child display items
             // under it
-            lists.with_mut(|lists| {
-                let mut child_lists = child_lists.take_unwrap();
-                let result = lists.lists[index].list.mut_rev_iter().position(|item| {
-                    match *item {
-                        ClipDisplayItemClass(ref mut item) => {
-                            item.child_list.push_all_move(child_lists.lists.shift().unwrap().list);
-                            true
-                        },
-                        _ => false,
-                    }
-                });
-
-                if result.is_none() {
-                    fail!("fail to find parent item");
+            let mut child_lists = child_lists.take_unwrap();
+            let lists = lists.borrow_mut();
+            let result = lists.lists[index].list.mut_rev_iter().position(|item| {
+                match *item {
+                    ClipDisplayItemClass(ref mut item) => {
+                        item.child_list.push_all_move(child_lists.lists.shift().unwrap().list);
+                        true
+                    },
+                    _ => false,
                 }
-
-                lists.lists.push_all_move(child_lists.lists);
             });
+
+            if result.is_none() {
+                fail!("fail to find parent item");
+            }
+
+            lists.lists.push_all_move(child_lists.lists);
         }
         true
     }

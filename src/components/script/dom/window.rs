@@ -65,6 +65,12 @@ impl Eq for TimerHandle {
     }
 }
 
+impl TotalEq for TimerHandle {
+    fn equals(&self, other: &TimerHandle) -> bool {
+        self.eq(other)
+    }
+}
+
 impl TimerHandle {
     fn cancel(&self) {
         self.cancel_chan.as_ref().map(|chan| chan.send(()));
@@ -99,7 +105,7 @@ impl<S: Encoder> Encodable<S> for Untraceable {
 impl Window {
     pub fn get_cx(&self) -> *JSObject {
         let js_info = self.page().js_info();
-        (*js_info.get()).get_ref().js_compartment.cx.deref().ptr
+        js_info.get_ref().js_compartment.cx.deref().ptr
     }
 
     pub fn page<'a>(&'a self) -> &'a Page {
@@ -141,7 +147,7 @@ impl Window {
 
     pub fn Document(&self) -> JS<Document> {
         let frame = self.page().frame();
-        (*frame.get()).get_ref().document.clone()
+        frame.get_ref().document.clone()
     }
 
     pub fn Name(&self) -> DOMString {

@@ -15,7 +15,7 @@ fn read_all(reader: &mut io::Stream, progress_chan: &Sender<ProgressMsg>)
         -> Result<(), ()> {
     loop {
         let mut buf = ~[];
-        match reader.push_bytes(&mut buf, READ_SIZE) {
+        match reader.push_exact(&mut buf, READ_SIZE) {
             Ok(_) => progress_chan.send(Payload(buf)),
             Err(e) => match e.kind {
                 io::EndOfFile => return Ok(()),

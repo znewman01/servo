@@ -425,11 +425,11 @@ impl LayoutTask {
     /// Retrieves the flow tree root from the root node.
     fn get_layout_root(&self, node: LayoutNode) -> ~Flow {
         let mut layout_data_ref = node.mutate_layout_data();
-        let result = match *layout_data_ref.get() {
-            Some(ref mut layout_data) => {
+        let result = match &mut *layout_data_ref {
+            &Some(ref mut layout_data) => {
                 mem::replace(&mut layout_data.data.flow_construction_result, NoConstructionResult)
             }
-            None => fail!("no layout data for root node"),
+            &None => fail!("no layout data for root node"),
         };
         let mut flow = match result {
             FlowConstructionResult(mut flow, abs_descendants, fixed_descendants) => {
@@ -857,6 +857,6 @@ impl LayoutTask {
     unsafe fn handle_reap_layout_data(&self, layout_data: LayoutDataRef) {
         let mut layout_data_ref = layout_data.borrow_mut();
         let _: Option<LayoutDataWrapper> = cast::transmute(
-            mem::replace(layout_data_ref.get(), None));
+            mem::replace(&mut *layout_data_ref, None));
     }
 }

@@ -647,7 +647,7 @@ pub fn global_object_for_js_object(obj: *JSObject) -> JS<window::Window> {
 fn cx_for_dom_reflector(obj: *JSObject) -> *JSContext {
     let win = global_object_for_js_object(obj);
     let js_info = win.get().page().js_info();
-    match *js_info.get() {
+    match *js_info {
         Some(ref info) => info.js_context.deref().ptr,
         None => fail!("no JS context for DOM global")
     }

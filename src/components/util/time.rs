@@ -6,8 +6,8 @@
 
 use std_time::precise_time_ns;
 use collections::treemap::TreeMap;
-use std::cast;
 use std::comm::{Sender, channel, Receiver};
+use std::f64;
 use std::iter::AdditiveIterator;
 use task::{spawn_named};
 
@@ -213,11 +213,11 @@ impl Profiler {
             });
             let data_len = data.len();
             if data_len > 0 {
-                let (mean, median, &min, &max) =
+                let (mean, median, min, max) =
                     (data.iter().map(|&x|x).sum() / (data_len as f64),
                      data[data_len / 2],
-                     data.iter().fold(f64::INFINITY, |&a, b| a.min(b)),
-                     data.iter().fold(-f64::INFINITY, |&a, b| a.max(b));
+                     data.iter().fold(f64::INFINITY, |a, &b| a.min(b)),
+                     data.iter().fold(-f64::INFINITY, |a, &b| a.max(b)));
                 println!("{:-35s}: {:15.4f} {:15.4f} {:15.4f} {:15.4f} {:15u}",
                          category.format(), mean, median, min, max, data_len);
             }

@@ -140,7 +140,7 @@ macro_rules! native_graphics_context(
     )
 )
 
-impl<C: RenderListener + Send, T:Send+Share+Freeze> RenderTask<C,T> {
+impl<C: RenderListener + Send, T:Send+Share> RenderTask<C,T> {
     pub fn create(id: PipelineId,
                   port: Receiver<Msg<T>>,
                   compositor: C,

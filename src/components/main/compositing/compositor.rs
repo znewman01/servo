@@ -639,7 +639,9 @@ impl IOCompositor {
         self.world_zoom = (self.world_zoom * magnification).max(1.0);
         let world_zoom = self.world_zoom;
 
-        self.root_layer.common.with_mut(|common| common.set_transform(identity().scale(world_zoom, world_zoom, 1f32)));
+        {
+            self.root_layer.common.borrow_mut().set_transform(identity().scale(world_zoom, world_zoom, 1f32));
+        }
 
         // Scroll as needed
         let page_delta = Point2D(window_size.width as f32 * (1.0 / world_zoom - 1.0 / old_world_zoom) * 0.5,

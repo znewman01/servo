@@ -75,7 +75,7 @@ pub struct HashCache<K, V> {
     entries: HashMap<K, V>,
 }
 
-impl<K: Clone + Eq + Hash, V: Clone> HashCache<K,V> {
+impl<K: Clone + Eq + TotalEq + Hash, V: Clone> HashCache<K,V> {
     pub fn new() -> HashCache<K, V> {
         HashCache {
           entries: HashMap::new(),
@@ -83,7 +83,7 @@ impl<K: Clone + Eq + Hash, V: Clone> HashCache<K,V> {
     }
 }
 
-impl<K: Clone + Eq + Hash, V: Clone> Cache<K,V> for HashCache<K,V> {
+impl<K: Clone + Eq + TotalEq + Hash, V: Clone> Cache<K,V> for HashCache<K,V> {
     fn insert(&mut self, key: K, value: V) {
         self.entries.insert(key, value);
     }

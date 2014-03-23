@@ -135,7 +135,7 @@ impl TextRunScanner {
                     // font group fonts. This is probably achieved by creating the font group above
                     // and then letting `FontGroup` decide which `Font` to stick into the text run.
                     let fontgroup = font_context.get_resolved_font_for_style(&font_style);
-                    let run = ~fontgroup.with(|fg| fg.create_textrun(transformed_text.clone(), decoration));
+                    let run = ~fontgroup.borrow().create_textrun(transformed_text.clone(), decoration);
 
                     debug!("TextRunScanner: pushing single text box in range: {} ({})",
                            self.clump,
@@ -220,11 +220,8 @@ impl TextRunScanner {
                 // sequence. If no clump takes ownership, however, it will leak.
                 let clump = self.clump;
                 let run = if clump.length() != 0 && run_str.len() > 0 {
-                    fontgroup.with(|fg| {
-                        fg.fonts[0].with_mut(|font| {
-                            Some(Arc::new(~TextRun::new(font, run_str.clone(), decoration)))
-                        })
-                    })
+                    Some(Arc::new(~TextRun::new(&mut *fontgroup.borrow().fonts[0].borrow_mut(),
+                                                run_str.clone(), decoration)))
                 } else {
                     None
                 };

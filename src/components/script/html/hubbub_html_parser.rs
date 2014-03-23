@@ -286,8 +286,7 @@ pub fn parse_html(page: &Page,
         // Store the final URL before we start parsing, so that DOM routines
         // (e.g. HTMLImageElement::update_image) can resolve relative URLs
         // correctly.
-        let mut page_url = page.mut_url();
-        *page_url.get() = Some((url2.clone(), true));
+        *page.mut_url() = Some((url2.clone(), true));
     }
 
     let pipeline_id = page.id;
@@ -310,7 +309,7 @@ pub fn parse_html(page: &Page,
             debug!("create comment");
             // NOTE: tmp vars are workaround for lifetime issues. Both required.
             let tmp_borrow = doc_cell.borrow();
-            let tmp = tmp_borrow.get();
+            let tmp = &*tmp_borrow;
             let comment: JS<Node> = NodeCast::from(&Comment::new(data, *tmp));
                 unsafe { comment.to_hubbub_node() }
         },
@@ -322,7 +321,7 @@ pub fn parse_html(page: &Page,
                                 force_quirks: _ } = doctype;
             // NOTE: tmp vars are workaround for lifetime issues. Both required.
             let tmp_borrow = doc_cell.borrow();
-            let tmp = tmp_borrow.get();
+            let tmp = &*tmp_borrow;
             let doctype_node = DocumentType::new(name, public_id, system_id, *tmp);
             unsafe {
                 doctype_node.to_hubbub_node()
@@ -332,7 +331,7 @@ pub fn parse_html(page: &Page,
             debug!("create element");
             // NOTE: tmp vars are workaround for lifetime issues. Both required.
             let tmp_borrow = doc_cell.borrow();
-            let tmp = tmp_borrow.get();
+            let tmp = &*tmp_borrow;
             let mut element = build_element_from_tag(tag.name.clone(), *tmp);
 
             debug!("-- attach attrs");
@@ -398,7 +397,7 @@ pub fn parse_html(page: &Page,
             debug!("create text");
             // NOTE: tmp vars are workaround for lifetime issues. Both required.
             let tmp_borrow = doc_cell.borrow();
-            let tmp = tmp_borrow.get();
+            let tmp = &*tmp_borrow;
             let text = Text::new(data, *tmp);
             unsafe { text.to_hubbub_node() }
         },
@@ -448,14 +447,14 @@ pub fn parse_html(page: &Page,
             debug!("set quirks mode");
             // NOTE: tmp vars are workaround for lifetime issues. Both required.
             let mut tmp_borrow = doc_cell.borrow_mut();
-            let tmp = tmp_borrow.get();
+            let tmp = &mut *tmp_borrow;
             tmp.get_mut().set_quirks_mode(mode);
         },
         encoding_change: |encname| {
             debug!("encoding change");
             // NOTE: tmp vars are workaround for lifetime issues. Both required.
             let mut tmp_borrow = doc_cell.borrow_mut();
-            let tmp = tmp_borrow.get();
+            let tmp = &mut *tmp_borrow;
             tmp.get_mut().set_encoding_name(encname);
         },
         complete_script: |script| {

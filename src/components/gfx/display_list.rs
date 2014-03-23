@@ -266,18 +266,18 @@ impl<E> DisplayItem<E> {
                 let text_run = text.text_run.get();
                 let font = render_context.font_ctx.get_font_by_descriptor(&text_run.font_descriptor).unwrap();
 
-                let font_metrics = font.with(|font| {
-                    font.metrics.clone()
-                });
+                let font_metrics = {
+                    font.borrow().metrics.clone()
+                };
                 let origin = text.base.bounds.origin;
                 let baseline_origin = Point2D(origin.x, origin.y + font_metrics.ascent);
-                font.with_mut(|font| {
-                    font.draw_text_into_context(render_context,
-                                                text.text_run.get(),
-                                                &text.range,
-                                                baseline_origin,
-                                                text.text_color);
-                });
+                {
+                    font.borrow_mut().draw_text_into_context(render_context,
+                                                             text.text_run.get(),
+                                                             &text.range,
+                                                             baseline_origin,
+                                                             text.text_color);
+                }
                 let width = text.base.bounds.size.width;
                 let underline_size = font_metrics.underline_size;
                 let underline_offset = font_metrics.underline_offset;
