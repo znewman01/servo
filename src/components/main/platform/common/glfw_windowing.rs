@@ -144,9 +144,12 @@ impl WindowMethods<Application> for Window {
     }
 
     fn recv(&self) -> WindowEvent {
-        self.event_queue.borrow_mut().shift().map(|event| {
-            return event;
-        });
+        {
+            let mut event_queue = self.event_queue.borrow_mut();
+            if !event_queue.is_empty() {
+                return event_queue.shift().unwrap();
+            }
+        }
 
         glfw::poll_events();
         for (_, event) in self.glfw_window.flush_events() {
