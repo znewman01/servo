@@ -23,7 +23,6 @@ extern crate js;
 extern crate layers;
 extern crate opengles;
 extern crate png;
-#[cfg(target_os="android")]
 extern crate rustuv;
 extern crate script;
 extern crate servo_net = "net";

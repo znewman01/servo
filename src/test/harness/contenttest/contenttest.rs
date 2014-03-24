@@ -92,7 +92,7 @@ fn run_test(file: ~str) {
     let path = os::make_absolute(&Path::new(file));
     // FIXME (#1094): not the right way to transform a path
     let infile = ~"file://" + path.display().to_str();
-    let stdout = CreatePipe(true, false); // rustc #10228
+    let stdout = CreatePipe(false, true);
     let stderr = InheritFd(2);
 
     let config = ProcessConfig {

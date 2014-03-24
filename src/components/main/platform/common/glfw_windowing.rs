@@ -144,9 +144,9 @@ impl WindowMethods<Application> for Window {
     }
 
     fn recv(&self) -> WindowEvent {
-        if !{ self.event_queue.borrow_mut().is_empty() } {
-            return self.event_queue.borrow_mut().shift().unwrap()
-        }
+        self.event_queue.borrow_mut().shift().map(|event| {
+            return event;
+        });
 
         glfw::poll_events();
         for (_, event) in self.glfw_window.flush_events() {
@@ -155,10 +155,8 @@ impl WindowMethods<Application> for Window {
 
         if self.glfw_window.should_close() {
             QuitWindowEvent
-        } else if !{ self.event_queue.borrow_mut().is_empty() } {
-            self.event_queue.borrow_mut().shift().unwrap()
         } else {
-            IdleWindowEvent
+            self.event_queue.borrow_mut().shift().unwrap_or(IdleWindowEvent)
         }
     }
 
