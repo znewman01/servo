@@ -195,7 +195,6 @@ impl CompositorLayer {
                   -> bool {
         let cursor = cursor - self.scroll_offset;
         for child in self.children.mut_iter().filter(|x| !x.child.hidden) {
-            // NOTE: work around borrowchk
             match child.container.scissor.get() {
                 None => {
                     error!("CompositorLayer: unable to perform cursor hit test for layer");
@@ -222,7 +221,7 @@ impl CompositorLayer {
                     Some(size) => size,
                     None => fail!("CompositorLayer: tried to scroll with no page size set"),
                 };
-                let min_x = window_size.width - page_size.width.min(0.0);
+                let min_x = (window_size.width - page_size.width).min(0.0);
                 self.scroll_offset.x = self.scroll_offset.x.clamp(&min_x, &0.0);
                 let min_y = (window_size.height - page_size.height).min(0.0);
                 self.scroll_offset.y = self.scroll_offset.y.clamp(&min_y, &0.0);
@@ -246,7 +245,6 @@ impl CompositorLayer {
     pub fn send_mouse_event(&self, event: MouseWindowEvent, cursor: Point2D<f32>) {
         let cursor = cursor - self.scroll_offset;
         for child in self.children.iter().filter(|&x| !x.child.hidden) {
-            // NOTE: work around borrowchk
             match child.container.scissor.get() {
                 None => {
                     error!("CompositorLayer: unable to perform cursor hit test for layer");
@@ -308,7 +306,6 @@ impl CompositorLayer {
             self.build_layer_tree(graphics_context);
         }
         let transform = |x: &mut CompositorLayerChild| -> bool {
-            // NOTE: work around borrowchk
             match x.container.scissor.get() {
                 Some(scissor) => {
                     let new_rect = rect.intersection(&scissor);
@@ -716,7 +713,6 @@ impl CompositorLayer {
             Tree(ref mut quadtree) => quadtree,
         };
         for child in self.children.iter().filter(|x| !x.child.hidden) {
-            // NOTE: work around borrowchk
             match child.container.scissor.get() {
                 None => {} // Nothing to do
                 Some(rect) => {
