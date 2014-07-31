@@ -107,7 +107,7 @@ impl ScaledFontExtensionMethods for ScaledFont {
                         y: (origin.y + glyph_offset.y).to_nearest_px() as AzFloat
                     }
                 };
-                origin = Point2D(origin.x + glyph_advance, origin.y);
+                origin = Point2D::new(origin.x + glyph_advance, origin.y);
                 azglyphs.push(azglyph)
             };
         }
@@ -598,7 +598,7 @@ impl DisplayItem {
                 let font = font.borrow();
 
                 let origin = text.base.bounds.origin;
-                let baseline_origin = Point2D(origin.x, origin.y + text_run.font_metrics.ascent);
+                let baseline_origin = Point2D::new(origin.x, origin.y + text_run.font_metrics.ascent);
                 {
                     font.draw_text_into_context(render_context,
                                                 &*text.text_run,
@@ -614,21 +614,21 @@ impl DisplayItem {
 
                 for underline_color in text.text_decorations.underline.iter() {
                     let underline_y = baseline_origin.y - underline_offset;
-                    let underline_bounds = Rect(Point2D(baseline_origin.x, underline_y),
-                                                Size2D(width, underline_size));
+                    let underline_bounds = Rect::new(Point2D::new(baseline_origin.x, underline_y),
+                                                     Size2D::new(width, underline_size));
                     render_context.draw_solid_color(&underline_bounds, *underline_color);
                 }
 
                 for overline_color in text.text_decorations.overline.iter() {
-                    let overline_bounds = Rect(Point2D(baseline_origin.x, origin.y),
-                                               Size2D(width, underline_size));
+                    let overline_bounds = Rect::new(Point2D::new(baseline_origin.x, origin.y),
+                                                    Size2D::new(width, underline_size));
                     render_context.draw_solid_color(&overline_bounds, *overline_color);
                 }
 
                 for line_through_color in text.text_decorations.line_through.iter() {
                     let strikeout_y = baseline_origin.y - strikeout_offset;
-                    let strikeout_bounds = Rect(Point2D(baseline_origin.x, strikeout_y),
-                                                Size2D(width, strikeout_size));
+                    let strikeout_bounds = Rect::new(Point2D::new(baseline_origin.x, strikeout_y),
+                                                     Size2D::new(width, strikeout_size));
                     render_context.draw_solid_color(&strikeout_bounds, *line_through_color);
                 }
             }

@@ -615,8 +615,8 @@ impl ScriptTask {
     fn scroll_fragment_point(&self, pipeline_id: PipelineId, node: &JSRef<Element>) {
         let node: &JSRef<Node> = NodeCast::from_ref(node);
         let rect = node.get_bounding_content_box();
-        let point = Point2D(to_frac_px(rect.origin.x).to_f32().unwrap(),
-                            to_frac_px(rect.origin.y).to_f32().unwrap());
+        let point = Point2D::new(to_frac_px(rect.origin.x).to_f32().unwrap(),
+                                 to_frac_px(rect.origin.y).to_f32().unwrap());
         // FIXME(#2003, pcwalton): This is pretty bogus when multiple layers are involved.
         // Really what needs to happen is that this needs to go through layout to ask which
         // layer the element belongs to, and have it send the scroll message to the

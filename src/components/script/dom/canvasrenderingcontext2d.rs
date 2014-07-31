@@ -113,17 +113,17 @@ impl CanvasRenderingContext2D {
 
 impl<'a> CanvasRenderingContext2DMethods for JSRef<'a, CanvasRenderingContext2D> {
     fn FillRect(&self, x: f64, y: f64, width: f64, height: f64) {
-        let rect = Rect(Point2D(x as f32, y as f32), Size2D(width as f32, height as f32));
+        let rect = Rect::new(Point2D::new(x as f32, y as f32), Size2D::new(width as f32, height as f32));
         self.renderer.send(FillRect(rect));
     }
 
     fn ClearRect(&self, x: f64, y: f64, width: f64, height: f64) {
-        let rect = Rect(Point2D(x as f32, y as f32), Size2D(width as f32, height as f32));
+        let rect = Rect::new(Point2D::new(x as f32, y as f32), Size2D::new(width as f32, height as f32));
         self.renderer.send(ClearRect(rect));
     }
 
     fn StrokeRect(&self, x: f64, y: f64, width: f64, height: f64) {
-        let rect = Rect(Point2D(x as f32, y as f32), Size2D(width as f32, height as f32));
+        let rect = Rect::new(Point2D::new(x as f32, y as f32), Size2D::new(width as f32, height as f32));
         self.renderer.send(StrokeRect(rect));
     }
 }

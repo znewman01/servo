@@ -321,7 +321,7 @@ impl<C:RenderListener + Send> RenderTask<C> {
                 let width = tile.screen_rect.size.width;
                 let height = tile.screen_rect.size.height;
 
-                let size = Size2D(width as i32, height as i32);
+                let size = Size2D::new(width as i32, height as i32);
                 let draw_target = match self.graphics_context {
                     CpuGraphicsContext => {
                         DrawTarget::new(self.opts.render_backend, size, B8G8R8A8)
@@ -392,7 +392,7 @@ impl<C:RenderListener + Send> RenderTask<C> {
                                 let mut native_surface: NativeSurface =
                                     layers::platform::surface::NativeSurfaceMethods::new(
                                         native_graphics_context!(self),
-                                        Size2D(width as i32, height as i32),
+                                        Size2D::new(width as i32, height as i32),
                                         width as i32 * 4);
                                 native_surface.mark_wont_leak();
 

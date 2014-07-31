@@ -85,7 +85,7 @@ impl<'a> HTMLCanvasElementMethods for JSRef<'a, HTMLCanvasElement> {
         if self.context.get().is_none() {
             let window = window_from_node(self).root();
             let (w, h) = (self.width.get() as i32, self.height.get() as i32);
-            let context = CanvasRenderingContext2D::new(&Window(*window), Size2D(w, h));
+            let context = CanvasRenderingContext2D::new(&Window(*window), Size2D::new(w, h));
             self.context.assign(Some(context));
         }
         self.context.get().map(|context| Temporary::new(context))
@@ -119,7 +119,7 @@ impl<'a> VirtualMethods for JSRef<'a, HTMLCanvasElement> {
         if recreate {
             let (w, h) = (self.width.get() as i32, self.height.get() as i32);
             match self.context.get() {
-                Some(ref context) => context.root().recreate(Size2D(w, h)),
+                Some(ref context) => context.root().recreate(Size2D::new(w, h)),
                 None => ()
             }
         }
@@ -146,7 +146,7 @@ impl<'a> VirtualMethods for JSRef<'a, HTMLCanvasElement> {
         if recreate {
             let (w, h) = (self.width.get() as i32, self.height.get() as i32);
             match self.context.get() {
-                Some(ref context) => context.root().recreate(Size2D(w, h)),
+                Some(ref context) => context.root().recreate(Size2D::new(w, h)),
                 None => ()
             }
         }

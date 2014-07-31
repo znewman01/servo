@@ -298,7 +298,9 @@ pub fn rect_contains_point<T:PartialOrd + Add<T,T>>(rect: Rect<T>, point: Point2
 
 /// A helper function to convert a rect of `f32` pixels to a rect of app units.
 pub fn f32_rect_to_au_rect(rect: Rect<f32>) -> Rect<Au> {
-    Rect(Point2D(Au::from_frac32_px(rect.origin.x), Au::from_frac32_px(rect.origin.y)),
-         Size2D(Au::from_frac32_px(rect.size.width), Au::from_frac32_px(rect.size.height)))
+    Rect::new(Point2D::new(Au::from_frac32_px(rect.origin.x),
+                           Au::from_frac32_px(rect.origin.y)),
+              Size2D::new(Au::from_frac32_px(rect.size.width),
+                          Au::from_frac32_px(rect.size.height)))
 }
 

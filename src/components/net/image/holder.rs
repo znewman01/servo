@@ -31,7 +31,7 @@ impl ImageHolder {
         let holder = ImageHolder {
             url: url,
             image: None,
-            cached_size: Size2D(0,0),
+            cached_size: Size2D::new(0,0),
             local_image_cache: local_image_cache.clone(),
         };
 
@@ -63,8 +63,8 @@ impl ImageHolder {
     pub fn get_size(&mut self) -> Option<Size2D<int>> {
         debug!("get_size() {}", self.url.serialize());
         self.get_image().map(|img| {
-            self.cached_size = Size2D(img.width as int,
-                                      img.height as int);
+            self.cached_size = Size2D::new(img.width as int,
+                                           img.height as int);
             self.cached_size.clone()
         })
     }

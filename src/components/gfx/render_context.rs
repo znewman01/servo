@@ -80,10 +80,10 @@ impl<'a> RenderContext<'a>  {
         let rect = bounds.to_azure_rect();
         let path_builder = self.draw_target.create_path_builder();
 
-        let left_top = Point2D(rect.origin.x, rect.origin.y);
-        let right_top = Point2D(rect.origin.x + rect.size.width, rect.origin.y);
-        let left_bottom = Point2D(rect.origin.x, rect.origin.y + rect.size.height);
-        let right_bottom = Point2D(rect.origin.x + rect.size.width, rect.origin.y + rect.size.height);
+        let left_top = Point2D::new(rect.origin.x, rect.origin.y);
+        let right_top = Point2D::new(rect.origin.x + rect.size.width, rect.origin.y);
+        let left_bottom = Point2D::new(rect.origin.x, rect.origin.y + rect.size.height);
+        let right_bottom = Point2D::new(rect.origin.x + rect.size.width, rect.origin.y + rect.size.height);
 
         path_builder.move_to(left_top);
         path_builder.line_to(right_top);
@@ -99,7 +99,7 @@ impl<'a> RenderContext<'a>  {
     }
 
     pub fn draw_image(&self, bounds: Rect<Au>, image: Arc<Box<Image>>) {
-        let size = Size2D(image.width as i32, image.height as i32);
+        let size = Size2D::new(image.width as i32, image.height as i32);
         let pixel_width = match image.color_type {
             RGBA8 => 4,
             K8    => 1,
@@ -112,8 +112,8 @@ impl<'a> RenderContext<'a>  {
         let draw_target_ref = &self.draw_target;
         let azure_surface = draw_target_ref.create_source_surface_from_data(image.pixels.as_slice(), size,
                                                                             stride as i32, B8G8R8A8);
-        let source_rect = Rect(Point2D(0 as AzFloat, 0 as AzFloat),
-                               Size2D(image.width as AzFloat, image.height as AzFloat));
+        let source_rect = Rect::new(Point2D::new(0 as AzFloat, 0 as AzFloat),
+                                    Size2D::new(image.width as AzFloat, image.height as AzFloat));
         let dest_rect = bounds.to_azure_rect();
         let draw_surface_options = DrawSurfaceOptions::new(Linear, true);
         let draw_options = DrawOptions::new(1.0f64 as AzFloat, 0);
@@ -126,10 +126,10 @@ impl<'a> RenderContext<'a>  {
 
     pub fn clear(&self) {
         let pattern = ColorPattern::new(Color::new(0.0, 0.0, 0.0, 0.0));
-        let rect = Rect(Point2D(self.page_rect.origin.x as AzFloat,
-                                self.page_rect.origin.y as AzFloat),
-                        Size2D(self.screen_rect.size.width as AzFloat,
-                               self.screen_rect.size.height as AzFloat));
+        let rect = Rect::new(Point2D::new(self.page_rect.origin.x as AzFloat,
+                                          self.page_rect.origin.y as AzFloat),
+                             Size2D::new(self.screen_rect.size.width as AzFloat,
+                                         self.screen_rect.size.height as AzFloat));
         let mut draw_options = DrawOptions::new(1.0, 0);
         draw_options.set_composition_op(SourceOp);
         self.draw_target.make_current();
@@ -203,34 +203,34 @@ impl<'a> RenderContext<'a>  {
                         border:    SideOffsets2D<f32>,
                         color:     Color) {
         let left_top     = bounds.origin;
-        let right_top    = left_top + Point2D(bounds.size.width, 0.0);
-        let left_bottom  = left_top + Point2D(0.0, bounds.size.height);
-        let right_bottom = left_top + Point2D(bounds.size.width, bounds.size.height);
+        let right_top    = left_top + Point2D::new(bounds.size.width, 0.0);
+        let left_bottom  = left_top + Point2D::new(0.0, bounds.size.height);
+        let right_bottom = left_top + Point2D::new(bounds.size.width, bounds.size.height);
         let draw_opts    = DrawOptions::new(1.0, 0);
         let path_builder = self.draw_target.create_path_builder();
          match direction {
              Top    => {
                  path_builder.move_to(left_top);
                  path_builder.line_to(right_top);
-                 path_builder.line_to(right_top + Point2D(-border.right, border.top));
-                 path_builder.line_to(left_top + Point2D(border.left, border.top));
+                 path_builder.line_to(right_top + Point2D::new(-border.right, border.top));
+                 path_builder.line_to(left_top + Point2D::new(border.left, border.top));
              }
              Left   => {
                  path_builder.move_to(left_top);
-                 path_builder.line_to(left_top + Point2D(border.left, border.top));
-                 path_builder.line_to(left_bottom + Point2D(border.left, -border.bottom));
+                 path_builder.line_to(left_top + Point2D::new(border.left, border.top));
+                 path_builder.line_to(left_bottom + Point2D::new(border.left, -border.bottom));
                  path_builder.line_to(left_bottom);
              }
              Right  => {
                  path_builder.move_to(right_top);
                  path_builder.line_to(right_bottom);
-                 path_builder.line_to(right_bottom + Point2D(-border.right, -border.bottom));
-                 path_builder.line_to(right_top + Point2D(-border.right, border.top));
+                 path_builder.line_to(right_bottom + Point2D::new(-border.right, -border.bottom));
+                 path_builder.line_to(right_top + Point2D::new(-border.right, border.top));
              }
              Bottom => {
                  path_builder.move_to(left_bottom);
-                 path_builder.line_to(left_bottom + Point2D(border.left, -border.bottom));
-                 path_builder.line_to(right_bottom + Point2D(-border.right, -border.bottom));
+                 path_builder.line_to(left_bottom + Point2D::new(border.left, -border.bottom));
+                 path_builder.line_to(right_bottom + Point2D::new(-border.right, -border.bottom));
                  path_builder.line_to(right_bottom);
              }
          }
@@ -268,26 +268,26 @@ impl<'a> RenderContext<'a>  {
         let (start, end)  = match direction {
             Top => {
                 let y = rect.origin.y + border.top * 0.5;
-                let start = Point2D(rect.origin.x, y);
-                let end = Point2D(rect.origin.x + rect.size.width, y);
+                let start = Point2D::new(rect.origin.x, y);
+                let end = Point2D::new(rect.origin.x + rect.size.width, y);
                 (start, end)
             }
             Left => {
                 let x = rect.origin.x + border.left * 0.5;
-                let start = Point2D(x, rect.origin.y + rect.size.height);
-                let end = Point2D(x, rect.origin.y + border.top);
+                let start = Point2D::new(x, rect.origin.y + rect.size.height);
+                let end = Point2D::new(x, rect.origin.y + border.top);
                 (start, end)
             }
             Right => {
                 let x = rect.origin.x + rect.size.width - border.right * 0.5;
-                let start = Point2D(x, rect.origin.y);
-                let end = Point2D(x, rect.origin.y + rect.size.height);
+                let start = Point2D::new(x, rect.origin.y);
+                let end = Point2D::new(x, rect.origin.y + rect.size.height);
                 (start, end)
             }
             Bottom => {
                 let y = rect.origin.y + rect.size.height - border.bottom * 0.5;
-                let start = Point2D(rect.origin.x + rect.size.width, y);
-                let end = Point2D(rect.origin.x + border.left, y);
+                let start = Point2D::new(rect.origin.x + rect.size.width, y);
+                let end = Point2D::new(rect.origin.x + border.left, y);
                 (start, end)
             }
         };
@@ -313,11 +313,12 @@ impl<'a> RenderContext<'a>  {
                                                  shrink_factor * border.right,
                                                  shrink_factor * border.bottom,
                                                  shrink_factor * border.left);
-        let left_top        = Point2D(rect.origin.x, rect.origin.y);
-        let scaled_left_top = left_top + Point2D(scaled_border.left,
-                                                 scaled_border.top);
-        return Rect(scaled_left_top,
-                    Size2D(rect.size.width - 2.0 * scaled_border.right, rect.size.height - 2.0 * scaled_border.bottom));
+        let left_top        = Point2D::new(rect.origin.x, rect.origin.y);
+        let scaled_left_top = left_top + Point2D::new(scaled_border.left,
+                                                      scaled_border.top);
+        return Rect::new(scaled_left_top,
+                         Size2D::new(rect.size.width - 2.0 * scaled_border.right,
+                                     rect.size.height - 2.0 * scaled_border.bottom));
     }
 
     fn scale_color(&self, color: Color, scale_factor: f32) -> Color {
@@ -396,10 +397,10 @@ trait ToAzureRect {
 
 impl ToAzureRect for Rect<Au> {
     fn to_azure_rect(&self) -> Rect<AzFloat> {
-        Rect(Point2D(self.origin.x.to_nearest_px() as AzFloat,
-                     self.origin.y.to_nearest_px() as AzFloat),
-             Size2D(self.size.width.to_nearest_px() as AzFloat,
-                    self.size.height.to_nearest_px() as AzFloat))
+        Rect::new(Point2D::new(self.origin.x.to_nearest_px() as AzFloat,
+                               self.origin.y.to_nearest_px() as AzFloat),
+                  Size2D::new(self.size.width.to_nearest_px() as AzFloat,
+                              self.size.height.to_nearest_px() as AzFloat))
     }
 }
 
