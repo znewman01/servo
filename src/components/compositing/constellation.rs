@@ -436,7 +436,7 @@ impl<LTF: LayoutTaskFactory> Constellation<LTF> {
             });
             idx.map(|idx| {
                 debug!("removing pending frame change for failed pipeline");
-                force_pipeline_exit(&self.pending_frames.get(idx).after.pipeline);
+                force_pipeline_exit(&self.pending_frames[idx].after.pipeline);
                 self.pending_frames.remove(idx)
             });
             if idx.is_none() {

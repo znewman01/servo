@@ -169,7 +169,7 @@ impl<'a> DocumentHelpers for JSRef<'a, Document> {
                     let elem: Option<&JSRef<Element>> = ElementCast::to_ref(&node);
                     match elem {
                         Some(elem) => {
-                            if &*elements.get(head).root() == elem {
+                            if &*(*elements)[head].root() == elem {
                                 head = head + 1;
                             }
                             if new_node == &node || head == elements.len() {
@@ -366,7 +366,7 @@ impl<'a> DocumentMethods for JSRef<'a, Document> {
     fn GetElementById(&self, id: DOMString) -> Option<Temporary<Element>> {
         match self.idmap.deref().borrow().find_equiv(&id) {
             None => None,
-            Some(ref elements) => Some(Temporary::new(elements.get(0).clone())),
+            Some(ref elements) => Some(Temporary::new((*elements)[0].clone())),
         }
     }
 

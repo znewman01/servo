@@ -379,7 +379,7 @@ impl LayoutTask {
             AddStylesheetMsg(sheet) => self.handle_add_stylesheet(sheet),
             ReflowMsg(data) => {
                 profile(time::LayoutPerformCategory, self.time_profiler_chan.clone(), || {
-                    self.handle_reflow(data);
+                    self.handle_reflow(&*data);
                 });
             }
             QueryMsg(query) => {
@@ -630,7 +630,7 @@ impl LayoutTask {
                     let mut applicable_declarations = ApplicableDeclarations::new();
                     let mut applicable_declarations_cache = ApplicableDeclarationsCache::new();
                     let mut style_sharing_candidate_cache = StyleSharingCandidateCache::new();
-                    drop(node.recalc_style_for_subtree(self.stylist,
+                    drop(node.recalc_style_for_subtree(&*self.stylist,
                                                        &mut layout_ctx,
                                                        font_context_opt.take_unwrap(),
                                                        &mut applicable_declarations,

@@ -370,11 +370,11 @@ impl<'a> PrivateNodeHelpers for JSRef<'a, Node> {
     }
 }
 
-pub trait NodeHelpers {
-    fn ancestors(&self) -> AncestorIterator;
-    fn children(&self) -> AbstractNodeChildrenIterator;
-    fn child_elements(&self) -> ChildElementIterator;
-    fn following_siblings(&self) -> AbstractNodeChildrenIterator;
+pub trait NodeHelpers<'m, 'n> {
+    fn ancestors(&self) -> AncestorIterator<'n>;
+    fn children(&self) -> AbstractNodeChildrenIterator<'n>;
+    fn child_elements(&self) -> ChildElementIterator<'m, 'n>;
+    fn following_siblings(&self) -> AbstractNodeChildrenIterator<'n>;
     fn is_in_doc(&self) -> bool;
     fn is_inclusive_ancestor_of(&self, parent: &JSRef<Node>) -> bool;
     fn is_parent_of(&self, child: &JSRef<Node>) -> bool;
@@ -411,9 +411,9 @@ pub trait NodeHelpers {
     fn dump_indent(&self, indent: uint);
     fn debug_str(&self) -> String;
 
-    fn traverse_preorder<'a>(&'a self) -> TreeIterator<'a>;
-    fn sequential_traverse_postorder<'a>(&'a self) -> TreeIterator<'a>;
-    fn inclusively_following_siblings<'a>(&'a self) -> AbstractNodeChildrenIterator<'a>;
+    fn traverse_preorder(&self) -> TreeIterator<'n>;
+    fn sequential_traverse_postorder(&self) -> TreeIterator<'n>;
+    fn inclusively_following_siblings(&self) -> AbstractNodeChildrenIterator<'n>;
 
     fn to_trusted_node_address(&self) -> TrustedNodeAddress;
 
@@ -426,7 +426,7 @@ pub trait NodeHelpers {
     fn remove_self(&self);
 }
 
-impl<'a> NodeHelpers for JSRef<'a, Node> {
+impl<'m, 'n> NodeHelpers<'m, 'n> for JSRef<'n, Node> {
     /// Dumps the subtree rooted at this node, for debugging.
     fn dump(&self) {
         self.dump_indent(0);
@@ -549,20 +549,20 @@ impl<'a> NodeHelpers for JSRef<'a, Node> {
     }
 
     /// Iterates over this node and all its descendants, in preorder.
-    fn traverse_preorder<'a>(&'a self) -> TreeIterator<'a> {
+    fn traverse_preorder(&self) -> TreeIterator<'n> {
         let mut nodes = vec!();
         gather_abstract_nodes(self, &mut nodes, false);
         TreeIterator::new(nodes)
     }
 
     /// Iterates over this node and all its descendants, in postorder.
-    fn sequential_traverse_postorder<'a>(&'a self) -> TreeIterator<'a> {
+    fn sequential_traverse_postorder(&self) -> TreeIterator<'n> {
         let mut nodes = vec!();
         gather_abstract_nodes(self, &mut nodes, true);
         TreeIterator::new(nodes)
     }
 
-    fn inclusively_following_siblings<'a>(&'a self) -> AbstractNodeChildrenIterator<'a> {
+    fn inclusively_following_siblings(&self) -> AbstractNodeChildrenIterator<'n> {
         AbstractNodeChildrenIterator {
             current_node: Some(self.clone()),
         }
@@ -572,7 +572,7 @@ impl<'a> NodeHelpers for JSRef<'a, Node> {
         self == parent || parent.ancestors().any(|ancestor| &ancestor == self)
     }
 
-    fn following_siblings(&self) -> AbstractNodeChildrenIterator {
+    fn following_siblings(&self) -> AbstractNodeChildrenIterator<'n> {
         AbstractNodeChildrenIterator {
             current_node: self.next_sibling().root().map(|next| next.deref().clone()),
         }
@@ -658,7 +658,7 @@ impl<'a> NodeHelpers for JSRef<'a, Node> {
         Ok(NodeList::new_simple_list(&window.root_ref(), nodes))
     }
 
-    fn ancestors(&self) -> AncestorIterator {
+    fn ancestors(&self) -> AncestorIterator<'n> {
         AncestorIterator {
             current: self.parent_node.get().map(|node| (*node.root()).clone()),
         }
@@ -672,13 +672,13 @@ impl<'a> NodeHelpers for JSRef<'a, Node> {
         self.owner_doc.assign(Some(document.clone()));
     }
 
-    fn children(&self) -> AbstractNodeChildrenIterator {
+    fn children(&self) -> AbstractNodeChildrenIterator<'n> {
         AbstractNodeChildrenIterator {
             current_node: self.first_child.get().map(|node| (*node.root()).clone()),
         }
     }
 
-    fn child_elements(&self) -> ChildElementIterator {
+    fn child_elements(&self) -> ChildElementIterator<'m, 'n> {
         self.children()
             .filter(|node| {
                 node.is_element()
@@ -853,7 +853,8 @@ impl<'a> Iterator<JSRef<'a, Node>> for TreeIterator<'a> {
         if self.index >= self.nodes.len() {
             None
         } else {
-            let v = self.nodes.get(self.index).clone();
+            let v = self.nodes[self.index];
+            let v = v.clone();
             self.index += 1;
             Some(v)
         }
@@ -881,7 +882,7 @@ impl NodeIterator {
         }
     }
 
-    fn next_child<'b>(&self, node: &JSRef<'b, Node>) -> Option<JSRef<Node>> {
+    fn next_child<'b>(&self, node: &JSRef<'b, Node>) -> Option<JSRef<'b, Node>> {
         if !self.include_descendants_of_void && node.is_element() {
             let elem: &JSRef<Element> = ElementCast::to_ref(node).unwrap();
             if elem.deref().is_void() {
@@ -896,7 +897,7 @@ impl NodeIterator {
 }
 
 impl<'a> Iterator<JSRef<'a, Node>> for NodeIterator {
-    fn next(&mut self) -> Option<JSRef<Node>> {
+    fn next(&mut self) -> Option<JSRef<'a, Node>> {
         self.current_node = match self.current_node.as_ref().map(|node| node.root()) {
             None => {
                 if self.include_start {
@@ -1085,9 +1086,11 @@ impl Node {
                                     return Err(HierarchyRequest);
                                 }
                                 match child {
-                                    Some(ref child) if child.inclusively_following_siblings()
-                                                            .any(|child| child.is_doctype()) => {
-                                        return Err(HierarchyRequest);
+                                    Some(ref child) => {
+                                        if child.inclusively_following_siblings()
+                                            .any(|child| child.is_doctype()) {
+                                                return Err(HierarchyRequest)
+                                            }
                                     }
                                     _ => (),
                                 }
@@ -1104,9 +1107,11 @@ impl Node {
                             return Err(HierarchyRequest);
                         }
                         match child {
-                            Some(ref child) if child.inclusively_following_siblings()
-                                                    .any(|child| child.is_doctype()) => {
-                                return Err(HierarchyRequest);
+                            Some(ref child) => {
+                                if child.inclusively_following_siblings()
+                                    .any(|child| child.is_doctype()) {
+                                        return Err(HierarchyRequest)
+                                    }
                             }
                             _ => (),
                         }
