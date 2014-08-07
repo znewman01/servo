@@ -65,6 +65,7 @@ pub enum LayoutQuery {
 
 /// The address of a node known to be valid. These must only be sent from content -> layout,
 /// because we do not trust layout.
+#[deriving(Show)]
 pub struct TrustedNodeAddress(pub *const c_void);
 
 impl<S: Encoder<E>, E> Encodable<S, E> for TrustedNodeAddress {

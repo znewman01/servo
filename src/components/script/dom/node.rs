@@ -186,7 +186,7 @@ pub struct LayoutData {
 }
 
 pub struct LayoutDataRef {
-    pub data_cell: RefCell<Option<LayoutData>>,
+    data_cell: RefCell<Option<LayoutData>>,
 }
 
 impl LayoutDataRef {
@@ -204,6 +204,7 @@ impl LayoutDataRef {
 
     /// Take the chan out of the layout data if it is present.
     pub fn take_chan(&self) -> Option<LayoutChan> {
+        println!("take_chan called");
         let mut layout_data = self.data_cell.borrow_mut();
         match *layout_data {
             None => None,
@@ -216,12 +217,14 @@ impl LayoutDataRef {
     /// safe layout data accessor.
     #[inline]
     pub unsafe fn borrow_unchecked(&self) -> *const Option<LayoutData> {
+        println!("borrow unchecked");
         mem::transmute(&self.data_cell)
     }
 
     /// Borrows the layout data immutably. This function is *not* thread-safe.
     #[inline]
     pub fn borrow<'a>(&'a self) -> Ref<'a,Option<LayoutData>> {
+        println!("borrow");
         self.data_cell.borrow()
     }
 
@@ -232,6 +235,8 @@ impl LayoutDataRef {
     /// on it. This has already resulted in one bug!
     #[inline]
     pub fn borrow_mut<'a>(&'a self) -> RefMut<'a,Option<LayoutData>> {
+        println!("borrow_mut");
+        println!("data cell = {:?}", self.data_cell);
         self.data_cell.borrow_mut()
     }
 }
@@ -243,7 +248,7 @@ impl LayoutDataRef {
 pub trait TLayoutData {}
 
 /// The different types of nodes.
-#[deriving(PartialEq,Encodable)]
+#[deriving(PartialEq,Encodable,Show)]
 pub enum NodeTypeId {
     DoctypeNodeTypeId,
     DocumentFragmentNodeTypeId,

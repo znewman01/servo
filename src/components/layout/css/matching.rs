@@ -9,7 +9,7 @@ use construct::FlowConstructor;
 use context::LayoutContext;
 use extra::LayoutAuxMethods;
 use util::{LayoutDataAccess, LayoutDataWrapper};
-use wrapper::{LayoutElement, LayoutNode, PostorderNodeMutTraversal, ThreadSafeLayoutNode};
+use wrapper::{LayoutElement, LayoutNode, PostorderNodeMutTraversal, ThreadSafeLayoutNode, TLayoutNode};
 
 use gfx::font_context::FontContext;
 use servo_util::atom::Atom;
@@ -469,6 +469,7 @@ impl<'ln> MatchMethods for LayoutNode<'ln> {
                                 style_sharing_candidate_cache: &mut StyleSharingCandidateCache,
                                 parent: Option<LayoutNode>)
                                 -> Box<FontContext> {
+        unsafe { println!("recalcing style for subtree at {}", self.get().type_id); }
         self.initialize_layout_data(layout_context.layout_chan.clone());
 
         // First, check to see whether we can share a style with someone.

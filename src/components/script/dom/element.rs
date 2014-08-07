@@ -69,7 +69,7 @@ impl Reflectable for Element {
     }
 }
 
-#[deriving(PartialEq,Encodable)]
+#[deriving(PartialEq,Encodable,Show)]
 pub enum ElementTypeId {
     HTMLElementTypeId,
     HTMLAnchorElementTypeId,

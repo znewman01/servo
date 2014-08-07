@@ -379,6 +379,7 @@ impl LayoutTask {
             AddStylesheetMsg(sheet) => self.handle_add_stylesheet(sheet),
             ReflowMsg(data) => {
                 profile(time::LayoutPerformCategory, self.time_profiler_chan.clone(), || {
+                    println!("{}", (*data).document_root);
                     self.handle_reflow(&*data);
                 });
             }
@@ -574,10 +575,18 @@ impl LayoutTask {
     /// The high-level routine that performs layout tasks.
     fn handle_reflow(&mut self, data: &Reflow) {
         // FIXME: Isolate this transmutation into a "bridge" module.
+        println!("{}", data.document_root);
         let node: &mut LayoutNode = unsafe {
             let mut node: JS<Node> = JS::from_trusted_node_address(data.document_root);
+            println!("reflowing node = {:?}", *node.unsafe_get());
             mem::transmute(&mut node)
         };
+
+            {
+                println!("mutating layout data...");
+                let _x = node.mutate_layout_data();
+                println!("...done!");
+            }
 
         debug!("layout: received layout request for: {:s}", data.url.serialize());
         debug!("layout: damage is {:?}", data.damage);

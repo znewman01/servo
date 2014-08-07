@@ -90,7 +90,8 @@ impl<'ln> LayoutDataAccess for LayoutNode<'ln> {
     #[inline(always)]
     fn mutate_layout_data<'a>(&'a self) -> RefMut<'a,Option<LayoutDataWrapper>> {
         unsafe {
-            mem::transmute(self.get().layout_data.borrow_mut())
+            let node = self.get();
+            mem::transmute(node.layout_data.borrow_mut())
         }
     }
 }

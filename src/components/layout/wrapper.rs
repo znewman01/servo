@@ -75,7 +75,10 @@ pub trait TLayoutNode {
     /// Returns the interior of this node as a `Node`. This is highly unsafe for layout to call
     /// and as such is marked `unsafe`.
     unsafe fn get<'a>(&'a self) -> &'a Node {
-        &*self.get_jsmanaged().unsafe_get()
+        let jsm = self.get_jsmanaged();
+        let node = jsm.unsafe_get();
+        &*node
+        //&*self.get_jsmanaged().unsafe_get()
     }
 
     fn node_is_element(&self) -> bool {

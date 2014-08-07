@@ -335,6 +335,8 @@ impl Page {
                 let window_size = self.window_size.deref().get();
 
                 // Send new document and relevant styles to layout.
+                println!("root.to_trusted_node_address() = {}", root.to_trusted_node_address());
+                println!("node = {:?}", **root);
                 let reflow = box Reflow {
                     document_root: root.to_trusted_node_address(),
                     url: self.get_url(),
