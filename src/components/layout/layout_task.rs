@@ -44,6 +44,7 @@ use servo_msg::constellation_msg::{ConstellationChan, PipelineId, Failure, Failu
 use servo_net::image_cache_task::{ImageCacheTask, ImageResponseMsg};
 use gfx::font_cache_task::{FontCacheTask};
 use servo_net::local_image_cache::{ImageResponder, LocalImageCache};
+use servo_util::bloom::BloomFilter;
 use servo_util::geometry::Au;
 use servo_util::geometry;
 use servo_util::logical_geometry::LogicalPoint;
@@ -53,10 +54,11 @@ use servo_util::time::{TimeProfilerChan, profile};
 use servo_util::time;
 use servo_util::task::spawn_named_with_send_on_failure;
 use servo_util::workqueue::WorkQueue;
+use std::collections::hashmap::HashSet;
 use std::comm::{channel, Sender, Receiver, Select};
 use std::mem;
 use std::ptr;
-use style::{AuthorOrigin, Stylesheet, Stylist};
+use style::{AuthorOrigin, Stylesheet, Stylist, SimpleSelector};
 use style::iter_font_face_rules;
 use sync::{Arc, Mutex};
 use url::Url;
@@ -363,7 +365,13 @@ impl LayoutTask {
     }
 
     // Create a layout context for use in building display lists, hit testing, &c.
-    fn build_shared_layout_context(&self, reflow_root: &LayoutNode, url: &Url) -> SharedLayoutContext {
+    fn build_shared_layout_context(
+      &self,
+      reflow_root: &LayoutNode,
+      max_dom_depth: uint,
+      descendant_simple_selectors: HashSet<&'static SimpleSelector>,
+      url: &Url)
+          -> SharedLayoutContext {
         SharedLayoutContext {
             image_cache: self.local_image_cache.clone(),
             screen_size: self.screen_size.clone(),
@@ -371,6 +379,8 @@ impl LayoutTask {
             layout_chan: self.chan.clone(),
             font_cache_task: self.font_cache_task.clone(),
             stylist: &*self.stylist,
+            max_dom_depth: max_dom_depth,
+            descendant_simple_selectors: descendant_simple_selectors,
             url: (*url).clone(),
             reflow_root: OpaqueNodeMethods::from_layout_node(reflow_root),
             opts: self.opts.clone(),
@@ -638,8 +648,22 @@ impl LayoutTask {
         }
         self.screen_size = current_screen_size;
 
+        // TODO(cgaebel): Instead of counting the max dom selectors, maybe just
+        // use a 1 MB bloom filter? Or use d-left hasing to allow one that grows
+        // dynamically?
+        let (max_dom_node_selectors, descendant_simple_selectors) =
+            profile(time::LayoutMaxSelectorMatchesCategory,
+                    self.time_profiler_chan.clone(),
+                    // TODO(cagebel): Parallelize this traversal.
+                    || self.stylist.max_selector_matches(node));
+
         // Create a layout context for use throughout the following passes.
-        let mut shared_layout_ctx = self.build_shared_layout_context(node, &data.url);
+        let mut shared_layout_ctx =
+            self.build_shared_layout_context(
+                node,
+                max_dom_node_selectors,
+                descendant_simple_selectors,
+                &data.url);
 
         let mut layout_root = profile(time::LayoutStyleRecalcCategory,
                                       self.time_profiler_chan.clone(),
@@ -651,6 +675,7 @@ impl LayoutTask {
                     let mut applicable_declarations = ApplicableDeclarations::new();
                     node.recalc_style_for_subtree(&*self.stylist,
                                                    &layout_ctx,
+                                                   &mut Some(BloomFilter::new(max_dom_node_selectors)),
                                                    &mut applicable_declarations,
                                                    None)
                 }

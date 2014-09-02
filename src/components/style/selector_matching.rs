@@ -2,14 +2,17 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-use std::collections::hashmap::HashMap;
+use std::cmp;
+use std::collections::hashmap::{HashMap,HashSet};
 use std::hash::Hash;
+use std::mem;
 use std::num::div_rem;
 use sync::Arc;
 
 use url::Url;
 
 use servo_util::atom::Atom;
+use servo_util::bloom::BloomFilter;
 use servo_util::namespace;
 use servo_util::smallvec::VecLike;
 use servo_util::sort;
@@ -83,6 +86,7 @@ impl SelectorMap {
                               V:VecLike<DeclarationBlock>>(
                               &self,
                               node: &N,
+                              parent_bf: &Option<BloomFilter>,
                               matching_rules_list: &mut V,
                               shareable: &mut bool) {
         if self.empty {
@@ -95,6 +99,7 @@ impl SelectorMap {
         match element.get_id() {
             Some(id) => {
                 SelectorMap::get_matching_rules_from_hash(node,
+                                                          parent_bf,
                                                           &self.id_hash,
                                                           &id,
                                                           matching_rules_list,
@@ -108,10 +113,11 @@ impl SelectorMap {
                 // FIXME: Store classes pre-split as atoms to make the loop below faster.
                 for class in class_attr.split(SELECTOR_WHITESPACE) {
                     SelectorMap::get_matching_rules_from_hash(node,
-                                                                &self.class_hash,
-                                                                &Atom::from_slice(class),
-                                                                matching_rules_list,
-                                                                shareable);
+                                                              parent_bf,
+                                                              &self.class_hash,
+                                                              &Atom::from_slice(class),
+                                                              matching_rules_list,
+                                                              shareable);
                 }
             }
             None => {}
@@ -123,12 +129,14 @@ impl SelectorMap {
             &self.local_name_hash
         };
         SelectorMap::get_matching_rules_from_hash(node,
+                                                  parent_bf,
                                                   local_name_hash,
                                                   element.get_local_name(),
                                                   matching_rules_list,
                                                   shareable);
 
         SelectorMap::get_matching_rules(node,
+                                        parent_bf,
                                         self.universal_rules.as_slice(),
                                         matching_rules_list,
                                         shareable);
@@ -145,13 +153,14 @@ impl SelectorMap {
                                     N:TNode<E>,
                                     V:VecLike<DeclarationBlock>>(
                                     node: &N,
+                                    parent_bf: &Option<BloomFilter>,
                                     hash: &HashMap<Atom, Vec<Rule>>,
                                     key: &Atom,
                                     matching_rules: &mut V,
                                     shareable: &mut bool) {
         match hash.find(key) {
             Some(rules) => {
-                SelectorMap::get_matching_rules(node, rules.as_slice(), matching_rules, shareable)
+                SelectorMap::get_matching_rules(node, parent_bf, rules.as_slice(), matching_rules, shareable)
             }
             None => {}
         }
@@ -162,11 +171,12 @@ impl SelectorMap {
                           N:TNode<E>,
                           V:VecLike<DeclarationBlock>>(
                           node: &N,
+                          parent_bf: &Option<BloomFilter>,
                           rules: &[Rule],
                           matching_rules: &mut V,
                           shareable: &mut bool) {
         for rule in rules.iter() {
-            if matches_compound_selector(&*rule.selector, node, shareable) {
+            if matches_compound_selector(&*rule.selector, node, parent_bf, shareable) {
                 matching_rules.vec_push(rule.declarations.clone());
             }
         }
@@ -336,6 +346,7 @@ impl Stylist {
                                         V:VecLike<DeclarationBlock>>(
                                         &self,
                                         element: &N,
+                                        parent_bf: &Option<BloomFilter>,
                                         style_attribute: Option<&PropertyDeclarationBlock>,
                                         pseudo_element: Option<PseudoElement>,
                                         applicable_declarations: &mut V)
@@ -354,10 +365,11 @@ impl Stylist {
 
         // Step 1: Normal rules.
         map.user_agent.normal.get_all_matching_rules(element,
+                                                     parent_bf,
                                                      applicable_declarations,
                                                      &mut shareable);
-        map.user.normal.get_all_matching_rules(element, applicable_declarations, &mut shareable);
-        map.author.normal.get_all_matching_rules(element, applicable_declarations, &mut shareable);
+        map.user.normal.get_all_matching_rules(element, parent_bf, applicable_declarations, &mut shareable);
+        map.author.normal.get_all_matching_rules(element, parent_bf, applicable_declarations, &mut shareable);
 
         // Step 2: Normal style attributes.
         style_attribute.map(|sa| {
@@ -367,6 +379,7 @@ impl Stylist {
 
         // Step 3: Author-supplied `!important` rules.
         map.author.important.get_all_matching_rules(element,
+                                                    parent_bf,
                                                     applicable_declarations,
                                                     &mut shareable);
 
@@ -378,13 +391,127 @@ impl Stylist {
 
         // Step 5: User and UA `!important` rules.
         map.user.important.get_all_matching_rules(element,
+                                                  parent_bf,
                                                   applicable_declarations,
                                                   &mut shareable);
         map.user_agent.important.get_all_matching_rules(element,
+                                                        parent_bf,
                                                         applicable_declarations,
                                                         &mut shareable);
 
         shareable
+    }
+
+    /// Pushes all the simple selectors with a descendant (space) to their right.
+    fn push_rule<'a>(src: &'a Rule, dst: &mut HashSet<&'a SimpleSelector>) {
+        let mut selector: &CompoundSelector = src.selector.deref();
+
+        loop {
+            match selector.next {
+                None => break,
+                Some((ref to_the_left, Descendant)) => {
+                    dst.extend(to_the_left.simple_selectors.iter());
+                    selector = &**to_the_left;
+                },
+                // non-descendant selectors
+                Some((ref to_the_left, _)) => {
+                    selector = &**to_the_left;
+                },
+            }
+        }
+    }
+
+    /// For the css selection bloom filter, we need to get an estimate of the
+    /// matching descendant simple selector in the tree. This function will
+    /// return a set of them.
+    pub fn descendant_simple_selectors<'a>(&'a self) -> HashSet<&'a SimpleSelector> {
+        let mut ret = HashSet::new();
+
+        for &element_selector_map in
+            [ &self.element_map
+            , &self.before_map
+            , &self.after_map
+            ].iter() {
+            for origin_selector_map in
+                [ &element_selector_map.user_agent
+                , &element_selector_map.author
+                , &element_selector_map.user
+                ].iter() {
+                for selector_map in
+                    [ &origin_selector_map.normal
+                    , &origin_selector_map.important
+                    ].iter() {
+                    for rules in
+                        selector_map.id_hash.values()
+                        .chain(selector_map.class_hash.values())
+                        .chain(selector_map.local_name_hash.values())
+                        .chain(selector_map.lower_local_name_hash.values()) {
+                        for rule in rules.iter() {
+                            Stylist::push_rule(rule, &mut ret);
+                        }
+                    }
+                    for rule in selector_map.universal_rules.iter() {
+                        Stylist::push_rule(rule, &mut ret);
+                    }
+                }
+            }
+        }
+
+        ret
+    }
+
+    pub fn number_of_selector_matches<E: TElement, N: TNode<E>>(
+      node: &N, selector_set: &HashSet<&SimpleSelector>) -> uint {
+        let mut _shareable = false;
+        selector_set
+            .iter()
+            .filter(|&&selector|
+                    matches_simple_selector(selector, node, &mut _shareable))
+            .count()
+    }
+
+    /// TODO(cgaebel): Do this in parallel?
+    pub fn max_selector_matches_for_node<E: TElement, N: TNode<E>>(
+      node: &N, selector_set: &HashSet<&SimpleSelector>) -> uint {
+        let mut max_of_children = 0;
+
+        let mut current_node: N =
+            match node.tnode_first_child() {
+                // ignore leaf nodes
+                None                  => return 0,
+                Some(ref first_child) => first_child.clone(),
+            };
+
+        loop {
+            max_of_children =
+                cmp::max(
+                    max_of_children,
+                    Stylist::max_selector_matches_for_node(
+                        &current_node,
+                        selector_set));
+
+            current_node =
+                match current_node.next_sibling() {
+                    None => break,
+                    Some(s) => s,
+                };
+        }
+
+        max_of_children + Stylist::number_of_selector_matches(node, selector_set)
+    }
+
+    /// The return value of this function is extremely sketchy.
+    /// The 'static lifetime on SimpleSelector is so that lifetime parameters on
+    /// `SharedLayoutContext` can be avoided.
+    pub fn max_selector_matches<E: TElement, N: TNode<E>>(&self, node: &N)
+      -> (uint, HashSet<&'static SimpleSelector>) {
+        let descendant_simple_selectors = self.descendant_simple_selectors();
+        debug!("Number of descendant simple selectors: {}, using {} kB of RAM",
+               descendant_simple_selectors.len(),
+               descendant_simple_selectors.len() * mem::size_of::<uint>() / 1024);
+        let ret = Stylist::max_selector_matches_for_node(node, &descendant_simple_selectors);
+        debug!("Max selector matches (proportional to bloom filter size): {}", ret);
+        (ret, unsafe { mem::transmute(descendant_simple_selectors) })
     }
 }
 
@@ -449,12 +576,11 @@ impl DeclarationBlock {
     }
 }
 
-pub fn matches<E:TElement, N:TNode<E>>(selector_list: &SelectorList, element: &N) -> bool {
+pub fn matches<E:TElement, N:TNode<E>>(selector_list: &SelectorList, element: &N, parent_bf: &Option<BloomFilter>) -> bool {
     get_selector_list_selectors(selector_list).iter().any(|selector|
         selector.pseudo_element.is_none() &&
-        matches_compound_selector(&*selector.compound_selectors, element, &mut false))
+        matches_compound_selector(&*selector.compound_selectors, element, parent_bf, &mut false))
 }
-
 
 /// Determines whether the given element matches the given single or compound selector.
 ///
@@ -466,9 +592,10 @@ fn matches_compound_selector<E:TElement,
                              N:TNode<E>>(
                              selector: &CompoundSelector,
                              element: &N,
+                             parent_bf: &Option<BloomFilter>,
                              shareable: &mut bool)
                              -> bool {
-    match matches_compound_selector_internal(selector, element, shareable) {
+    match matches_compound_selector_internal(selector, element, parent_bf, shareable) {
         Matched => true,
         _ => false
     }
@@ -523,17 +650,63 @@ enum SelectorMatchingResult {
     NotMatchedGlobally,
 }
 
+/// Quickly figures out whether or not the compound selector is worth doing more
+/// work on. If the simple selectors don't match, or there's a child selector
+/// that does not appear in the bloom parent bloom filter, we can exit early.
+fn can_fast_reject<E: TElement, N: TNode<E>>(
+  mut selector: &CompoundSelector,
+  element: &N,
+  parent_bf: &Option<BloomFilter>,
+  shareable: &mut bool) -> Option<SelectorMatchingResult> {
+    if !selector.simple_selectors.iter().all(|simple_selector| {
+      matches_simple_selector(simple_selector, element, shareable) }) {
+        return Some(NotMatchedAndRestartFromClosestLaterSibling);
+    }
+
+    let bf: &BloomFilter =
+        match *parent_bf {
+            None => return None,
+            Some(ref bf) => bf,
+        };
+
+    // See if the bloom filter can exclude any of the child selectors, and
+    // reject if we can.
+    loop {
+        let next: &CompoundSelector =
+            match selector.next {
+              None => break,
+              Some((ref cs, Descendant)) => &**cs,
+              Some((ref cs, _)) => {
+                  selector = &**cs;
+                  continue;
+              }
+            };
+
+        for ss in selector.simple_selectors.iter() {
+            if bf.definitely_excludes(ss) {
+                return Some(NotMatchedGlobally);
+            }
+        }
+
+        selector = next;
+    }
+
+    // Can't fast reject.
+    return None;
+}
+
 fn matches_compound_selector_internal<E:TElement,
                                       N:TNode<E>>(
                                       selector: &CompoundSelector,
                                       element: &N,
+                                      parent_bf: &Option<BloomFilter>,
                                       shareable: &mut bool)
                                       -> SelectorMatchingResult {
-    if !selector.simple_selectors.iter().all(|simple_selector| {
-            matches_simple_selector(simple_selector, element, shareable)
-    }) {
-        return NotMatchedAndRestartFromClosestLaterSibling
-    }
+    match can_fast_reject(selector, element, parent_bf, shareable) {
+        None => {},
+        Some(result) => return result,
+    };
+
     match selector.next {
         None => Matched,
         Some((ref next_selector, combinator)) => {
@@ -557,6 +730,7 @@ fn matches_compound_selector_internal<E:TElement,
                 if node.is_element() {
                     let result = matches_compound_selector_internal(&**next_selector,
                                                                     &node,
+                                                                    parent_bf,
                                                                     shareable);
                     match (result, combinator) {
                         // Return the status immediately.
@@ -596,7 +770,7 @@ fn matches_compound_selector_internal<E:TElement,
 /// will almost certainly break as nodes will start mistakenly sharing styles. (See the code in
 /// `main/css/matching.rs`.)
 #[inline]
-fn matches_simple_selector<E:TElement,
+pub fn matches_simple_selector<E:TElement,
                            N:TNode<E>>(
                            selector: &SimpleSelector,
                            element: &N,

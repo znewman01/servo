@@ -31,6 +31,7 @@ extern crate std_time = "time";
 extern crate string_cache;
 
 pub mod atom;
+pub mod bloom;
 pub mod cache;
 pub mod debug_utils;
 pub mod geometry;
