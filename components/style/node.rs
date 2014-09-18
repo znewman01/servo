@@ -7,7 +7,6 @@
 
 use selectors::AttrSelector;
 use servo_util::atom::Atom;
-use servo_util::namespace::Namespace;
 
 
 pub trait TNode<E:TElement> : Clone {
@@ -24,10 +23,10 @@ pub trait TNode<E:TElement> : Clone {
 }
 
 pub trait TElement {
-    fn get_attr(&self, namespace: &Namespace, attr: &str) -> Option<&'static str>;
+    fn get_attr(&self, namespace: &Atom, attr: &str) -> Option<&'static str>;
     fn get_link(&self) -> Option<&'static str>;
     fn get_local_name<'a>(&'a self) -> &'a Atom;
-    fn get_namespace<'a>(&'a self) -> &'a Namespace;
+    fn get_namespace<'a>(&'a self) -> &'a Atom;
     fn get_hover_state(&self) -> bool;
     fn get_id(&self) -> Option<Atom>;
     fn get_disabled_state(&self) -> bool;

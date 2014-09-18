@@ -12,8 +12,6 @@ use dom::element::{Element, AttributeHandlers, ElementHelpers};
 use dom::node::{Node, NodeHelpers};
 use dom::window::Window;
 use servo_util::atom::Atom;
-use servo_util::namespace;
-use servo_util::namespace::Namespace;
 use servo_util::str::{DOMString, split_html_space_chars};
 
 use serialize::{Encoder, Encodable};
@@ -64,9 +62,9 @@ impl HTMLCollection {
     }
 
     fn all_elements(window: JSRef<Window>, root: JSRef<Node>,
-                    namespace_filter: Option<Namespace>) -> Temporary<HTMLCollection> {
+                    namespace_filter: Option<Atom>) -> Temporary<HTMLCollection> {
         struct AllElementFilter {
-            namespace_filter: Option<Namespace>
+            namespace_filter: Option<Atom>
         }
         impl CollectionFilter for AllElementFilter {
             fn filter(&self, elem: JSRef<Element>, _root: JSRef<Node>) -> bool {
@@ -112,10 +110,10 @@ impl HTMLCollection {
             Some(namespace) => {
                 match namespace.as_slice() {
                     "*" => None,
-                    ns => Some(Namespace::from_str(ns)),
+                    ns => Some(Atom::from_slice(ns)),
                 }
             },
-            None => Some(namespace::Null),
+            None => Some(satom!("")),
         };
 
         if tag.as_slice() == "*" {
@@ -123,7 +121,7 @@ impl HTMLCollection {
         }
         struct TagNameNSFilter {
             tag: Atom,
-            namespace_filter: Option<Namespace>
+            namespace_filter: Option<Atom>
         }
         impl CollectionFilter for TagNameNSFilter {
             fn filter(&self, elem: JSRef<Element>, _root: JSRef<Node>) -> bool {

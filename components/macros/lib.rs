@@ -184,3 +184,53 @@ macro_rules! bitfield(
         }
     )
 )
+
+// NB: if your crate uses these then you also need
+// #[phase(plugin)] extern crate string_cache;
+
+#[macro_export]
+macro_rules! satom(
+    ($str:tt) => (::servo_util::atom::Atom { atom: atom!($str) })
+)
+
+#[macro_export]
+macro_rules! sns(
+    ($str:tt) => (::servo_util::atom::Atom { atom: ns!($str) })
+)
+
+#[cfg(test)]
+mod tests {
+    use std::collections::hashmap::HashMap;
+    lazy_init! {
+        static ref NUMBER: uint = times_two(3);
+        static ref VEC: [Box<uint>, ..3] = [box 1, box 2, box 3];
+        static ref OWNED_STRING: String = "hello".to_string();
+        static ref HASHMAP: HashMap<uint, &'static str> = {
+            let mut m = HashMap::new();
+            m.insert(0u, "abc");
+            m.insert(1, "def");
+            m.insert(2, "ghi");
+            m
+        };
+    }
+
+    fn times_two(n: uint) -> uint {
+        n * 2
+    }
+
+    #[test]
+    fn test_basic() {
+        assert_eq!(*OWNED_STRING, "hello".to_string());
+        assert_eq!(*NUMBER, 6);
+        assert!(HASHMAP.find(&1).is_some());
+        assert!(HASHMAP.find(&3).is_none());
+        assert_eq!(VEC.as_slice(), &[box 1, box 2, box 3]);
+    }
+
+    #[test]
+    fn test_repeat() {
+        assert_eq!(*NUMBER, 6);
+        assert_eq!(*NUMBER, 6);
+        assert_eq!(*NUMBER, 6);
+    }
+}

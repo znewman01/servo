@@ -37,7 +37,6 @@ pub mod fnv;
 pub mod geometry;
 pub mod logical_geometry;
 pub mod memory;
-pub mod namespace;
 pub mod opts;
 pub mod range;
 pub mod smallvec;

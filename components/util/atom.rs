@@ -13,7 +13,8 @@ use string_cache::atom;
 
 #[deriving(Clone, Eq, Hash, PartialEq)]
 pub struct Atom {
-    atom: atom::Atom,
+    /// Public for use by pattern macros
+    pub atom: atom::Atom,
 }
 
 impl Atom {
