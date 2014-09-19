@@ -51,8 +51,7 @@ use dom::range::Range;
 use dom::treewalker::TreeWalker;
 use dom::uievent::UIEvent;
 use dom::window::{Window, WindowHelpers};
-use html::hubbub_html_parser::build_element_from_tag;
-use hubbub::hubbub::{QuirksMode, NoQuirks, LimitedQuirks, FullQuirks};
+use parse::html::build_element_from_tag;
 use layout_interface::{DocumentDamageLevel, ContentChangedDocumentDamage};
 use servo_util::str::{DOMString, null_str_as_empty_ref, split_html_space_chars};
 use servo_util::atom::Atom;
@@ -62,6 +61,7 @@ use std::ascii::StrAsciiExt;
 use std::cell::{Cell, RefCell};
 use url::Url;
 use time;
+use html5ever::tree_builder::{QuirksMode, NoQuirks, LimitedQuirks, Quirks};
 
 #[deriving(PartialEq,Encodable)]
 pub enum IsHTMLDocument {
@@ -389,7 +389,7 @@ impl<'a> DocumentMethods for JSRef<'a, Document> {
     fn CompatMode(self) -> DOMString {
         match self.quirks_mode.deref().get() {
             LimitedQuirks | NoQuirks => "CSS1Compat".to_string(),
-            FullQuirks => "BackCompat".to_string()
+            Quirks => "BackCompat".to_string()
         }
     }
 
@@ -453,8 +453,8 @@ impl<'a> DocumentMethods for JSRef<'a, Document> {
             debug!("Not a valid element name");
             return Err(InvalidCharacter);
         }
-        let local_name = local_name.as_slice().to_ascii_lower();
-        Ok(build_element_from_tag(local_name, sns!(HTML), self))
+        let local_name = Atom::from_slice(local_name.as_slice().to_ascii_lower().as_slice());
+        Ok(build_element_from_tag(sns!(HTML), local_name, self))
     }
 
     // http://dom.spec.whatwg.org/#dom-document-createelementns
@@ -498,7 +498,7 @@ impl<'a> DocumentMethods for JSRef<'a, Document> {
         }
 
         if ns == sns!(HTML) {
-            Ok(build_element_from_tag(local_name_from_qname.to_string(), ns, self))
+            Ok(build_element_from_tag(ns, Atom::from_slice(local_name_from_qname), self))
         } else {
             Ok(Element::new(local_name_from_qname.to_string(), ns,
                             prefix_from_qname.map(|s| s.to_string()), self))

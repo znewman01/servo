@@ -328,6 +328,12 @@ impl<'a> AttributeHandlers for JSRef<'a, Element> {
     fn set_attribute_from_parser(self, local_name: Atom,
                                  value: DOMString, namespace: Atom,
                                  prefix: Option<DOMString>) {
+        // Don't set if the attribute already exists, so we can handle add_attrs_if_missing
+        if self.attrs.borrow().iter().map(|attr| attr.root())
+                .any(|a| *a.local_name() == local_name && a.namespace == namespace) {
+            return;
+        }
+
         let name = match prefix {
             None => local_name.clone(),
             Some(ref prefix) => {

@@ -42,8 +42,8 @@ git = "https://github.com/servo/rust-cssparser"
 [dependencies.geom]
 git = "https://github.com/servo/rust-geom"
 
-[dependencies.hubbub]
-git = "https://github.com/servo/rust-hubbub"
+[dependencies.html5ever]
+git = "https://github.com/kmcallister/html5ever"
 
 [dependencies.encoding]
 git = "https://github.com/lifthrasiir/rust-encoding"

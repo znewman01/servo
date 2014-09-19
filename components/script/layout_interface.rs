@@ -6,8 +6,7 @@
 /// coupling between these two components, and enables the DOM to be placed in a separate crate
 /// from layout.
 
-use dom::bindings::js::JS;
-use dom::node::{Node, LayoutDataRef};
+use dom::node::LayoutDataRef;
 
 use geom::point::Point2D;
 use geom::rect::Rect;
@@ -23,6 +22,8 @@ use style::Stylesheet;
 use url::Url;
 
 use serialize::{Encodable, Encoder};
+
+pub use dom::node::TrustedNodeAddress;
 
 /// Asynchronous messages that script can send to layout.
 pub enum Msg {
@@ -69,20 +70,6 @@ pub trait LayoutRPC {
     /// Requests the node containing the point of interest
     fn hit_test(&self, node: TrustedNodeAddress, point: Point2D<f32>) -> Result<HitTestResponse, ()>;
     fn mouse_over(&self, node: TrustedNodeAddress, point: Point2D<f32>) -> Result<MouseOverResponse, ()>;
-}
-
-/// The address of a node known to be valid. These must only be sent from content -> layout,
-/// because we do not trust layout.
-pub struct TrustedNodeAddress(pub *const c_void);
-
-impl<S: Encoder<E>, E> Encodable<S, E> for TrustedNodeAddress {
-    fn encode(&self, s: &mut S) -> Result<(), E> {
-        let TrustedNodeAddress(addr) = *self;
-        let node = addr as *const Node;
-        unsafe {
-            JS::from_raw(node).encode(s)
-        }
-    }
 }
 
 /// The address of a node. Layout sends these back. They must be validated via
