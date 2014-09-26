@@ -225,10 +225,10 @@ version = "0.0.0"
 source = "git+https://github.com/kmcallister/html5ever#41f760c331dacd3aab1ab75a5c3492ee2b5a250c"
 dependencies = [
  "html5ever_macros 0.0.0 (git+https://github.com/kmcallister/html5ever#41f760c331dacd3aab1ab75a5c3492ee2b5a250c)",
- "phf 0.0.0 (git+https://github.com/sfackler/rust-phf#06254fdde7708630a6397c41c6c17ef81a4b66a0)",
- "phf_mac 0.0.0 (git+https://github.com/sfackler/rust-phf#06254fdde7708630a6397c41c6c17ef81a4b66a0)",
- "string_cache 0.0.0 (git+https://github.com/servo/string-cache#b348bd00cc8991e1f25749be077c5bd9cec019bb)",
- "string_cache_macros 0.0.0 (git+https://github.com/servo/string-cache#b348bd00cc8991e1f25749be077c5bd9cec019bb)",
+ "phf 0.0.0 (git+https://github.com/sfackler/rust-phf#f2b4d7918ebc13c4f911531bebed763a42dee8d8)",
+ "phf_mac 0.0.0 (git+https://github.com/sfackler/rust-phf#f2b4d7918ebc13c4f911531bebed763a42dee8d8)",
+ "string_cache 0.0.0 (git+https://github.com/servo/string-cache#21810abaae94d30c6b73dae5da4192a2a0709dfa)",
+ "string_cache_macros 0.0.0 (git+https://github.com/servo/string-cache#21810abaae94d30c6b73dae5da4192a2a0709dfa)",
 ]
 
 [[package]]
@@ -288,8 +288,8 @@ dependencies = [
  "net 0.0.1",
  "script 0.0.1",
  "script_traits 0.0.1",
- "string_cache 0.0.0 (git+https://github.com/servo/string-cache#b348bd00cc8991e1f25749be077c5bd9cec019bb)",
- "string_cache_macros 0.0.0 (git+https://github.com/servo/string-cache#b348bd00cc8991e1f25749be077c5bd9cec019bb)",
+ "string_cache 0.0.0 (git+https://github.com/servo/string-cache#21810abaae94d30c6b73dae5da4192a2a0709dfa)",
+ "string_cache_macros 0.0.0 (git+https://github.com/servo/string-cache#21810abaae94d30c6b73dae5da4192a2a0709dfa)",
  "style 0.0.1",
  "url 0.1.0 (git+https://github.com/servo/rust-url#bfdf809365600a7941a77524f9bb065886de3379)",
  "util 0.0.1",
@@ -358,12 +358,12 @@ source = "git+https://github.com/sfackler/rust-openssl.git#cc7511a3329ae07df6bb6
 [[package]]
 name = "phf"
 version = "0.0.0"
-source = "git+https://github.com/sfackler/rust-phf#06254fdde7708630a6397c41c6c17ef81a4b66a0"
+source = "git+https://github.com/sfackler/rust-phf#f2b4d7918ebc13c4f911531bebed763a42dee8d8"
 
 [[package]]
 name = "phf_mac"
 version = "0.0.0"
-source = "git+https://github.com/sfackler/rust-phf#06254fdde7708630a6397c41c6c17ef81a4b66a0"
+source = "git+https://github.com/sfackler/rust-phf#f2b4d7918ebc13c4f911531bebed763a42dee8d8"
 
 [[package]]
 name = "png"
@@ -395,8 +395,8 @@ dependencies = [
  "msg 0.0.1",
  "net 0.0.1",
  "script_traits 0.0.1",
- "string_cache 0.0.0 (git+https://github.com/servo/string-cache#b348bd00cc8991e1f25749be077c5bd9cec019bb)",
- "string_cache_macros 0.0.0 (git+https://github.com/servo/string-cache#b348bd00cc8991e1f25749be077c5bd9cec019bb)",
+ "string_cache 0.0.0 (git+https://github.com/servo/string-cache#21810abaae94d30c6b73dae5da4192a2a0709dfa)",
+ "string_cache_macros 0.0.0 (git+https://github.com/servo/string-cache#21810abaae94d30c6b73dae5da4192a2a0709dfa)",
  "style 0.0.1",
  "url 0.1.0 (git+https://github.com/servo/rust-url#bfdf809365600a7941a77524f9bb065886de3379)",
  "util 0.0.1",
@@ -435,17 +435,17 @@ source = "git+https://github.com/servo/rust-stb-image#f5022de4ad6bb474a03493d1f2
 [[package]]
 name = "string_cache"
 version = "0.0.0"
-source = "git+https://github.com/servo/string-cache#b348bd00cc8991e1f25749be077c5bd9cec019bb"
+source = "git+https://github.com/servo/string-cache#21810abaae94d30c6b73dae5da4192a2a0709dfa"
 dependencies = [
- "phf 0.0.0 (git+https://github.com/sfackler/rust-phf#06254fdde7708630a6397c41c6c17ef81a4b66a0)",
- "phf_mac 0.0.0 (git+https://github.com/sfackler/rust-phf#06254fdde7708630a6397c41c6c17ef81a4b66a0)",
- "string_cache_macros 0.0.0 (git+https://github.com/servo/string-cache#b348bd00cc8991e1f25749be077c5bd9cec019bb)",
+ "phf 0.0.0 (git+https://github.com/sfackler/rust-phf#f2b4d7918ebc13c4f911531bebed763a42dee8d8)",
+ "phf_mac 0.0.0 (git+https://github.com/sfackler/rust-phf#f2b4d7918ebc13c4f911531bebed763a42dee8d8)",
+ "string_cache_macros 0.0.0 (git+https://github.com/servo/string-cache#21810abaae94d30c6b73dae5da4192a2a0709dfa)",
 ]
 
 [[package]]
 name = "string_cache_macros"
 version = "0.0.0"
-source = "git+https://github.com/servo/string-cache#b348bd00cc8991e1f25749be077c5bd9cec019bb"
+source = "git+https://github.com/servo/string-cache#21810abaae94d30c6b73dae5da4192a2a0709dfa"
 dependencies = [
  "lazy_static 0.1.0 (git+https://github.com/Kimundi/lazy-static.rs#e62a65372f1dd9019e37eb9381d819edff80e360)",
 ]
@@ -459,8 +459,8 @@ dependencies = [
  "geom 0.1.0 (git+https://github.com/servo/rust-geom#50a294fd997f0c6eb43e9a58ad6e227fdc2a4692)",
  "lazy_static 0.1.0 (git+https://github.com/Kimundi/lazy-static.rs#e62a65372f1dd9019e37eb9381d819edff80e360)",
  "macros 0.0.1",
- "string_cache 0.0.0 (git+https://github.com/servo/string-cache#b348bd00cc8991e1f25749be077c5bd9cec019bb)",
- "string_cache_macros 0.0.0 (git+https://github.com/servo/string-cache#b348bd00cc8991e1f25749be077c5bd9cec019bb)",
+ "string_cache 0.0.0 (git+https://github.com/servo/string-cache#21810abaae94d30c6b73dae5da4192a2a0709dfa)",
+ "string_cache_macros 0.0.0 (git+https://github.com/servo/string-cache#21810abaae94d30c6b73dae5da4192a2a0709dfa)",
  "url 0.1.0 (git+https://github.com/servo/rust-url#bfdf809365600a7941a77524f9bb065886de3379)",
  "util 0.0.1",
 ]
@@ -483,7 +483,7 @@ version = "0.0.1"
 dependencies = [
  "azure 0.1.0 (git+https://github.com/servo/rust-azure#b357751c04a89a87e6ef1f0cebe5f20957dd112d)",
  "geom 0.1.0 (git+https://github.com/servo/rust-geom#50a294fd997f0c6eb43e9a58ad6e227fdc2a4692)",
- "string_cache 0.0.0 (git+https://github.com/servo/string-cache#b348bd00cc8991e1f25749be077c5bd9cec019bb)",
+ "string_cache 0.0.0 (git+https://github.com/servo/string-cache#21810abaae94d30c6b73dae5da4192a2a0709dfa)",
  "task_info 0.0.1",
  "url 0.1.0 (git+https://github.com/servo/rust-url#bfdf809365600a7941a77524f9bb065886de3379)",
 ]
