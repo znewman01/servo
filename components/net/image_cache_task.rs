@@ -10,6 +10,7 @@ use servo_util::task::spawn_named;
 use servo_util::taskpool::TaskPool;
 use std::comm::{channel, Receiver, Sender};
 use std::collections::HashMap;
+use std::collections::hash_map::{Entry, Occupied, Vacant};
 use std::mem::replace;
 use std::result;
 use sync::{Arc, Mutex};
@@ -385,9 +386,14 @@ impl ImageCache {
 
             Prefetching(DoDecode) | Decoding => {
                 // We don't have this image yet
-                self.wait_map.find_with_or_insert_with(url, response,
-                    |_, waiters, response| waiters.lock().push(response),
-                    |_, response| Arc::new(Mutex::new(vec!(response))));
+                match self.wait_map.entry(url) {
+                    Occupied(entry) => {
+                        entry.get_mut().lock().push(response);
+                    }
+                    Vacant(entry) => {
+                        entry.set(Arc::new(Mutex::new(vec!(response))));
+                    }
+                }
             }
 
             Decoded(image) => {
