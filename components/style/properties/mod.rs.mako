@@ -4,7 +4,7 @@
 
 // This file is a Mako template: http://www.makotemplates.org/
 
-pub use std::ascii::StrAsciiExt;
+pub use std::ascii::AsciiExt;
 
 use servo_util::logical_geometry::{WritingMode, LogicalMargin};
 use sync::Arc;

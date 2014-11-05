@@ -23,7 +23,7 @@ use servo_net::resource_task::{Load, LoadData, Payload, Done, ResourceTask};
 use servo_msg::constellation_msg::LoadData as MsgLoadData;
 use servo_util::task_state;
 use servo_util::task_state::InHTMLParser;
-use std::ascii::StrAsciiExt;
+use std::ascii::AsciiExt;
 use std::comm::channel;
 use std::str::MaybeOwned;
 use url::Url;

@@ -63,7 +63,7 @@ use string_cache::{Atom, QualName};
 use url::Url;
 
 use std::collections::HashMap;
-use std::ascii::StrAsciiExt;
+use std::ascii::AsciiExt;
 use std::cell::Cell;
 use std::default::Default;
 use time;

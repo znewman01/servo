@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 use std::iter::Iterator;
-use std::ascii::StrAsciiExt;
+use std::ascii::AsciiExt;
 use url::Url;
 
 use encoding::EncodingRef;

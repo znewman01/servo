@@ -40,7 +40,7 @@ use style;
 use servo_util::namespace;
 use servo_util::str::{DOMString, LengthOrPercentageOrAuto};
 
-use std::ascii::StrAsciiExt;
+use std::ascii::AsciiExt;
 use std::default::Default;
 use std::mem;
 use string_cache::{Atom, Namespace, QualName};

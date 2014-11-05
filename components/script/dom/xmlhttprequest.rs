@@ -50,7 +50,7 @@ use script_task::{ScriptChan, XHRProgressMsg, XHRReleaseMsg};
 use servo_util::str::DOMString;
 use servo_util::task::spawn_named;
 
-use std::ascii::StrAsciiExt;
+use std::ascii::AsciiExt;
 use std::cell::Cell;
 use std::comm::{Sender, Receiver, channel};
 use std::default::Default;

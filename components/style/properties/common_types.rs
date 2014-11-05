@@ -13,7 +13,7 @@ pub type CSSFloat = f64;
 pub static DEFAULT_LINE_HEIGHT: CSSFloat = 1.14;
 
 pub mod specified {
-    use std::ascii::StrAsciiExt;
+    use std::ascii::AsciiExt;
     use cssparser::ast;
     use cssparser::ast::*;
     use super::{Au, CSSFloat};
