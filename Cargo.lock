@@ -283,7 +283,7 @@ source = "git+https://github.com/servo/html5ever?ref=servo#0bdd6087dc8df6a92c96e
 [[package]]
 name = "http"
 version = "0.1.0-pre"
-source = "git+https://github.com/chris-morgan/rust-http#c8aef7e0192161aa528ed067fad85bd353088a52"
+source = "git+https://github.com/servo/rust-http?ref=servo#383cbdfacfeaf31bb83b64dcb34f406f2351fd04"
 dependencies = [
  "openssl 0.0.0 (git+https://github.com/sfackler/rust-openssl.git#1e706b8ef4d4344b5297b90bcd430cc96f40fb39)",
  "url 0.1.0 (git+https://github.com/servo/rust-url#9142b86a812ac5bc886f76235585557d8e002246)",
@@ -375,7 +375,7 @@ dependencies = [
  "azure 0.1.0 (git+https://github.com/servo/rust-azure#8e9b6b1fdbbe0386655d61b0f58e1a9910497311)",
  "core_foundation 0.1.0 (git+https://github.com/servo/rust-core-foundation#6fa0b908f3912e20d081193e83bf5a9aa958fb83)",
  "geom 0.1.0 (git+https://github.com/servo/rust-geom#649e3215808d2a05dafa6bc761093bdfbccd1fbc)",
- "http 0.1.0-pre (git+https://github.com/chris-morgan/rust-http#c8aef7e0192161aa528ed067fad85bd353088a52)",
+ "http 0.1.0-pre (git+https://github.com/servo/rust-http?ref=servo#383cbdfacfeaf31bb83b64dcb34f406f2351fd04)",
  "io_surface 0.1.0 (git+https://github.com/servo/rust-io-surface#3f8220ab2e94651ced69b04068c5126b1adadf1f)",
  "layers 0.1.0 (git+https://github.com/servo/rust-layers#3737b00270644594a95896a2cd37ffca36d5bc5f)",
  "url 0.1.0 (git+https://github.com/servo/rust-url#9142b86a812ac5bc886f76235585557d8e002246)",
@@ -387,7 +387,7 @@ name = "net"
 version = "0.0.1"
 dependencies = [
  "geom 0.1.0 (git+https://github.com/servo/rust-geom#649e3215808d2a05dafa6bc761093bdfbccd1fbc)",
- "http 0.1.0-pre (git+https://github.com/chris-morgan/rust-http#c8aef7e0192161aa528ed067fad85bd353088a52)",
+ "http 0.1.0-pre (git+https://github.com/servo/rust-http?ref=servo#383cbdfacfeaf31bb83b64dcb34f406f2351fd04)",
  "png 0.1.0 (git+https://github.com/servo/rust-png#b0b4acde0080dd475dee93615276bfc19207a21e)",
  "stb_image 0.1.0 (git+https://github.com/servo/rust-stb-image#c84d5c3d1e0c5579331b7cad86c7011a73f74944)",
  "url 0.1.0 (git+https://github.com/servo/rust-url#9142b86a812ac5bc886f76235585557d8e002246)",
@@ -448,7 +448,7 @@ dependencies = [
  "geom 0.1.0 (git+https://github.com/servo/rust-geom#649e3215808d2a05dafa6bc761093bdfbccd1fbc)",
  "gfx 0.0.1",
  "html5ever 0.0.0 (git+https://github.com/servo/html5ever?ref=servo#0bdd6087dc8df6a92c96e1859bbb4ebbb0be7c1f)",
- "http 0.1.0-pre (git+https://github.com/chris-morgan/rust-http#c8aef7e0192161aa528ed067fad85bd353088a52)",
+ "http 0.1.0-pre (git+https://github.com/servo/rust-http?ref=servo#383cbdfacfeaf31bb83b64dcb34f406f2351fd04)",
  "js 0.1.0 (git+https://github.com/servo/rust-mozjs#384ff80359d8aa1497b09496ec8afcd46371e0cf)",
  "msg 0.0.1",
  "net 0.0.1",
