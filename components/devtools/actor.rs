@@ -5,7 +5,7 @@
 /// General actor system infrastructure.
 
 use std::any::{AnyPrivate, AnyRefExt, AnyMutRefExt};
-use std::collections::hashmap::HashMap;
+use std::collections::HashMap;
 use std::cell::{Cell, RefCell};
 use std::intrinsics::TypeId;
 use std::io::TcpStream;
@@ -108,7 +108,7 @@ impl ActorRegistry {
                 return key.to_string();
             }
         }
-        fail!("couldn't find actor named {:s}", actor)
+        panic!("couldn't find actor named {:s}", actor)
     }
 
     /// Create a unique name based on a monotonically increasing suffix

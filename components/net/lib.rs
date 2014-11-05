@@ -6,7 +6,6 @@
 
 #![deny(unused_imports, unused_variable)]
 
-extern crate debug;
 extern crate collections;
 extern crate geom;
 extern crate http;

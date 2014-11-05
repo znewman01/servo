@@ -15,7 +15,6 @@
 #[phase(plugin, link)]
 extern crate log;
 
-extern crate debug;
 extern crate devtools_traits;
 extern crate cssparser;
 extern crate collections;

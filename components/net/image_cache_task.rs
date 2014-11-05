@@ -169,7 +169,7 @@ impl ImageCache {
         loop {
             let msg = self.port.recv();
 
-            debug!("image_cache_task: received: {:?}", msg);
+            debug!("image_cache_task: received: {}", msg);
 
             match msg {
                 Prefetch(url) => self.prefetch(url),

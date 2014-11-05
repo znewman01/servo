@@ -12,8 +12,6 @@
 #[phase(plugin, link)]
 extern crate log;
 
-extern crate debug;
-
 extern crate alert;
 extern crate azure;
 extern crate devtools_traits;

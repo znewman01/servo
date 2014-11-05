@@ -23,7 +23,6 @@ extern crate log;
 extern crate collections;
 extern crate core;
 extern crate devtools_traits;
-extern crate debug;
 extern crate serialize;
 extern crate sync;
 extern crate "msg" as servo_msg;
@@ -90,7 +89,7 @@ fn run_server(receiver: Receiver<DevtoolsControlMsg>, port: u16) {
 
     /// Process the input from a single devtools client until EOF.
     fn handle_client(actors: Arc<Mutex<ActorRegistry>>, mut stream: TcpStream) {
-        println!("connection established to {:?}", stream.peer_name().unwrap());
+        println!("connection established to {}", stream.peer_name().unwrap());
 
         {
             let mut actors = actors.lock();
