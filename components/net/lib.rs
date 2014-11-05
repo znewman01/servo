@@ -4,7 +4,7 @@
 
 #![feature(default_type_params, globs, phase)]
 
-#![deny(unused_imports, unused_variable)]
+#![deny(unused_imports, unused_variables)]
 
 extern crate collections;
 extern crate geom;

@@ -10,7 +10,7 @@ use servo_util::task::spawn_named;
 use servo_util::taskpool::TaskPool;
 use std::comm::{channel, Receiver, Sender};
 use std::collections::HashMap;
-use std::collections::hash_map::{Entry, Occupied, Vacant};
+use std::collections::hash_map::{Occupied, Vacant};
 use std::mem::replace;
 use std::result;
 use sync::{Arc, Mutex};
@@ -358,7 +358,7 @@ impl ImageCache {
     fn purge_waiters(&mut self, url: Url, f: || -> ImageResponseMsg) {
         match self.wait_map.pop(&url) {
             Some(waiters) => {
-                let mut items = waiters.lock();
+                let items = waiters.lock();
                 for response in items.iter() {
                     response.send(f());
                 }

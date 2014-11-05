@@ -13,7 +13,7 @@ use image_cache_task::{ImageResponseMsg, Prefetch, WaitForImage};
 
 use std::comm::{Receiver, channel};
 use std::collections::HashMap;
-use std::collections::hash_map::{Entry, Occupied, Vacant};
+use std::collections::hash_map::{Occupied, Vacant};
 use servo_util::task::spawn_named;
 use url::Url;
 
