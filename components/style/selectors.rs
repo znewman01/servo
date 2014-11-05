@@ -14,14 +14,6 @@ use string_cache::{Atom, Namespace};
 use namespaces::NamespaceMap;
 
 
-// Only used in tests
-impl PartialEq for Arc<CompoundSelector> {
-    fn eq(&self, other: &Arc<CompoundSelector>) -> bool {
-        **self == **other
-    }
-}
-
-
 #[deriving(PartialEq, Clone)]
 pub struct Selector {
     pub compound_selectors: Arc<CompoundSelector>,
