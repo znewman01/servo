@@ -53,8 +53,7 @@ branch = "servo"
 git = "https://github.com/lifthrasiir/rust-encoding"
 
 [dependencies.http]
-git = "https://github.com/servo/rust-http"
-branch = "servo"
+git = "https://github.com/chris-morgan/rust-http"
 
 [dependencies.js]
 git = "https://github.com/servo/rust-mozjs"

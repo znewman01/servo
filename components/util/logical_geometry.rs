@@ -12,10 +12,10 @@ use std::num::Zero;
 bitflags!(
     #[deriving(Encodable)]
     flags WritingMode: u8 {
-        static FlagRTL = 1 << 0,
-        static FlagVertical = 1 << 1,
-        static FlagVerticalLR = 1 << 2,
-        static FlagSidewaysLeft = 1 << 3
+        const FlagRTL = 1 << 0,
+        const FlagVertical = 1 << 1,
+        const FlagVerticalLR = 1 << 2,
+        const FlagSidewaysLeft = 1 << 3
     }
 )
 

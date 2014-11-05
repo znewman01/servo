@@ -17,8 +17,7 @@ path = "../../components/compositing"
 git = "https://github.com/servo/rust-geom"
 
 [dependencies.glfw]
-git = "https://github.com/servo/glfw-rs"
-branch = "servo"
+git = "https://github.com/bjz/glfw-rs"
 
 [dependencies.layers]
 git = "https://github.com/servo/rust-layers"

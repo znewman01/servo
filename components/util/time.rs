@@ -4,7 +4,7 @@
 
 //! Timing functions.
 
-use collections::treemap::TreeMap;
+use collections::TreeMap;
 use std::comm::{Sender, channel, Receiver};
 use std::f64;
 use std::io::timer::sleep;

@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-use std::collections::hashmap::HashMap;
+use std::collections::HashMap;
 use rand::Rng;
 use std::hash::{Hash, sip};
 use std::rand::task_rng;
@@ -43,6 +43,12 @@ impl<K: Clone + PartialEq + Eq + Hash, V: Clone> Cache<K,V> for HashCache<K,V> {
     }
 
     fn find_or_create(&mut self, key: &K, blk: |&K| -> V) -> V {
+        match self.entries.entry(key.clone()) {
+            Occupied() => {
+            }
+            Vacant() => {
+            }
+        }
         self.entries.find_or_insert_with(key.clone(), blk).clone()
     }
 
