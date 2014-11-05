@@ -12,7 +12,7 @@ use image_cache_task::{Decode, GetImage, ImageCacheTask, ImageFailed, ImageNotRe
 use image_cache_task::{ImageResponseMsg, Prefetch, WaitForImage};
 
 use std::comm::{Receiver, channel};
-use std::collections::hashmap::HashMap;
+use std::collections::HashMap;
 use servo_util::task::spawn_named;
 use url::Url;
 

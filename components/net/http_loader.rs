@@ -5,7 +5,7 @@
 use resource_task::{Metadata, Payload, Done, LoadResponse, LoadData, start_sending_opt};
 
 use log;
-use std::collections::hashmap::HashSet;
+use std::collections::HashSet;
 use http::client::{RequestWriter, NetworkStream};
 use http::headers::HeaderEnum;
 use std::io::Reader;

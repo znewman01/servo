@@ -9,7 +9,7 @@ use resource_task::{LoadData, ResourceTask};
 use servo_util::task::spawn_named;
 use servo_util::taskpool::TaskPool;
 use std::comm::{channel, Receiver, Sender};
-use std::collections::hashmap::HashMap;
+use std::collections::HashMap;
 use std::mem::replace;
 use std::result;
 use sync::{Arc, Mutex};
