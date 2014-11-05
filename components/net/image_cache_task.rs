@@ -387,7 +387,7 @@ impl ImageCache {
             Prefetching(DoDecode) | Decoding => {
                 // We don't have this image yet
                 match self.wait_map.entry(url) {
-                    Occupied(entry) => {
+                    Occupied(mut entry) => {
                         entry.get_mut().lock().push(response);
                     }
                     Vacant(entry) => {
