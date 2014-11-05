@@ -4,7 +4,7 @@
 
 #![feature(default_type_params,macro_rules,unsafe_destructor)]
 
-#![deny(unused_imports, unused_variable)]
+#![deny(unused_imports, unused_variables)]
 
 #![feature(phase)]
 #[phase(plugin, link)]
