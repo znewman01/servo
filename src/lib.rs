@@ -125,7 +125,7 @@ impl<Window> Browser<Window> where Window: WindowMethods + 'static {
                     Ok(url) => url,
                     Err(url::RelativeUrlWithoutBase)
                     => url::Url::from_file_path(&cwd.join(url.as_slice())).unwrap(),
-                    Err(_) => fail!("URL parsing failed"),
+                    Err(_) => panic!("URL parsing failed"),
                 };
 
                 let ConstellationChan(ref chan) = constellation_chan;

@@ -455,7 +455,7 @@ impl DisplayItem {
             }
 
             ImageDisplayItemClass(ref image_item) => {
-                debug!("Drawing image at {:?}.", image_item.base.bounds);
+                debug!("Drawing image at {}.", image_item.base.bounds);
 
                 let mut y_offset = Au(0);
                 while y_offset < image_item.base.bounds.size.height {

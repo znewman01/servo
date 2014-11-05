@@ -273,7 +273,7 @@ impl LineBreaker {
     }
 
     fn flush_current_line(&mut self) {
-        debug!("LineBreaker: Flushing line {:u}: {:?}",
+        debug!("LineBreaker: Flushing line {:u}: {}",
                self.lines.len(), self.pending_line);
 
         // clear line and add line mapping
@@ -325,7 +325,7 @@ impl LineBreaker {
 
         let line_bounds = self.floats.place_between_floats(&info);
 
-        debug!("LineBreaker: found position for line: {} using placement_info: {:?}",
+        debug!("LineBreaker: found position for line: {} using placement_info: {}",
                line_bounds,
                info);
 
@@ -944,7 +944,7 @@ impl Flow for InlineFlow {
         // TODO: Combine this with `LineBreaker`'s walk in the fragment list, or put this into
         // `Fragment`.
 
-        debug!("InlineFlow::assign_inline_sizes: floats in: {:?}", self.base.floats);
+        debug!("InlineFlow::assign_inline_sizes: floats in: {}", self.base.floats);
 
         self.base.position.size.inline = self.base.block_container_inline_size;
 
@@ -984,7 +984,7 @@ impl Flow for InlineFlow {
         // element to determine its block-size for computing the line's own block-size.
         //
         // TODO(pcwalton): Cache the line scanner?
-        debug!("assign_block_size_inline: floats in: {:?}", self.base.floats);
+        debug!("assign_block_size_inline: floats in: {}", self.base.floats);
 
         // assign block-size for inline fragments
         let containing_block_block_size =

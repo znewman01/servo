@@ -394,7 +394,7 @@ impl Iterator<MaybeAuto> for CandidateBSizeIterator {
                 Some(Specified(self.min_block_size))
             }
             FoundCandidateBSizeStatus => None,
-            InitialCandidateBSizeStatus => fail!(),
+            InitialCandidateBSizeStatus => panic!(),
         }
     }
 }
@@ -787,7 +787,7 @@ impl BlockFlow {
         }
 
         let (block_start_margin_value, block_end_margin_value) = match self.base.collapsible_margins {
-            MarginsCollapseThrough(_) => fail!("Margins unexpectedly collapsed through root flow."),
+            MarginsCollapseThrough(_) => panic!("Margins unexpectedly collapsed through root flow."),
             MarginsCollapse(block_start_margin, block_end_margin) => {
                 (block_start_margin.collapse(), block_end_margin.collapse())
             }
@@ -2329,7 +2329,7 @@ impl ISizeAndMarginsComputer for AbsoluteReplaced {
 
         let inline_size = match computed_inline_size {
             Specified(w) => w,
-            _ => fail!("{} {}",
+            _ => panic!("{} {}",
                        "The used value for inline_size for absolute replaced flow",
                        "should have already been calculated by now.")
         };
@@ -2440,7 +2440,7 @@ impl ISizeAndMarginsComputer for BlockReplaced {
                                      -> ISizeConstraintSolution {
         match input.computed_inline_size {
             Specified(_) => {},
-            Auto => fail!("BlockReplaced: inline_size should have been computed by now")
+            Auto => panic!("BlockReplaced: inline_size should have been computed by now")
         };
         self.solve_block_inline_size_constraints(block, input)
     }
@@ -2495,7 +2495,7 @@ impl ISizeAndMarginsComputer for FloatReplaced {
         let margin_inline_end = inline_end_margin.specified_or_zero();
         let inline_size = match computed_inline_size {
             Specified(w) => w,
-            Auto => fail!("FloatReplaced: inline_size should have been computed by now")
+            Auto => panic!("FloatReplaced: inline_size should have been computed by now")
         };
         debug!("assign_inline_sizes_float -- inline_size: {}", inline_size);
         ISizeConstraintSolution::new(inline_size, margin_inline_start, margin_inline_end)

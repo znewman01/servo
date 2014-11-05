@@ -319,7 +319,7 @@ impl<'a> DetailedGlyphStore {
             detail_offset: self.detail_buffer.len() as int,
         };
 
-        debug!("Adding entry[off={}] for detailed glyphs: {:?}", entry_offset, glyphs);
+        debug!("Adding entry[off={}] for detailed glyphs: {}", entry_offset, glyphs);
 
         /* TODO: don't actually assert this until asserts are compiled
         in/out based on severity, debug/release, etc. This assertion
@@ -589,7 +589,7 @@ impl<'a> GlyphStore {
             }
         }.adapt_character_flags_of_entry(self.entry_buffer[i.to_uint()]);
 
-        debug!("Adding multiple glyphs[idx={}, count={}]: {:?}", i, glyph_count, entry);
+        debug!("Adding multiple glyphs[idx={}, count={}]: {}", i, glyph_count, entry);
 
         *self.entry_buffer.get_mut(i.to_uint()) = entry;
     }
@@ -611,10 +611,10 @@ impl<'a> GlyphStore {
     #[inline]
     pub fn iter_glyphs_for_char_range(&'a self, rang: &Range<CharIndex>) -> GlyphIterator<'a> {
         if rang.begin() >= self.char_len() {
-            fail!("iter_glyphs_for_range: range.begin beyond length!");
+            panic!("iter_glyphs_for_range: range.begin beyond length!");
         }
         if rang.end() > self.char_len() {
-            fail!("iter_glyphs_for_range: range.end beyond length!");
+            panic!("iter_glyphs_for_range: range.end beyond length!");
         }
 
         GlyphIterator {

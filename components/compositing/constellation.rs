@@ -233,7 +233,7 @@ impl NavigationContext {
 
     /// Loads a new set of page frames, returning all evicted frame trees
     fn load(&mut self, frame_tree: Rc<FrameTree>) -> Vec<Rc<FrameTree>> {
-        debug!("navigating to {:?}", frame_tree.pipeline.id);
+        debug!("navigating to {}", frame_tree.pipeline.id);
         let evicted = replace(&mut self.next, vec!());
         if self.current.is_some() {
             self.previous.push(self.current.take().unwrap());
@@ -428,7 +428,7 @@ impl<LTF: LayoutTaskFactory, STF: ScriptTaskFactory> Constellation<LTF, STF> {
     }
 
     fn handle_failure_msg(&mut self, pipeline_id: PipelineId, subpage_id: Option<SubpageId>) {
-        debug!("handling failure message from pipeline {:?}, {:?}", pipeline_id, subpage_id);
+        debug!("handling failure message from pipeline {}, {}", pipeline_id, subpage_id);
 
         if opts::get().hard_fail {
             // It's quite difficult to make Servo exit cleanly if some tasks have failed.
@@ -507,7 +507,7 @@ impl<LTF: LayoutTaskFactory, STF: ScriptTaskFactory> Constellation<LTF, STF> {
 
     fn handle_frame_rect_msg(&mut self, pipeline_id: PipelineId, subpage_id: SubpageId,
                              rect: TypedRect<PagePx, f32>) {
-        debug!("Received frame rect {:?} from {:?}, {:?}", rect, pipeline_id, subpage_id);
+        debug!("Received frame rect {} from {}, {}", rect, pipeline_id, subpage_id);
         let mut already_sent = HashSet::new();
 
         // Returns true if a child frame tree's subpage id matches the given subpage id
@@ -607,7 +607,7 @@ impl<LTF: LayoutTaskFactory, STF: ScriptTaskFactory> Constellation<LTF, STF> {
         // and add the new pipeline to their sub frames.
         let frame_trees = self.find_all(source_pipeline_id);
         if frame_trees.is_empty() {
-            fail!("Constellation: source pipeline id of LoadIframeUrlMsg is not in
+            panic!("Constellation: source pipeline id of LoadIframeUrlMsg is not in
                    navigation context, nor is it in a pending frame. This should be
                    impossible.");
         }
@@ -627,10 +627,10 @@ impl<LTF: LayoutTaskFactory, STF: ScriptTaskFactory> Constellation<LTF, STF> {
         // FIXME(tkuehn): Need to follow the standardized spec for checking same-origin
         // Reuse the script task if the URL is same-origin
         let new_pipeline = if same_script {
-            debug!("Constellation: loading same-origin iframe at {:?}", url);
+            debug!("Constellation: loading same-origin iframe at {}", url);
             Some(source_pipeline.clone())
         } else {
-            debug!("Constellation: loading cross-origin iframe at {:?}", url);
+            debug!("Constellation: loading cross-origin iframe at {}", url);
             None
         };
 
@@ -697,7 +697,7 @@ impl<LTF: LayoutTaskFactory, STF: ScriptTaskFactory> Constellation<LTF, STF> {
     }
 
     fn handle_navigate_msg(&mut self, direction: constellation_msg::NavigationDirection) {
-        debug!("received message to navigate {:?}", direction);
+        debug!("received message to navigate {}", direction);
 
         // TODO(tkuehn): what is the "critical point" beyond which pending frames
         // should not be cleared? Currently, the behavior is that forward/back
@@ -738,7 +738,7 @@ impl<LTF: LayoutTaskFactory, STF: ScriptTaskFactory> Constellation<LTF, STF> {
     }
 
     fn handle_renderer_ready_msg(&mut self, pipeline_id: PipelineId) {
-        debug!("Renderer {:?} ready to send paint msg", pipeline_id);
+        debug!("Renderer {} ready to send paint msg", pipeline_id);
         // This message could originate from a pipeline in the navigation context or
         // from a pending frame. The only time that we will grant paint permission is
         // when the message originates from a pending frame or the current frame.
@@ -775,7 +775,7 @@ impl<LTF: LayoutTaskFactory, STF: ScriptTaskFactory> Constellation<LTF, STF> {
             // If there are frames to revoke permission from, do so now.
             match frame_change.before {
                 Some(revoke_id) if self.current_frame().is_some() => {
-                    debug!("Constellation: revoking permission from {:?}", revoke_id);
+                    debug!("Constellation: revoking permission from {}", revoke_id);
                     let current_frame = self.current_frame().as_ref().unwrap();
 
                     let to_revoke = current_frame.find(revoke_id).expect(
@@ -792,7 +792,7 @@ impl<LTF: LayoutTaskFactory, STF: ScriptTaskFactory> Constellation<LTF, STF> {
                     let mut flag = false;
                     {
                         if to_add.parent.borrow().is_some() {
-                            debug!("Constellation: replacing {:?} with {:?} in {:?}",
+                            debug!("Constellation: replacing {} with {} in {}",
                                    revoke_id, to_add.pipeline.id,
                                    next_frame_tree.pipeline.id);
                             flag = true;
@@ -852,7 +852,7 @@ impl<LTF: LayoutTaskFactory, STF: ScriptTaskFactory> Constellation<LTF, STF> {
         for change in self.pending_frames.iter() {
             let frame_tree = &change.after;
             if frame_tree.parent.borrow().is_none() {
-                debug!("constellation sending resize message to pending outer frame ({:?})",
+                debug!("constellation sending resize message to pending outer frame ({})",
                        frame_tree.pipeline.id);
                 let ScriptControlChan(ref chan) = frame_tree.pipeline.script_chan;
                 let _ = chan.send_opt(ResizeMsg(frame_tree.pipeline.id, new_size));

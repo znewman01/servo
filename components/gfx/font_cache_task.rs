@@ -237,7 +237,7 @@ impl FontCache {
             }
         }
 
-        fail!("Unable to find any fonts that match (do you have fallback fonts installed?)");
+        panic!("Unable to find any fonts that match (do you have fallback fonts installed?)");
     }
 }
 

@@ -1020,7 +1020,7 @@ impl<'a> PostorderNodeMutTraversal for FlowConstructor<'a> {
             }
         };
 
-        debug!("building flow for node: {:?} {:?}", display, float);
+        debug!("building flow for node: {} {}", display, float);
 
         // Switch on display and floatedness.
         match (display, float, positioning) {

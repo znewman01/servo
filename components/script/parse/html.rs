@@ -207,7 +207,7 @@ pub fn parse_html(page: &Page,
 
             let load_response = input_port.recv();
 
-            debug!("Fetched page; metadata is {:?}", load_response.metadata);
+            debug!("Fetched page; metadata is {}", load_response.metadata);
 
             load_response.metadata.headers.as_ref().map(|headers| {
                 let header = headers.iter().find(|h|
@@ -265,7 +265,7 @@ pub fn parse_html(page: &Page,
                                 parser.parse_chunk(data);
                             }
                             Done(Err(err)) => {
-                                fail!("Failed to load page URL {:s}, error: {:s}", url.serialize(), err);
+                                panic!("Failed to load page URL {:s}, error: {:s}", url.serialize(), err);
                             }
                             Done(Ok(())) => break,
                         }

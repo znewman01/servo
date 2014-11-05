@@ -284,7 +284,7 @@ impl<'a> VirtualMethods for JSRef<'a, HTMLInputElement> {
             &atom!("size") => {
                 match *attr.value() {
                     UIntAttrValue(_, value) => self.size.set(value),
-                    _ => fail!("Expected a UIntAttrValue"),
+                    _ => panic!("Expected a UIntAttrValue"),
                 }
                 self.force_relayout();
             }

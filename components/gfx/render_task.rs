@@ -237,7 +237,7 @@ impl<C> RenderTask<C> where C: RenderListener + Send {
                         if self.epoch == epoch {
                             self.render(&mut replies, buffer_requests, scale, layer_id);
                         } else {
-                            debug!("renderer epoch mismatch: {:?} != {:?}", self.epoch, epoch);
+                            debug!("renderer epoch mismatch: {} != {}", self.epoch, epoch);
                         }
                     }
 

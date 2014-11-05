@@ -415,8 +415,8 @@ impl FragmentDisplayListBuilding for Fragment {
 
         // Create special per-fragment-type display items.
         match self.specific {
-            UnscannedTextFragment(_) => fail!("Shouldn't see unscanned fragments here."),
-            TableColumnFragment(_) => fail!("Shouldn't see table column fragments here."),
+            UnscannedTextFragment(_) => panic!("Shouldn't see unscanned fragments here."),
+            TableColumnFragment(_) => panic!("Shouldn't see table column fragments here."),
             ScannedTextFragment(ref text_fragment) => {
                 // Create the text display item.
                 let orientation = if self.style.writing_mode.is_vertical() {
@@ -570,7 +570,7 @@ impl FragmentDisplayListBuilding for Fragment {
                                Size2D(geometry::to_frac_px(content_size.width) as f32,
                                       geometry::to_frac_px(content_size.height) as f32));
 
-        debug!("finalizing position and size of iframe for {:?},{:?}",
+        debug!("finalizing position and size of iframe for {},{}",
                iframe_fragment.pipeline_id,
                iframe_fragment.subpage_id);
         let ConstellationChan(ref chan) = layout_context.shared.constellation_chan;

@@ -468,7 +468,7 @@ impl ScriptTask {
             } else if ret == port3.id() {
                 FromDevtools(self.devtools_port.recv())
             } else {
-                fail!("unexpected select result")
+                panic!("unexpected select result")
             }
         };
 
@@ -519,22 +519,22 @@ impl ScriptTask {
         for msg in sequential.into_iter() {
             match msg {
                 // TODO(tkuehn) need to handle auxiliary layouts for iframes
-                FromConstellation(AttachLayoutMsg(_)) => fail!("should have handled AttachLayoutMsg already"),
+                FromConstellation(AttachLayoutMsg(_)) => panic!("should have handled AttachLayoutMsg already"),
                 FromConstellation(LoadMsg(id, load_data)) => self.load(id, load_data),
                 FromScript(TriggerLoadMsg(id, load_data)) => self.trigger_load(id, load_data),
                 FromScript(TriggerFragmentMsg(id, url)) => self.trigger_fragment(id, url),
                 FromConstellation(SendEventMsg(id, event)) => self.handle_event(id, event),
                 FromScript(FireTimerMsg(FromWindow(id), timer_id)) => self.handle_fire_timer_msg(id, timer_id),
-                FromScript(FireTimerMsg(FromWorker, _)) => fail!("Worker timeouts must not be sent to script task"),
+                FromScript(FireTimerMsg(FromWorker, _)) => panic!("Worker timeouts must not be sent to script task"),
                 FromScript(NavigateMsg(direction)) => self.handle_navigate_msg(direction),
                 FromConstellation(ReflowCompleteMsg(id, reflow_id)) => self.handle_reflow_complete_msg(id, reflow_id),
                 FromConstellation(ResizeInactiveMsg(id, new_size)) => self.handle_resize_inactive_msg(id, new_size),
                 FromConstellation(ExitPipelineMsg(id)) => if self.handle_exit_pipeline_msg(id) { return false },
                 FromScript(ExitWindowMsg(id)) => self.handle_exit_window_msg(id),
-                FromConstellation(ResizeMsg(..)) => fail!("should have handled ResizeMsg already"),
+                FromConstellation(ResizeMsg(..)) => panic!("should have handled ResizeMsg already"),
                 FromScript(XHRProgressMsg(addr, progress)) => XMLHttpRequest::handle_progress(addr, progress),
                 FromScript(XHRReleaseMsg(addr)) => XMLHttpRequest::handle_release(addr),
-                FromScript(DOMMessage(..)) => fail!("unexpected message"),
+                FromScript(DOMMessage(..)) => panic!("unexpected message"),
                 FromScript(WorkerPostMessage(addr, data, nbytes)) => Worker::handle_message(addr, data, nbytes),
                 FromScript(WorkerRelease(addr)) => Worker::handle_release(addr),
                 FromDevtools(EvaluateJS(id, s, reply)) => self.handle_evaluate_js(id, s, reply),
@@ -572,7 +572,7 @@ impl ScriptTask {
         } else {
             //FIXME: jsvals don't have an is_int32/is_number yet
             assert!(rval.is_object_or_null());
-            fail!("object values unimplemented")
+            panic!("object values unimplemented")
         });
     }
 
@@ -607,7 +607,7 @@ impl ScriptTask {
             }
         }
 
-        fail!("couldn't find node with unique id {:s}", node_id)
+        panic!("couldn't find node with unique id {:s}", node_id)
     }
 
     fn handle_get_children(&self, pipeline: PipelineId, node_id: String, reply: Sender<Vec<NodeInfo>>) {
@@ -624,7 +624,7 @@ impl ScriptTask {
     }
 
     fn handle_new_layout(&self, new_layout_info: NewLayoutInfo) {
-        debug!("Script: new layout: {:?}", new_layout_info);
+        debug!("Script: new layout: {}", new_layout_info);
         let NewLayoutInfo {
             old_pipeline_id,
             new_pipeline_id,
@@ -660,7 +660,7 @@ impl ScriptTask {
 
     /// Handles a notification that reflow completed.
     fn handle_reflow_complete_msg(&self, pipeline_id: PipelineId, reflow_id: uint) {
-        debug!("Script: Reflow {:?} complete for {:?}", reflow_id, pipeline_id);
+        debug!("Script: Reflow {} complete for {}", reflow_id, pipeline_id);
         let mut page = self.page.borrow_mut();
         let page = page.find(pipeline_id).expect(
             "ScriptTask: received a load message for a layout channel that is not associated \
@@ -718,7 +718,7 @@ impl ScriptTask {
         // If root is being exited, shut down all pages
         let mut page = self.page.borrow_mut();
         if page.id == id {
-            debug!("shutting down layout for root page {:?}", id);
+            debug!("shutting down layout for root page {}", id);
             *self.js_context.borrow_mut() = None;
             shut_down_layout(&*page, (*self.js_runtime).ptr);
             return true
@@ -742,7 +742,7 @@ impl ScriptTask {
     /// objects, parses HTML and CSS, and kicks off initial layout.
     fn load(&self, pipeline_id: PipelineId, load_data: LoadData) {
         let url = load_data.url.clone();
-        debug!("ScriptTask: loading {} on page {:?}", url, pipeline_id);
+        debug!("ScriptTask: loading {} on page {}", url, pipeline_id);
 
         let mut page = self.page.borrow_mut();
         let page = page.find(pipeline_id).expect("ScriptTask: received a load
@@ -885,7 +885,7 @@ impl ScriptTask {
     fn handle_event(&self, pipeline_id: PipelineId, event: CompositorEvent) {
         match event {
             ResizeEvent(new_size) => {
-                debug!("script got resize event: {:?}", new_size);
+                debug!("script got resize event: {}", new_size);
 
                 let window = {
                     let page = get_page(&*self.page.borrow(), pipeline_id);
@@ -944,11 +944,11 @@ impl ScriptTask {
             }
 
             ClickEvent(_button, point) => {
-                debug!("ClickEvent: clicked at {:?}", point);
+                debug!("ClickEvent: clicked at {}", point);
                 let page = get_page(&*self.page.borrow(), pipeline_id);
                 match page.hit_test(&point) {
                     Some(node_address) => {
-                        debug!("node address is {:?}", node_address);
+                        debug!("node address is {}", node_address);
 
                         let temp_node =
                                 node::from_untrusted_node_address(

@@ -482,7 +482,7 @@ impl<'a> NodeHelpers<'a> for JSRef<'a, Node> {
 
     /// Returns a string that describes this node.
     fn debug_str(self) -> String {
-        format!("{:?}", self.type_id)
+        format!("{}", self.type_id)
     }
 
     fn is_in_doc(self) -> bool {
@@ -840,7 +840,7 @@ pub fn from_untrusted_node_address(runtime: *mut JSRuntime, candidate: Untrusted
         let object: *mut JSObject = jsfriendapi::bindgen::JS_GetAddressableObject(runtime,
                                                                                   candidate);
         if object.is_null() {
-            fail!("Attempted to create a `JS<Node>` from an invalid pointer!")
+            panic!("Attempted to create a `JS<Node>` from an invalid pointer!")
         }
         let boxed_node: *const Node = utils::unwrap(object);
         Temporary::new(JS::from_raw(boxed_node))
