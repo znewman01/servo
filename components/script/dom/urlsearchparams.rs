@@ -16,7 +16,7 @@ use servo_util::str::DOMString;
 use encoding::all::UTF_8;
 use encoding::types::{EncodingRef, EncodeReplace};
 
-use std::collections::hashmap::HashMap;
+use std::collections::HashMap;
 use std::fmt::radix;
 use std::ascii::OwnedStrAsciiExt;
 

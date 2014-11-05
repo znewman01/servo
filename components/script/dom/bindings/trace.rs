@@ -38,7 +38,7 @@ use url::Url;
 use msg::constellation_msg::{PipelineId, SubpageId, WindowSizeData};
 use net::image_cache_task::ImageCacheTask;
 use script_traits::ScriptControlChan;
-use std::collections::hashmap::HashMap;
+use std::collections::HashMap;
 use collections::hash::{Hash, Hasher};
 use style::PropertyDeclarationBlock;
 use std::comm::{Receiver, Sender};

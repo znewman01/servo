@@ -24,7 +24,7 @@ use libc::{c_char, size_t};
 use std::ptr;
 use url::Url;
 
-use std::collections::hashmap::HashMap;
+use std::collections::HashMap;
 
 #[deriving(PartialEq)]
 #[jstraceable]

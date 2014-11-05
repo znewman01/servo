@@ -47,7 +47,7 @@ use servo_util::memory::MemoryProfilerChan;
 use servo_util::opts;
 use servo_util::time::{profile, TimeProfilerChan};
 use servo_util::{memory, time};
-use std::collections::hashmap::HashMap;
+use std::collections::HashMap;
 use std::path::Path;
 use std::rc::Rc;
 use time::{precise_time_ns, precise_time_s};

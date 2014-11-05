@@ -15,7 +15,7 @@ use dom::blob::Blob;
 use dom::file::File;
 use dom::htmlformelement::HTMLFormElement;
 use servo_util::str::DOMString;
-use std::collections::hashmap::HashMap;
+use std::collections::HashMap;
 
 #[deriving(Clone)]
 #[jstraceable]

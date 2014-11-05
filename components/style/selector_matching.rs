@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 use std::ascii::AsciiExt;
-use std::collections::hashmap::HashMap;
+use std::collections::HashMap;
 use std::hash::Hash;
 use std::num::div_rem;
 use sync::Arc;

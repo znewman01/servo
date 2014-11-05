@@ -62,7 +62,7 @@ use html5ever::tree_builder::{QuirksMode, NoQuirks, LimitedQuirks, Quirks};
 use string_cache::{Atom, QualName};
 use url::Url;
 
-use std::collections::hashmap::HashMap;
+use std::collections::HashMap;
 use std::ascii::StrAsciiExt;
 use std::cell::Cell;
 use std::default::Default;

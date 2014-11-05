@@ -16,7 +16,7 @@ use js::rust::with_compartment;
 
 use std::cell::Cell;
 use std::cmp;
-use std::collections::hashmap::HashMap;
+use std::collections::HashMap;
 use std::comm::{channel, Sender};
 use std::comm::Select;
 use std::hash::{Hash, sip};
