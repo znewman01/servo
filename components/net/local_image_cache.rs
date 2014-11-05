@@ -155,9 +155,9 @@ impl<NodeAddress: Send> LocalImageCache<NodeAddress> {
 
     fn get_state<'a>(&'a mut self, url: &Url) -> &'a mut ImageState {
         match self.state_map.entry((*url).clone()) {
-            Occupied(entry) => entry.get(),
+            Occupied(entry) => entry.into_mut(),
             Vacant(entry) =>
-                &*entry.set(ImageState {
+                entry.set(ImageState {
                     prefetched: false,
                     decoded: false,
                     last_request_round: 0,
