@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 use std::{cmp, iter};
-use std::ascii::{StrAsciiExt, OwnedStrAsciiExt};
+use std::ascii::{AsciiExt, OwnedAsciiExt};
 use sync::Arc;
 
 use cssparser::ast::*;
