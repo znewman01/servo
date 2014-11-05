@@ -4,6 +4,7 @@
 
 use resource_task::{Metadata, Payload, Done, LoadResponse, LoadData, start_sending_opt};
 
+use log;
 use std::collections::hashmap::HashSet;
 use http::client::{RequestWriter, NetworkStream};
 use http::headers::HeaderEnum;
@@ -98,10 +99,11 @@ fn load(load_data: LoadData, start_chan: Sender<LoadResponse>) {
 
         // Dump headers, but only do the iteration if info!() is enabled.
         info!("got HTTP response {:s}, headers:", response.status.to_string());
-        info!("{:?}",
+        if log_enabled!(log::INFO) {
             for header in response.headers.iter() {
                 info!(" - {:s}: {:s}", header.header_name(), header.header_value());
-            });
+            }
+        }
 
         if 3 == (response.status.code() / 100) {
             match response.headers.location {
