@@ -763,11 +763,11 @@ fn matches_compound_selector_internal<'a,E,N>(selector: &CompoundSelector,
 
 bitflags! {
     flags CommonStyleAffectingAttributes: u8 {
-        static HiddenAttribute = 0x01,
-        static NoWrapAttribute = 0x02,
-        static AlignLeftAttribute = 0x04,
-        static AlignCenterAttribute = 0x08,
-        static AlignRightAttribute = 0x10,
+        const HiddenAttribute = 0x01,
+        const NoWrapAttribute = 0x02,
+        const AlignLeftAttribute = 0x04,
+        const AlignCenterAttribute = 0x08,
+        const AlignRightAttribute = 0x10,
     }
 }
 
