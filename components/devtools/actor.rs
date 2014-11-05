@@ -4,7 +4,7 @@
 
 /// General actor system infrastructure.
 
-use std::any::{AnyPrivate, AnyRefExt, AnyMutRefExt};
+use std::any::{Any, AnyRefExt, AnyMutRefExt};
 use std::collections::HashMap;
 use std::cell::{Cell, RefCell};
 use std::intrinsics::TypeId;
@@ -16,7 +16,7 @@ use serialize::json;
 /// A common trait for all devtools actors that encompasses an immutable name
 /// and the ability to process messages that are directed to particular actors.
 /// TODO: ensure the name is immutable
-pub trait Actor: AnyPrivate {
+pub trait Actor {
     fn handle_message(&self,
                       registry: &ActorRegistry,
                       msg_type: &String,
