@@ -30,8 +30,8 @@ use string_cache::Atom;
 use std::ascii::OwnedAsciiExt;
 use std::cell::Cell;
 
-static DEFAULT_SUBMIT_VALUE: &'static str = "Submit";
-static DEFAULT_RESET_VALUE: &'static str = "Reset";
+const DEFAULT_SUBMIT_VALUE: &'static str = "Submit";
+const DEFAULT_RESET_VALUE: &'static str = "Reset";
 
 #[jstraceable]
 #[deriving(PartialEq)]
