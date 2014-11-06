@@ -45,9 +45,12 @@ impl<'a> AnyRefExt<'a> for &'a Actor + 'a {
     fn is<T: 'static>(self) -> bool {
         // This implementation is only needed so long as there's a Rust bug that
         // prevents downcast_ref from giving realistic return values.
-        let t = TypeId::of::<T>();
-        let boxed = self.get_type_id();
-        t == boxed
+        unsafe {
+            let t = TypeId::of::<T>();
+            let this: &Actor = transmute(self);
+            let boxed: TypeId = this.get_type_id();
+            t == boxed
+        }
     }
 
     fn downcast_ref<T: 'static>(self) -> Option<&'a T> {
