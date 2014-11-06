@@ -190,7 +190,6 @@ impl FontHandleMethods for FontHandle {
                 let void_glyph = (*self.face).glyph;
                 let slot: FT_GlyphSlot = mem::transmute(void_glyph);
                 assert!(slot.is_not_null());
-                debug!("metrics: {}", (*slot).metrics);
                 let advance = (*slot).metrics.horiAdvance;
                 debug!("h_advance for {} is {}", glyph, advance);
                 let advance = advance as i32;
