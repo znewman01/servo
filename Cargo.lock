@@ -456,6 +456,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "rustuv"
+version = "0.0.1"
+source = "git+https://github.com/alexcrichton/green-rs#511ee3fe283a07a833ac8a38ca5b7e6df0d7d1ce"
+dependencies = [
+ "green 0.0.1 (git+https://github.com/alexcrichton/green-rs#511ee3fe283a07a833ac8a38ca5b7e6df0d7d1ce)",
+ "tls 0.0.1 (git+https://github.com/alexcrichton/green-rs#511ee3fe283a07a833ac8a38ca5b7e6df0d7d1ce)",
+]
+
+[[package]]
 name = "script"
 version = "0.0.1"
 dependencies = [
