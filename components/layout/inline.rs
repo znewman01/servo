@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#![deny(unsafe_block)]
+#![deny(unsafe_blocks)]
 
 use css::node_style::StyledNode;
 use context::LayoutContext;
@@ -13,7 +13,7 @@ use flow;
 use fragment::{Fragment, InlineAbsoluteHypotheticalFragment, InlineBlockFragment};
 use fragment::{FragmentBoundsIterator, ScannedTextFragment, ScannedTextFragmentInfo};
 use fragment::SplitInfo;
-use incremental::{Reflow, ReflowOutOfFlow};
+use incremental::{REFLOW, REFLOW_OUT_OF_FLOW};
 use layout_debug;
 use model::IntrinsicISizesContribution;
 use text;
@@ -623,7 +623,7 @@ impl InlineFragments {
 
     /// A convenience function to return a mutable reference to the fragment at a given index.
     pub fn get_mut<'a>(&'a mut self, index: uint) -> &'a mut Fragment {
-        self.fragments.get_mut(index)
+        &mut self.fragments[index]
     }
 
     /// This function merges previously-line-broken fragments back into their
@@ -1028,11 +1028,11 @@ impl Flow for InlineFlow {
                  mut largest_block_size_for_bottom_fragments) = (Au(0), Au(0));
 
             for fragment_index in range(line.range.begin(), line.range.end()) {
-                let fragment = self.fragments.fragments.get_mut(fragment_index.to_uint());
+                let fragment = &mut self.fragments.fragments[fragment_index.to_uint()];
 
                 let InlineMetrics {
-                    block_size_above_baseline: mut block_size_above_baseline,
-                    depth_below_baseline: mut depth_below_baseline,
+                    mut block_size_above_baseline,
+                    mut depth_below_baseline,
                     ascent
                 } = fragment.inline_metrics(layout_context);
 
@@ -1131,7 +1131,7 @@ impl Flow for InlineFlow {
                                                     Au(0),
                                                     -self.base.position.size.block));
 
-        self.base.restyle_damage.remove(ReflowOutOfFlow | Reflow);
+        self.base.restyle_damage.remove(REFLOW_OUT_OF_FLOW | REFLOW);
     }
 
     fn compute_absolute_position(&mut self) {

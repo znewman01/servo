@@ -11,7 +11,7 @@
 //! maybe it's an absolute or fixed position thing that hasn't found its containing block yet.
 //! Construction items bubble up the tree from children to parents until they find their homes.
 
-#![deny(unsafe_block)]
+#![deny(unsafe_blocks)]
 
 use css::node_style::StyledNode;
 use block::BlockFlow;
@@ -27,7 +27,7 @@ use fragment::{InlineAbsoluteHypotheticalFragmentInfo, InlineBlockFragment};
 use fragment::{InlineBlockFragmentInfo, SpecificFragmentInfo, TableCellFragment};
 use fragment::{TableColumnFragment, TableColumnFragmentInfo, TableFragment, TableRowFragment};
 use fragment::{TableWrapperFragment, UnscannedTextFragment, UnscannedTextFragmentInfo};
-use incremental::{ReconstructFlow, RestyleDamage};
+use incremental::{RECONSTRUCT_FLOW, RestyleDamage};
 use inline::InlineFlow;
 use parallel;
 use table_wrapper::TableWrapperFlow;
@@ -38,7 +38,7 @@ use table_rowgroup::TableRowGroupFlow;
 use table_row::TableRowFlow;
 use table_cell::TableCellFlow;
 use text::TextRunScanner;
-use util::{HasNewlyConstructedFlow, LayoutDataAccess, OpaqueNodeMethods, LayoutDataWrapper};
+use util::{HAS_NEWLY_CONSTRUCTED_FLOW, LayoutDataAccess, OpaqueNodeMethods, LayoutDataWrapper};
 use wrapper::{PostorderNodeMutTraversal, TLayoutNode, ThreadSafeLayoutNode};
 use wrapper::{Before, After, Normal};
 
@@ -193,7 +193,7 @@ impl InlineFragmentsAccumulator {
 
     fn to_dlist(self) -> DList<Fragment> {
         let InlineFragmentsAccumulator {
-            fragments: mut fragments,
+            mut fragments,
             enclosing_style
         } = self;
 
@@ -403,7 +403,7 @@ impl<'a> FlowConstructor<'a> {
             }
             ConstructionItemConstructionResult(InlineFragmentsConstructionItem(
                     InlineFragmentsConstructionResult {
-                        splits: splits,
+                        splits,
                         fragments: successor_fragments,
                         abs_descendants: kid_abs_descendants,
                     })) => {
@@ -412,7 +412,7 @@ impl<'a> FlowConstructor<'a> {
                     // Pull apart the {ib} split object and push its predecessor fragments
                     // onto the list.
                     let InlineBlockSplit {
-                        predecessors: predecessors,
+                        predecessors,
                         flow: kid_flow
                     } = split;
                     inline_fragment_accumulator.push_all(predecessors);
@@ -591,7 +591,7 @@ impl<'a> FlowConstructor<'a> {
                 }
                 ConstructionItemConstructionResult(InlineFragmentsConstructionItem(
                         InlineFragmentsConstructionResult {
-                            splits: splits,
+                            splits,
                             fragments: successors,
                             abs_descendants: kid_abs_descendants,
                         })) => {
@@ -599,7 +599,7 @@ impl<'a> FlowConstructor<'a> {
                     // Bubble up {ib} splits.
                     for split in splits.into_iter() {
                         let InlineBlockSplit {
-                            predecessors: predecessors,
+                            predecessors,
                             flow: kid_flow
                         } = split;
                         fragment_accumulator.push_all(predecessors);
@@ -949,14 +949,14 @@ impl<'a> FlowConstructor<'a> {
     pub fn repair_if_possible(&mut self, node: &ThreadSafeLayoutNode) -> bool {
         // We can skip reconstructing the flow if we don't have to reconstruct and none of our kids
         // did either.
-        if node.restyle_damage().contains(ReconstructFlow) {
+        if node.restyle_damage().contains(RECONSTRUCT_FLOW) {
             return false
         }
 
         let mut need_to_reconstruct = false;
         for kid in node.children() {
-            if kid.flags().contains(HasNewlyConstructedFlow) {
-                kid.remove_flags(HasNewlyConstructedFlow);
+            if kid.flags().contains(HAS_NEWLY_CONSTRUCTED_FLOW) {
+                kid.remove_flags(HAS_NEWLY_CONSTRUCTED_FLOW);
                 need_to_reconstruct = true
             }
         }
@@ -1124,7 +1124,7 @@ impl<'a> PostorderNodeMutTraversal for FlowConstructor<'a> {
             }
         }
 
-        node.insert_flags(HasNewlyConstructedFlow);
+        node.insert_flags(HAS_NEWLY_CONSTRUCTED_FLOW);
         true
     }
 }

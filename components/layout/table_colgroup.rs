@@ -4,7 +4,7 @@
 
 //! CSS table formatting contexts.
 
-#![deny(unsafe_block)]
+#![deny(unsafe_blocks)]
 
 use context::LayoutContext;
 use css::node_style::StyledNode;

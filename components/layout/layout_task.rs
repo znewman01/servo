@@ -11,7 +11,7 @@ use context::SharedLayoutContext;
 use flow::{mod, Flow, ImmutableFlowUtils, MutableFlowUtils, MutableOwnedFlowUtils};
 use flow_ref::FlowRef;
 use fragment::{Fragment, FragmentBoundsIterator};
-use incremental::{LayoutDamageComputation, Reflow, ReflowEntireDocument, Repaint};
+use incremental::{LayoutDamageComputation, REFLOW, REFLOW_ENTIRE_DOCUMENT, REPAINT};
 use layout_debug;
 use parallel::UnsafeFlow;
 use parallel;
@@ -800,7 +800,7 @@ impl LayoutTask {
                 self.time_profiler_chan.clone(),
                 || {
             if opts::get().nonincremental_layout ||
-                    layout_root.deref_mut().compute_layout_damage().contains(ReflowEntireDocument) {
+                    layout_root.deref_mut().compute_layout_damage().contains(REFLOW_ENTIRE_DOCUMENT) {
                 layout_root.deref_mut().reflow_entire_document()
             }
         });
@@ -886,7 +886,7 @@ impl LayoutTask {
     }
 
     fn reflow_all_nodes(flow: &mut Flow) {
-        flow::mut_base(flow).restyle_damage.insert(Reflow | Repaint);
+        flow::mut_base(flow).restyle_damage.insert(REFLOW | REPAINT);
 
         for child in flow::child_iter(flow) {
             LayoutTask::reflow_all_nodes(child);
@@ -932,7 +932,7 @@ impl LayoutRPC for LayoutRPCImpl {
     /// Requests the dimensions of all the content boxes, as in the `getClientRects()` call.
     fn content_boxes(&self) -> ContentBoxesResponse {
         let &LayoutRPCImpl(ref rw_data) = self;
-        let mut rw_data = rw_data.lock();
+        let rw_data = rw_data.lock();
         ContentBoxesResponse(rw_data.content_boxes_response.clone())
     }
 
