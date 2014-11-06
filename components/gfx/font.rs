@@ -68,7 +68,7 @@ pub trait FontTableMethods {
     fn with_buffer(&self, |*const u8, uint|);
 }
 
-#[deriving(Clone)]
+#[deriving(Clone, Show)]
 pub struct FontMetrics {
     pub underline_size:   Au,
     pub underline_offset: Au,

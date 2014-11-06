@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 use std::collections::HashMap;
+use std::collections::hash_map::{Occupied, Vacant};
 use geom::size::Size2D;
 use layers::platform::surface::NativePaintingGraphicsContext;
 use layers::layers::LayerBuffer;
@@ -85,10 +86,17 @@ impl BufferMap {
         self.mem += new_buffer.get_mem();
         // use lazy insertion function to prevent unnecessary allocation
         let counter = &self.counter;
-        self.map.find_or_insert_with(new_key, |_| BufferValue {
-            buffers: vec!(),
-            last_action: *counter
-        }).buffers.push(new_buffer);
+        match self.map.entry(new_key) {
+            Occupied(entry) => {
+                entry.into_mut().buffers.push(new_buffer);
+            }
+            Vacant(entry) => {
+                entry.set(BufferValue {
+                    buffers: vec!(new_buffer),
+                    last_action: *counter,
+                });
+            }
+        }
 
         let mut opt_key: Option<BufferKey> = None;
         while self.mem > self.max_mem {
