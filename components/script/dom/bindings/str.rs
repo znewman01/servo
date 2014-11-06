@@ -67,7 +67,7 @@ impl ByteString {
         vec.iter().all(|&x| {
             // http://tools.ietf.org/html/rfc2616#section-2.2
             match x {
-                0..31 | 127 => false, // CTLs
+                0...31 | 127 => false, // CTLs
                 40 | 41 | 60 | 62 | 64 |
                 44 | 59 | 58 | 92 | 34 |
                 47 | 91 | 93 | 63 | 61 |
