@@ -93,7 +93,7 @@ pub enum NavigationType {
     Navigate,           // browser forward/back buttons
 }
 
-#[deriving(Clone, PartialEq, Hash)]
+#[deriving(Clone, PartialEq, Hash, Show)]
 pub enum NavigationDirection {
     Forward,
     Back,
