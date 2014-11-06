@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 use compositor_layer::{CompositorData, CompositorLayer, DoesntWantScrollEvents};
-use compositor_layer::{ScrollPositionChanged, WantsScrollEvents};
+use compositor_layer::WantsScrollEvents;
 use compositor_task::{Msg, CompositorTask, Exit, ChangeReadyState, SetIds, LayerProperties};
 use compositor_task::{GetGraphicsMetadata, CreateOrUpdateRootLayer, CreateOrUpdateDescendantLayer};
 use compositor_task::{SetLayerOrigin, Paint, ScrollFragmentPoint, LoadComplete};
@@ -51,6 +51,7 @@ use std::collections::HashMap;
 use std::collections::hash_map::{Occupied, Vacant};
 use std::path::Path;
 use std::rc::Rc;
+use std::slice::bytes::copy_memory;
 use time::{precise_time_ns, precise_time_s};
 use url::Url;
 
@@ -756,12 +757,12 @@ impl<Window: WindowMethods> IOCompositor<Window> {
             let delta = scroll_event.delta / self.scene.scale;
             let cursor = scroll_event.cursor.as_f32() / self.scene.scale;
 
-            let scrolled = match self.scene.root {
+            match self.scene.root {
                 Some(ref mut layer) => {
-                    layer.handle_scroll_event(delta, cursor) == ScrollPositionChanged
+                    layer.handle_scroll_event(delta, cursor);
                 }
-                None => false,
-            };
+                None => {}
+            }
 
             self.start_scrolling_timer_if_necessary();
             self.send_buffer_requests_for_all_layers();
@@ -846,7 +847,7 @@ impl<Window: WindowMethods> IOCompositor<Window> {
         for (layer, mut layer_requests) in requests.into_iter() {
             let &(_, ref mut vec) =
                 match results.entry(layer.extra_data.borrow().pipeline.id) {
-                    Occupied(entry) => {
+                    Occupied(mut entry) => {
                         *entry.get_mut() =
                             (layer.extra_data.borrow().pipeline.render_chan.clone(), vec!());
                         entry.into_mut()
@@ -999,11 +1000,9 @@ impl<Window: WindowMethods> IOCompositor<Window> {
             for y in range(0, height) {
                 let dst_start = y * stride;
                 let src_start = (height - y - 1) * stride;
-                unsafe {
-                    let src_slice = orig_pixels.slice(src_start, src_start + stride);
-                    pixels.slice_mut(dst_start, dst_start + stride)
-                          .copy_memory(src_slice.slice_to(stride));
-                }
+                let src_slice = orig_pixels.slice(src_start, src_start + stride);
+                copy_memory(pixels.slice_mut(dst_start, dst_start + stride),
+                            src_slice.slice_to(stride));
             }
             let mut img = png::Image {
                 width: width as u32,
