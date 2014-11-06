@@ -5,9 +5,11 @@ dependencies = [
  "compositing 0.0.1",
  "gfx 0.0.1",
  "glfw_app 0.0.1",
+ "green 0.0.1 (git+https://github.com/alexcrichton/green-rs#511ee3fe283a07a833ac8a38ca5b7e6df0d7d1ce)",
  "layout 0.0.1",
  "msg 0.0.1",
  "net 0.0.1",
+ "rustuv 0.0.1 (git+https://github.com/alexcrichton/green-rs#511ee3fe283a07a833ac8a38ca5b7e6df0d7d1ce)",
  "script 0.0.1",
  "url 0.1.0 (git+https://github.com/servo/rust-url#9142b86a812ac5bc886f76235585557d8e002246)",
  "util 0.0.1",
@@ -211,7 +213,7 @@ source = "git+https://github.com/bjz/gl-rs.git#678346eb5f8ba95f50a8d0f7ff9d87a73
 dependencies = [
  "gl_common 0.0.1 (git+https://github.com/bjz/gl-rs.git#678346eb5f8ba95f50a8d0f7ff9d87a7338953dc)",
  "khronos_api 0.0.1 (git+https://github.com/bjz/gl-rs.git#678346eb5f8ba95f50a8d0f7ff9d87a7338953dc)",
- "rust-xml 0.1.0 (git+https://github.com/netvl/rust-xml#7d867d8020e6ee845d198e012124c698738804a2)",
+ "rust-xml 0.1.0 (git+https://github.com/netvl/rust-xml#a4109a2b99e602a26f157f052f4d2677f9b4aa8e)",
 ]
 
 [[package]]
@@ -257,6 +259,11 @@ source = "git+https://github.com/servo/rust-glx#7126ffa09fcfcc9f85f1406f3b5db729
 dependencies = [
  "gl_generator 0.0.1 (git+https://github.com/bjz/gl-rs.git#678346eb5f8ba95f50a8d0f7ff9d87a7338953dc)",
 ]
+
+[[package]]
+name = "green"
+version = "0.0.1"
+source = "git+https://github.com/alexcrichton/green-rs#511ee3fe283a07a833ac8a38ca5b7e6df0d7d1ce"
 
 [[package]]
 name = "harfbuzz"
@@ -435,7 +442,16 @@ source = "git+https://github.com/servo/libpng?ref=servo#d01f32b4eb86904695efe7fc
 [[package]]
 name = "rust-xml"
 version = "0.1.0"
-source = "git+https://github.com/netvl/rust-xml#7d867d8020e6ee845d198e012124c698738804a2"
+source = "git+https://github.com/netvl/rust-xml#a4109a2b99e602a26f157f052f4d2677f9b4aa8e"
+
+[[package]]
+name = "rustuv"
+version = "0.0.1"
+source = "git+https://github.com/alexcrichton/green-rs#511ee3fe283a07a833ac8a38ca5b7e6df0d7d1ce"
+dependencies = [
+ "green 0.0.1 (git+https://github.com/alexcrichton/green-rs#511ee3fe283a07a833ac8a38ca5b7e6df0d7d1ce)",
+ "tls 0.0.1 (git+https://github.com/alexcrichton/green-rs#511ee3fe283a07a833ac8a38ca5b7e6df0d7d1ce)",
+]
 
 [[package]]
 name = "script"
@@ -531,6 +547,11 @@ dependencies = [
 [[package]]
 name = "task_info"
 version = "0.0.1"
+
+[[package]]
+name = "tls"
+version = "0.0.1"
+source = "git+https://github.com/alexcrichton/green-rs#511ee3fe283a07a833ac8a38ca5b7e6df0d7d1ce"
 
 [[package]]
 name = "url"
