@@ -310,9 +310,11 @@ dependencies = [
 [[package]]
 name = "js"
 version = "0.1.0"
-source = "git+https://github.com/servo/rust-mozjs#384ff80359d8aa1497b09496ec8afcd46371e0cf"
+source = "git+https://github.com/servo/rust-mozjs#b0a1439fbaafdee84d2f96a2446f8c1c7393633f"
 dependencies = [
+ "green 0.0.1 (git+https://github.com/alexcrichton/green-rs#511ee3fe283a07a833ac8a38ca5b7e6df0d7d1ce)",
  "mozjs-sys 0.0.0 (git+https://github.com/servo/mozjs#0dd618fcc78fe7aa64e4e2a3b0f7f0d8a2f0f08a)",
+ "rustuv 0.0.1 (git+https://github.com/alexcrichton/green-rs#511ee3fe283a07a833ac8a38ca5b7e6df0d7d1ce)",
 ]
 
 [[package]]
@@ -465,7 +467,7 @@ dependencies = [
  "gfx 0.0.1",
  "html5ever 0.0.0 (git+https://github.com/servo/html5ever#8ca07dcfecdea1f31814fe966d17e18761e605de)",
  "http 0.1.0-pre (git+https://github.com/servo/rust-http?ref=servo#383cbdfacfeaf31bb83b64dcb34f406f2351fd04)",
- "js 0.1.0 (git+https://github.com/servo/rust-mozjs#384ff80359d8aa1497b09496ec8afcd46371e0cf)",
+ "js 0.1.0 (git+https://github.com/servo/rust-mozjs#b0a1439fbaafdee84d2f96a2446f8c1c7393633f)",
  "msg 0.0.1",
  "net 0.0.1",
  "plugins 0.0.1",
