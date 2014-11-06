@@ -155,7 +155,7 @@ impl CORSRequest {
 
         // Step 12
         match response.status.code() {
-         200 .. 299 => {}
+         200 ... 299 => {}
          _ => return error
         }
         cors_response.headers = response.headers.clone();
