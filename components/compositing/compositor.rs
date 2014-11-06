@@ -349,9 +349,15 @@ impl<Window: WindowMethods> IOCompositor<Window> {
     }
 
     fn change_render_state(&mut self, pipeline_id: PipelineId, render_state: RenderState) {
-        self.render_states.insert_or_update_with(pipeline_id,
-                                                 render_state,
-                                                 |_key, value| *value = render_state);
+        match self.render_states.entry(pipeline_id) {
+            Occupied(entry) => {
+                *entry.into_mut() = render_state;
+            }
+            Vacant(entry) => {
+                entry.set(render_state);
+            }
+        }
+
         self.window.set_render_state(render_state);
     }
 
