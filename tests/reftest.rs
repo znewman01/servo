@@ -15,7 +15,7 @@ extern crate test;
 extern crate regex;
 extern crate url;
 
-use std::ascii::StrAsciiExt;
+use std::ascii::AsciiExt;
 use std::io;
 use std::io::{File, Reader, Command};
 use std::io::process::ExitStatus;
@@ -30,11 +30,11 @@ use url::Url;
 
 bitflags!(
     flags RenderMode: u32 {
-        static CpuRendering  = 0x00000001,
-        static GpuRendering  = 0x00000010,
-        static LinuxTarget   = 0x00000100,
-        static MacOsTarget   = 0x00001000,
-        static AndroidTarget = 0x00010000
+        const CpuRendering  = 0x00000001,
+        const GpuRendering  = 0x00000010,
+        const LinuxTarget   = 0x00000100,
+        const MacOsTarget   = 0x00001000,
+        const AndroidTarget = 0x00010000
     }
 )
 
