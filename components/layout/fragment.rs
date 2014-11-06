@@ -1501,10 +1501,10 @@ impl fmt::Show for Fragment {
 
 bitflags! {
     flags QuantitiesIncludedInIntrinsicInlineSizes: u8 {
-        static IntrinsicInlineSizeIncludesMargins = 0x01,
-        static IntrinsicInlineSizeIncludesPadding = 0x02,
-        static IntrinsicInlineSizeIncludesBorder = 0x04,
-        static IntrinsicInlineSizeIncludesSpecified = 0x08,
+        const IntrinsicInlineSizeIncludesMargins = 0x01,
+        const IntrinsicInlineSizeIncludesPadding = 0x02,
+        const IntrinsicInlineSizeIncludesBorder = 0x04,
+        const IntrinsicInlineSizeIncludesSpecified = 0x08,
     }
 }
 

@@ -18,7 +18,7 @@ use layout_debug;
 use model::IntrinsicISizesContribution;
 use text;
 
-use collections::{Deque, RingBuf};
+use collections::{RingBuf};
 use geom::{Rect, Size2D};
 use gfx::display_list::ContentLevel;
 use gfx::font::FontMetrics;

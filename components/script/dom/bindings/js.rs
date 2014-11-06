@@ -431,12 +431,6 @@ impl RootCollection {
         }
     }
 
-    /// Create a new stack-bounded root that will not outlive this collection
-    #[allow(unrooted_must_root)]
-    fn new_root<'b, 'a: 'b, T: Reflectable>(&'a self, unrooted: &JS<T>) -> Root<'a, 'b, T> {
-        Root::new(self, unrooted)
-    }
-
     /// Track a stack-based root to ensure LIFO root ordering
     fn root<'a, 'b, T: Reflectable>(&self, untracked: &Root<'a, 'b, T>) {
         unsafe {

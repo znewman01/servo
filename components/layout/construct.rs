@@ -53,9 +53,9 @@ use script::dom::node::{DocumentNodeTypeId, ElementNodeTypeId, ProcessingInstruc
 use script::dom::node::{TextNodeTypeId};
 use script::dom::htmlobjectelement::is_image_data;
 use servo_util::opts;
-use std::collections::{DList, Deque};
+use std::collections::{DList};
 use std::mem;
-use std::sync::atomics::Relaxed;
+use std::sync::atomic::Relaxed;
 use style::ComputedValues;
 use style::computed_values::{display, position, float};
 use sync::Arc;

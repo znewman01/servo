@@ -6,7 +6,6 @@
 
 use std::from_str::FromStr;
 use std::hash::{Hash, sip};
-use std::path::BytesContainer;
 use std::str;
 
 /// Encapsulates the IDL `ByteString` type.

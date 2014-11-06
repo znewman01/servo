@@ -672,12 +672,10 @@ impl LayoutTask {
                                                                          .background_color)
                                          .to_gfx_color()
                     };
-                    match element_bg_color {
-                        color::rgba(0., 0., 0., 0.) => {}
-                        _ => {
-                            color = element_bg_color;
-                            break;
-                       }
+                    if element_bg_color.r != 0.0 || element_bg_color.g != 0.0 ||
+                       element_bg_color.b != 0.0 || element_bg_color.a != 0.0 {
+                        color = element_bg_color;
+                        break;
                     }
                 }
             }
@@ -802,8 +800,8 @@ impl LayoutTask {
                 self.time_profiler_chan.clone(),
                 || {
             if opts::get().nonincremental_layout ||
-                    layout_root.compute_layout_damage().contains(ReflowEntireDocument) {
-                layout_root.reflow_entire_document()
+                    layout_root.deref_mut().compute_layout_damage().contains(ReflowEntireDocument) {
+                layout_root.deref_mut().reflow_entire_document()
             }
         });
 

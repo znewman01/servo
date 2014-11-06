@@ -35,6 +35,7 @@ const DEFAULT_RESET_VALUE: &'static str = "Reset";
 
 #[jstraceable]
 #[deriving(PartialEq)]
+#[allow(dead_code)]
 enum InputType {
     InputButton(Option<&'static str>),
     InputText,

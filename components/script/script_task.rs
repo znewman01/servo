@@ -209,7 +209,7 @@ impl<'a> Drop for ScriptMemoryFailsafe<'a> {
     fn drop(&mut self) {
         match self.owner {
             Some(owner) => {
-                let mut page = owner.page.borrow_mut();
+                let page = owner.page.borrow_mut();
                 for page in page.iter() {
                     *page.mut_js_info() = None;
                 }
@@ -419,7 +419,7 @@ impl ScriptTask {
         let mut resizes = vec!();
 
         {
-            let mut page = self.page.borrow_mut();
+            let page = self.page.borrow_mut();
             for page in page.iter() {
                 // Only process a resize if layout is idle.
                 let layout_join_port = page.layout_join_port.borrow();
@@ -484,12 +484,12 @@ impl ScriptTask {
                     self.handle_new_layout(new_layout_info);
                 }
                 FromConstellation(ResizeMsg(id, size)) => {
-                    let mut page = self.page.borrow_mut();
+                    let page = self.page.borrow_mut();
                     let page = page.find(id).expect("resize sent to nonexistent pipeline");
                     page.resize_event.set(Some(size));
                 }
                 FromConstellation(SendEventMsg(id, ReflowEvent(node_addresses))) => {
-                    let mut page = self.page.borrow_mut();
+                    let page = self.page.borrow_mut();
                     let inner_page = page.find(id).expect("Reflow sent to nonexistent pipeline");
                     let mut pending = inner_page.pending_dirty_nodes.borrow_mut();
                     pending.push_all_move(node_addresses);
@@ -632,7 +632,7 @@ impl ScriptTask {
             layout_chan
         } = new_layout_info;
 
-        let mut page = self.page.borrow_mut();
+        let page = self.page.borrow_mut();
         let parent_page = page.find(old_pipeline_id).expect("ScriptTask: received a layout
             whose parent has a PipelineId which does not correspond to a pipeline in the script
             task's page tree. This is a bug.");
@@ -650,7 +650,7 @@ impl ScriptTask {
 
     /// Handles a timer that fired.
     fn handle_fire_timer_msg(&self, id: PipelineId, timer_id: TimerId) {
-        let mut page = self.page.borrow_mut();
+        let page = self.page.borrow_mut();
         let page = page.find(id).expect("ScriptTask: received fire timer msg for a
             pipeline ID not associated with this script task. This is a bug.");
         let frame = page.frame();
@@ -661,7 +661,7 @@ impl ScriptTask {
     /// Handles a notification that reflow completed.
     fn handle_reflow_complete_msg(&self, pipeline_id: PipelineId, reflow_id: uint) {
         debug!("Script: Reflow {} complete for {}", reflow_id, pipeline_id);
-        let mut page = self.page.borrow_mut();
+        let page = self.page.borrow_mut();
         let page = page.find(pipeline_id).expect(
             "ScriptTask: received a load message for a layout channel that is not associated \
              with this script task. This is a bug.");
@@ -688,7 +688,7 @@ impl ScriptTask {
 
     /// Window was resized, but this script was not active, so don't reflow yet
     fn handle_resize_inactive_msg(&self, id: PipelineId, new_size: WindowSizeData) {
-        let mut page = self.page.borrow_mut();
+        let page = self.page.borrow_mut();
         let page = page.find(id).expect("Received resize message for PipelineId not associated
             with a page in the page tree. This is a bug.");
         page.window_size.set(new_size);
@@ -716,7 +716,7 @@ impl ScriptTask {
     /// Returns true if the script task should shut down and false otherwise.
     fn handle_exit_pipeline_msg(&self, id: PipelineId) -> bool {
         // If root is being exited, shut down all pages
-        let mut page = self.page.borrow_mut();
+        let page = self.page.borrow_mut();
         if page.id == id {
             debug!("shutting down layout for root page {}", id);
             *self.js_context.borrow_mut() = None;
@@ -744,7 +744,7 @@ impl ScriptTask {
         let url = load_data.url.clone();
         debug!("ScriptTask: loading {} on page {}", url, pipeline_id);
 
-        let mut page = self.page.borrow_mut();
+        let page = self.page.borrow_mut();
         let page = page.find(pipeline_id).expect("ScriptTask: received a load
             message for a layout channel that is not associated with this script task. This
             is a bug.");

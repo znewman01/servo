@@ -5162,7 +5162,7 @@ class CallbackMember(CGNativeMember):
             if arg.optional and not arg.defaultValue:
                 argval += ".clone().unwrap()"
 
-        conversion = wrapForType("*argv.get_mut(%s)" % jsvalIndex,
+        conversion = wrapForType("argv[%s]" % jsvalIndex,
                 result=argval,
                 successCode="continue;" if arg.variadic else "break;")
         if arg.variadic:
@@ -5179,7 +5179,7 @@ class CallbackMember(CGNativeMember):
                 "  // This is our current trailing argument; reduce argc\n"
                 "  argc -= 1;\n"
                 "} else {\n"
-                "  *argv.get_mut(%d) = UndefinedValue();\n"
+                "  argv[%d] = UndefinedValue();\n"
                 "}" % (i+1, i))
         return conversion
 

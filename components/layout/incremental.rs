@@ -14,25 +14,25 @@ bitflags! {
     flags RestyleDamage: u8 {
         #[doc = "Repaint the node itself."]
         #[doc = "Currently unused; need to decide how this propagates."]
-        static Repaint = 0x01,
+        const Repaint = 0x01,
 
         #[doc = "Recompute intrinsic inline_sizes (minimum and preferred)."]
         #[doc = "Propagates down the flow tree because the computation is"]
         #[doc = "bottom-up."]
-        static BubbleISizes = 0x02,
+        const BubbleISizes = 0x02,
 
         #[doc = "Recompute actual inline-sizes and block-sizes, only taking out-of-flow children \
                  into account. \
                  Propagates up the flow tree because the computation is top-down."]
-        static ReflowOutOfFlow = 0x04,
+        const ReflowOutOfFlow = 0x04,
 
         #[doc = "Recompute actual inline_sizes and block_sizes."]
         #[doc = "Propagates up the flow tree because the computation is"]
         #[doc = "top-down."]
-        static Reflow = 0x08,
+        const Reflow = 0x08,
 
         #[doc = "The entire flow needs to be reconstructed."]
-        static ReconstructFlow = 0x10
+        const ReconstructFlow = 0x10
     }
 }
 
@@ -40,7 +40,7 @@ bitflags! {
     flags SpecialRestyleDamage: u8 {
         #[doc="If this flag is set, we need to reflow the entire document. This is more or less a \
                temporary hack to deal with cases that we don't handle incrementally yet."]
-        static ReflowEntireDocument = 0x01,
+        const ReflowEntireDocument = 0x01,
     }
 }
 
