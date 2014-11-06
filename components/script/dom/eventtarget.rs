@@ -21,6 +21,7 @@ use js::jsapi::{JSContext, JSObject};
 use servo_util::fnv::FnvHasher;
 use servo_util::str::DOMString;
 use libc::{c_char, size_t};
+use std::collections::hash_map::{Occupied, Vacant};
 use std::ptr;
 use url::Url;
 
@@ -83,14 +84,14 @@ impl EventTarget {
     }
 
     pub fn get_listeners(&self, type_: &str) -> Option<Vec<EventListener>> {
-        self.handlers.borrow().find_equiv(&type_).map(|listeners| {
+        self.handlers.borrow().find_equiv(type_).map(|listeners| {
             listeners.iter().map(|entry| entry.listener.get_listener()).collect()
         })
     }
 
     pub fn get_listeners_for(&self, type_: &str, desired_phase: ListenerPhase)
         -> Option<Vec<EventListener>> {
-        self.handlers.borrow().find_equiv(&type_).map(|listeners| {
+        self.handlers.borrow().find_equiv(type_).map(|listeners| {
             let filtered = listeners.iter().filter(|entry| entry.phase == desired_phase);
             filtered.map(|entry| entry.listener.get_listener()).collect()
         })
@@ -137,7 +138,12 @@ impl<'a> EventTargetHelpers for JSRef<'a, EventTarget> {
                                  ty: DOMString,
                                  listener: Option<EventListener>) {
         let mut handlers = self.handlers.borrow_mut();
-        let entries = handlers.find_or_insert_with(ty, |_| vec!());
+        let entries =
+            match handlers.entry(ty) {
+                Occupied(entry) => entry.get(),
+                Vacant  (entry) => &*entry.set(vec!()),
+            };
+
         let idx = entries.iter().position(|&entry| {
             match entry.listener {
                 Inline(_) => true,
@@ -241,7 +247,12 @@ impl<'a> EventTargetMethods for JSRef<'a, EventTarget> {
         match listener {
             Some(listener) => {
                 let mut handlers = self.handlers.borrow_mut();
-                let entry = handlers.find_or_insert_with(ty, |_| vec!());
+                let entry =
+                    match handlers.entry(ty) {
+                        Occupied(entry) => entry.get(),
+                        Vacant  (entry) => &*entry.set(vec!()),
+                    };
+
                 let phase = if capture { Capturing } else { Bubbling };
                 let new_entry = EventListenerEntry {
                     phase: phase,
