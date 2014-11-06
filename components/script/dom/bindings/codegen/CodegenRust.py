@@ -2683,7 +2683,7 @@ class CGMemberJITInfo(CGThing):
         depth = self.descriptor.interface.inheritanceDepth()
         failstr = "true" if infallible else "false"
         return ("\n"
-                "static %s: JSJitInfo = JSJitInfo {\n"
+                "const %s: JSJitInfo = JSJitInfo {\n"
                 "  op: %s as *const u8,\n"
                 "  protoID: %s,\n"
                 "  depth: %s,\n"
