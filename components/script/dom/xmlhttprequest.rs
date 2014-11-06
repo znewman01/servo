@@ -56,7 +56,6 @@ use std::comm::{Sender, Receiver, channel};
 use std::default::Default;
 use std::io::{BufReader, MemWriter, Timer};
 use std::from_str::FromStr;
-use std::path::BytesContainer;
 use std::time::duration::Duration;
 use std::num::Zero;
 use time;
