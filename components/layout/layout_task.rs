@@ -660,6 +660,7 @@ impl LayoutTask {
 
             // FIXME(pcwalton): This is really ugly and can't handle overflow: scroll. Refactor
             // it with extreme prejudice.
+            let zero_color = color::rgba(0.0, 0.0, 0.0, 0.0);
             let mut color = color::rgba(1.0, 1.0, 1.0, 1.0);
             for child in node.traverse_preorder() {
                 if child.type_id() == Some(ElementNodeTypeId(HTMLHtmlElementTypeId)) ||
@@ -673,7 +674,7 @@ impl LayoutTask {
                                          .to_gfx_color()
                     };
                     match element_bg_color {
-                        color::rgba(0., 0., 0., 0.) => {}
+                        zero_color => {}
                         _ => {
                             color = element_bg_color;
                             break;

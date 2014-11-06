@@ -158,7 +158,7 @@ pub mod longhands {
             ${caller.body()}
             pub mod computed_value {
                 #[allow(non_camel_case_types)]
-                #[deriving(PartialEq, Clone, FromPrimitive)]
+                #[deriving(PartialEq, Clone, FromPrimitive, Show)]
                 pub enum T {
                     % for value in values.split():
                         ${to_rust_ident(value)},
