@@ -61,7 +61,7 @@ impl URLSearchParams {
 
 impl<'a> URLSearchParamsMethods for JSRef<'a, URLSearchParams> {
     fn Append(self, name: DOMString, value: DOMString) {
-        let data = self.data.borrow_mut();
+        let mut data = self.data.borrow_mut();
 
         match data.entry(name) {
             Occupied(entry) => entry.into_mut().push(value),

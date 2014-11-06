@@ -58,7 +58,7 @@ impl<'a> FormDataMethods for JSRef<'a, FormData> {
     #[allow(unrooted_must_root)]
     fn Append(self, name: DOMString, value: JSRef<Blob>, filename: Option<DOMString>) {
         let file = FileData(JS::from_rooted(self.get_file_from_blob(value, filename)));
-        let data = self.data.borrow_mut();
+        let mut data = self.data.borrow_mut();
         match data.entry(name) {
             Occupied(entry) => entry.into_mut().push(file),
             Vacant(entry)   => { entry.set(vec!(file)); },
@@ -66,7 +66,7 @@ impl<'a> FormDataMethods for JSRef<'a, FormData> {
     }
 
     fn Append_(self, name: DOMString, value: DOMString) {
-        let data = self.data.borrow_mut();
+        let mut data = self.data.borrow_mut();
         match data.entry(name) {
             Occupied(entry) => entry.into_mut().push(StringData(value)),
             Vacant  (entry) => { entry.set(vec!(StringData(value))); },
