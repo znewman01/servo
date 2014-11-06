@@ -55,7 +55,7 @@ use script::dom::htmlobjectelement::is_image_data;
 use servo_util::opts;
 use std::collections::{DList, Deque};
 use std::mem;
-use std::sync::atomics::Relaxed;
+use std::sync::atomic::Relaxed;
 use style::ComputedValues;
 use style::computed_values::{display, position, float};
 use sync::Arc;

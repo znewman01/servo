@@ -25,7 +25,7 @@ use servo_util::time;
 use servo_util::workqueue::{WorkQueue, WorkUnit, WorkerProxy};
 use std::mem;
 use std::ptr;
-use std::sync::atomics::{AtomicInt, Relaxed, SeqCst};
+use std::sync::atomic::{AtomicInt, Relaxed, SeqCst};
 
 #[allow(dead_code)]
 fn static_assertion(node: UnsafeLayoutNode) {

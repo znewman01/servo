@@ -12,7 +12,7 @@ use flow;
 use std::mem;
 use std::ptr;
 use std::raw;
-use std::sync::atomics::SeqCst;
+use std::sync::atomic::SeqCst;
 
 #[unsafe_no_drop_flag]
 pub struct FlowRef {

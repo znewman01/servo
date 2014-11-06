@@ -59,7 +59,7 @@ use std::num::Zero;
 use std::fmt;
 use std::iter::Zip;
 use std::raw;
-use std::sync::atomics::{AtomicUint, SeqCst};
+use std::sync::atomic::{AtomicUint, SeqCst};
 use std::slice::MutItems;
 use style::computed_values::{clear, float, position, text_align};
 use style::ComputedValues;
