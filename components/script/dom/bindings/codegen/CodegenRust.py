@@ -1362,13 +1362,13 @@ class CGImports(CGWrapper):
             # CallbackMember.getArgConversions.
             'unreachable_code',
             'non_camel_case_types',
-            'non_uppercase_statics',
-            'unnecessary_parens',
+            'non_upper_case_globals',
+            'unused_parens',
             'unused_imports',
             'unused_variables',
             'unused_unsafe',
             'unused_mut',
-            'dead_assignment',
+            'unused_assignment',
             'dead_code',
         ]
 
