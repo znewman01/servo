@@ -95,9 +95,6 @@ fn start(argc: int, argv: *const *const u8) -> int {
 }
 
 #[cfg(not(any(test,target_os="android")))]
-fn main() {}
-
-#[cfg(not(any(test,target_os="android")))]
 impl glfw_app::NestedEventLoopListener for BrowserWrapper {
     fn handle_event_from_nested_event_loop(&mut self, event: WindowEvent) -> bool {
         let is_resize = match event {
