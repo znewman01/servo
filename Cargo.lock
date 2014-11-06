@@ -189,7 +189,7 @@ dependencies = [
  "fontconfig 0.1.0 (git+https://github.com/servo/rust-fontconfig#f42ff5cbd0404fe4d2cd64e8d9bb6307bad8fd7c)",
  "freetype 0.1.0 (git+https://github.com/servo/rust-freetype#e55b06110fb2d74a2db68ead740db7e98fb98060)",
  "geom 0.1.0 (git+https://github.com/servo/rust-geom#649e3215808d2a05dafa6bc761093bdfbccd1fbc)",
- "harfbuzz 0.1.0 (git+https://github.com/servo/rust-harfbuzz#1f1495d1e2d9ce9d03d45b24f35355d891210d89)",
+ "harfbuzz 0.1.0 (git+https://github.com/servo/rust-harfbuzz#8aab215463214647b7a81f66011da552bbb1121c)",
  "layers 0.1.0 (git+https://github.com/servo/rust-layers#d59a6e34b13fd6d09bca6cc207b446fa148a9956)",
  "msg 0.0.1",
  "net 0.0.1",
@@ -268,7 +268,7 @@ source = "git+https://github.com/alexcrichton/green-rs#511ee3fe283a07a833ac8a38c
 [[package]]
 name = "harfbuzz"
 version = "0.1.0"
-source = "git+https://github.com/servo/rust-harfbuzz#1f1495d1e2d9ce9d03d45b24f35355d891210d89"
+source = "git+https://github.com/servo/rust-harfbuzz#8aab215463214647b7a81f66011da552bbb1121c"
 
 [[package]]
 name = "html5ever"
