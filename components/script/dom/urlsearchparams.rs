@@ -17,6 +17,7 @@ use encoding::all::UTF_8;
 use encoding::types::{EncodingRef, EncodeReplace};
 
 use std::collections::HashMap;
+use std::collections::hash_map::{Occupied, Vacant};
 use std::fmt::radix;
 use std::ascii::OwnedAsciiExt;
 
@@ -60,8 +61,13 @@ impl URLSearchParams {
 
 impl<'a> URLSearchParamsMethods for JSRef<'a, URLSearchParams> {
     fn Append(self, name: DOMString, value: DOMString) {
-        self.data.borrow_mut().insert_or_update_with(name, vec!(value.clone()),
-                                                             |_k, v| v.push(value.clone()));
+        let data = self.data.borrow_mut();
+
+        match data.entry(name) {
+            Occupied(entry) => entry.into_mut().push(value),
+            Vacant  (entry) => { entry.set(vec!(value)); },
+        }
+
         self.update_steps();
     }
 
