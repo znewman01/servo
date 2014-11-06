@@ -140,8 +140,8 @@ impl<'a> EventTargetHelpers for JSRef<'a, EventTarget> {
         let mut handlers = self.handlers.borrow_mut();
         let entries =
             match handlers.entry(ty) {
-                Occupied(entry) => entry.get(),
-                Vacant  (entry) => &*entry.set(vec!()),
+                Occupied(entry) => entry.into_mut(),
+                Vacant  (entry) => entry.set(vec!()),
             };
 
         let idx = entries.iter().position(|&entry| {
@@ -249,8 +249,8 @@ impl<'a> EventTargetMethods for JSRef<'a, EventTarget> {
                 let mut handlers = self.handlers.borrow_mut();
                 let entry =
                     match handlers.entry(ty) {
-                        Occupied(entry) => entry.get(),
-                        Vacant  (entry) => &*entry.set(vec!()),
+                        Occupied(entry) => entry.into_mut(),
+                        Vacant  (entry) => entry.set(vec!()),
                     };
 
                 let phase = if capture { Capturing } else { Bubbling };

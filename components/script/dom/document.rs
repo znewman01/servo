@@ -269,7 +269,7 @@ impl<'a> DocumentHelpers<'a> for JSRef<'a, Document> {
                 entry.set(vec!(element.unrooted()));
             }
             Occupied(entry) => {
-                let elements = entry.get();
+                let elements = entry.into_mut();
 
                 let new_node: JSRef<Node> = NodeCast::from_ref(element);
                 let mut head: uint = 0u;
