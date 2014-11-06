@@ -347,6 +347,7 @@ struct GetLayoutReply {
 }
 
 #[deriving(Encodable)]
+#[allow(dead_code)]
 struct AutoMargins {
     top: String,
     bottom: String,

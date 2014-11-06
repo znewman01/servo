@@ -92,7 +92,7 @@ fn run_server(receiver: Receiver<DevtoolsControlMsg>, port: u16) {
         println!("connection established to {}", stream.peer_name().unwrap());
 
         {
-            let mut actors = actors.lock();
+            let actors = actors.lock();
             let msg = actors.find::<RootActor>("root").encodable();
             stream.write_json_packet(&msg);
         }
