@@ -4,7 +4,8 @@
 
 #![feature(globs, macro_rules, phase, unsafe_destructor)]
 
-#![deny(unused_imports, unused_variable)]
+#![deny(unused_imports)]
+#![deny(unused_variables)]
 
 #![feature(phase)]
 #[phase(plugin, link)]

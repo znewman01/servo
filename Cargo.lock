@@ -225,7 +225,7 @@ dependencies = [
 [[package]]
 name = "glfw"
 version = "0.0.1"
-source = "git+https://github.com/servo/glfw-rs?ref=servo#8edf667fbf289d909c7d1bdde03acf6d78168674"
+source = "git+https://github.com/servo/glfw-rs?ref=servo#46f82b46589720f202ab2d4a99e4f4fd48df6469"
 dependencies = [
  "glfw-sys 3.0.4 (git+https://github.com/servo/glfw?ref=cargo-3.0.4#765dace7e4125b87c764f5ac0e7a80eae5c550b2)",
  "semver 0.1.0 (git+https://github.com/rust-lang/semver#7dca047a9cd40e929a4545b37a1917daff82f156)",
@@ -244,7 +244,7 @@ dependencies = [
  "cgl 0.0.1 (git+https://github.com/servo/rust-cgl#c9c71f768a1bffeff5268b8258578d2faa6a3d8b)",
  "compositing 0.0.1",
  "geom 0.1.0 (git+https://github.com/servo/rust-geom#649e3215808d2a05dafa6bc761093bdfbccd1fbc)",
- "glfw 0.0.1 (git+https://github.com/servo/glfw-rs?ref=servo#8edf667fbf289d909c7d1bdde03acf6d78168674)",
+ "glfw 0.0.1 (git+https://github.com/servo/glfw-rs?ref=servo#46f82b46589720f202ab2d4a99e4f4fd48df6469)",
  "layers 0.1.0 (git+https://github.com/servo/rust-layers#d59a6e34b13fd6d09bca6cc207b446fa148a9956)",
  "msg 0.0.1",
  "util 0.0.1",
