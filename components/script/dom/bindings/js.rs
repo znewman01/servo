@@ -94,7 +94,7 @@ impl<T: Reflectable> Temporary<T> {
     pub fn root<'a, 'b>(self) -> Root<'a, 'b, T> {
         let collection = StackRoots.get().unwrap();
         unsafe {
-            (**collection).new_root(&self.inner)
+            Root::new(&**collection, &self.inner)
         }
     }
 
@@ -171,7 +171,7 @@ impl<T: Reflectable> JS<T> {
     pub fn root<'a, 'b>(&self) -> Root<'a, 'b, T> {
         let collection = StackRoots.get().unwrap();
         unsafe {
-            (**collection).new_root(self)
+            Root::new(&**collection, &self.inner)
         }
     }
 }
