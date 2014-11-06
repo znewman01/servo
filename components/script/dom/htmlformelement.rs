@@ -24,7 +24,7 @@ use http::method::Post;
 use servo_msg::constellation_msg::LoadData;
 use servo_util::str::DOMString;
 use script_task::{ScriptChan, TriggerLoadMsg};
-use std::ascii::OwnedStrAsciiExt;
+use std::ascii::OwnedAsciiExt;
 use std::str::StrSlice;
 use url::UrlParser;
 use url::form_urlencoded::serialize;

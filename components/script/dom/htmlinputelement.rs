@@ -27,7 +27,7 @@ use dom::virtualmethods::VirtualMethods;
 use servo_util::str::DOMString;
 use string_cache::Atom;
 
-use std::ascii::OwnedStrAsciiExt;
+use std::ascii::OwnedAsciiExt;
 use std::cell::Cell;
 
 static DEFAULT_SUBMIT_VALUE: &'static str = "Submit";

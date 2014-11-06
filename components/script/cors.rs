@@ -9,7 +9,7 @@
 //! This library will eventually become the core of the Fetch crate
 //! with CORSRequest being expanded into FetchRequest (etc)
 
-use std::ascii::{StrAsciiExt, OwnedStrAsciiExt};
+use std::ascii::{AsciiExt, OwnedAsciiExt};
 use std::from_str::FromStr;
 use std::io::BufReader;
 use std::str::StrSlice;
