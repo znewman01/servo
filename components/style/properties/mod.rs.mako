@@ -928,7 +928,7 @@ pub mod longhands {
             use super::super::Au;
             pub type T = Au;
         }
-        static MEDIUM_PX: int = 16;
+        const MEDIUM_PX: int = 16;
         #[inline] pub fn get_initial_value() -> computed_value::T {
             Au::from_px(MEDIUM_PX)
         }
@@ -985,7 +985,8 @@ pub mod longhands {
         }
         pub mod computed_value {
             pub type T = super::SpecifiedValue;
-            pub static none: T = super::SpecifiedValue { underline: false, overline: false, line_through: false };
+            #[allow(non_upper_case_globals)]
+            pub const none: T = super::SpecifiedValue { underline: false, overline: false, line_through: false };
         }
         #[inline] pub fn get_initial_value() -> computed_value::T {
             none

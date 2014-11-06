@@ -25,6 +25,7 @@ pub struct MediaQueryList {
     media_queries: Vec<MediaQuery>
 }
 
+#[allow(dead_code)]
 pub enum Range<T> {
     Min(T),
     Max(T),
