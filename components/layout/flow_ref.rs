@@ -33,18 +33,18 @@ impl FlowRef {
     }
 }
 
-impl Deref<Flow + 'static> for FlowRef {
-    fn deref<'a>(&'a self) -> &'a Flow + 'static {
+impl<'a> Deref<Flow + 'a> for FlowRef {
+    fn deref(&self) -> &Flow + 'a {
         unsafe {
-            mem::transmute_copy::<raw::TraitObject, &'a Flow + 'static>(&self.object)
+            mem::transmute_copy::<raw::TraitObject, &Flow + 'a>(&self.object)
         }
     }
 }
 
-impl DerefMut<Flow + 'static> for FlowRef {
-    fn deref_mut<'a>(&'a mut self) -> &'a mut Flow + 'static {
+impl<'a> DerefMut<Flow + 'a> for FlowRef {
+    fn deref_mut<'a>(&mut self) -> &mut Flow + 'a {
         unsafe {
-            mem::transmute_copy::<raw::TraitObject, &'a mut Flow + 'static>(&self.object)
+            mem::transmute_copy::<raw::TraitObject, &mut Flow + 'a>(&self.object)
         }
     }
 }

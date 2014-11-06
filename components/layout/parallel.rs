@@ -431,7 +431,7 @@ pub fn traverse_flow_tree_preorder(root: &mut FlowRef,
     if opts::get().bubble_inline_sizes_separately {
         let layout_context = LayoutContext::new(shared_layout_context);
         let bubble_inline_sizes = BubbleISizes { layout_context: &layout_context };
-        root.traverse_postorder(&bubble_inline_sizes);
+        root.deref_mut().traverse_postorder(&bubble_inline_sizes);
     }
 
     queue.data = shared_layout_context as *const _;

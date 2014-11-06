@@ -94,13 +94,13 @@ impl FlowList {
 
     /// O(1)
     #[inline]
-    fn is_empty(&self) -> bool {
+    pub fn is_empty(&self) -> bool {
         self.flows.is_empty()
     }
 
     /// O(1)
     #[inline]
-    fn len(&self) -> uint {
+    pub fn len(&self) -> uint {
         self.flows.len()
     }
 }

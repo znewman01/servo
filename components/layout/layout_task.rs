@@ -660,7 +660,6 @@ impl LayoutTask {
 
             // FIXME(pcwalton): This is really ugly and can't handle overflow: scroll. Refactor
             // it with extreme prejudice.
-            let zero_color = color::rgba(0.0, 0.0, 0.0, 0.0);
             let mut color = color::rgba(1.0, 1.0, 1.0, 1.0);
             for child in node.traverse_preorder() {
                 if child.type_id() == Some(ElementNodeTypeId(HTMLHtmlElementTypeId)) ||
@@ -673,12 +672,10 @@ impl LayoutTask {
                                                                          .background_color)
                                          .to_gfx_color()
                     };
-                    match element_bg_color {
-                        zero_color => {}
-                        _ => {
-                            color = element_bg_color;
-                            break;
-                       }
+                    if element_bg_color.r != 0.0 || element_bg_color.g != 0.0 ||
+                       element_bg_color.b != 0.0 || element_bg_color.a != 0.0 {
+                        color = element_bg_color;
+                        break;
                     }
                 }
             }
@@ -803,8 +800,8 @@ impl LayoutTask {
                 self.time_profiler_chan.clone(),
                 || {
             if opts::get().nonincremental_layout ||
-                    layout_root.compute_layout_damage().contains(ReflowEntireDocument) {
-                layout_root.reflow_entire_document()
+                    layout_root.deref_mut().compute_layout_damage().contains(ReflowEntireDocument) {
+                layout_root.deref_mut().reflow_entire_document()
             }
         });
 
