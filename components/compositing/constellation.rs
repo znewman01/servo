@@ -30,7 +30,7 @@ use servo_util::opts;
 use servo_util::task::spawn_named;
 use servo_util::time::TimeProfilerChan;
 use std::cell::RefCell;
-use std::collections::hashmap::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet};
 use std::io;
 use std::mem::replace;
 use std::rc::Rc;
@@ -918,4 +918,3 @@ impl<LTF: LayoutTaskFactory, STF: ScriptTaskFactory> Constellation<LTF, STF> {
         }
     }
 }
-
