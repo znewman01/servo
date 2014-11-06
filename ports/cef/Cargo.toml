@@ -45,7 +45,8 @@ git = "https://github.com/servo/rust-azure"
 git = "https://github.com/servo/rust-geom"
 
 [dependencies.glfw]
-git = "https://github.com/bjz/glfw-rs"
+git = "https://github.com/servo/glfw-rs"
+branch = "servo"
 
 [dependencies.js]
 git = "https://github.com/servo/rust-mozjs"
