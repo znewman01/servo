@@ -171,7 +171,7 @@ impl<T: Reflectable> JS<T> {
     pub fn root<'a, 'b>(&self) -> Root<'a, 'b, T> {
         let collection = StackRoots.get().unwrap();
         unsafe {
-            Root::new(&**collection, &self.inner)
+            Root::new(&**collection, self)
         }
     }
 }
