@@ -126,23 +126,23 @@ bitflags! {
     #[jstraceable]
     flags NodeFlags: u8 {
         #[doc = "Specifies whether this node is in a document."]
-        static IsInDoc = 0x01,
+        const IsInDoc = 0x01,
         #[doc = "Specifies whether this node is in hover state."]
-        static InHoverState = 0x02,
+        const InHoverState = 0x02,
         #[doc = "Specifies whether this node is in disabled state."]
-        static InDisabledState = 0x04,
+        const InDisabledState = 0x04,
         #[doc = "Specifies whether this node is in enabled state."]
-        static InEnabledState = 0x08,
+        const InEnabledState = 0x08,
         #[doc = "Specifies whether this node _must_ be reflowed regardless of style differences."]
-        static HasChanged = 0x10,
+        const HasChanged = 0x10,
         #[doc = "Specifies whether this node needs style recalc on next reflow."]
-        static IsDirty = 0x20,
+        const IsDirty = 0x20,
         #[doc = "Specifies whether this node has siblings (inclusive of itself) which \
                   changed since the last reflow."]
-        static HasDirtySiblings = 0x40,
+        const HasDirtySiblings = 0x40,
         #[doc = "Specifies whether this node has descendants (inclusive of itself) which \
                  have changed since the last reflow."]
-        static HasDirtyDescendants = 0x80,
+        const HasDirtyDescendants = 0x80,
     }
 }
 
