@@ -153,7 +153,7 @@ class CGNativePropertyHooks(CGThing):
         }
 
         return string.Template(
-            "pub static sNativePropertyHooks: NativePropertyHooks = NativePropertyHooks {\n"
+            "pub const sNativePropertyHooks: NativePropertyHooks = NativePropertyHooks {\n"
             "    native_properties: &sNativeProperties,\n"
             "    proto_hooks: ${parentHooks},\n"
             "};\n").substitute(substitutions)
@@ -183,7 +183,7 @@ class CGMethodCall(CGThing):
                                       nativeMethodName + '_'*signatureIndex,
                                       static, descriptor,
                                       method, argConversionStartsAt)
-            
+
 
         signatures = method.signatures()
         if len(signatures) == 1:
@@ -203,7 +203,7 @@ class CGMethodCall(CGThing):
                     "}" % (requiredArgs, methodName))
                 self.cgRoot.prepend(
                     CGWrapper(CGGeneric(code), pre="\n", post="\n"))
-                    
+
             return
 
         # Need to find the right overload
@@ -277,7 +277,7 @@ class CGMethodCall(CGThing):
                     s[1][distinguishingIndex].type.isNonCallbackInterface()) ]
             # There might be more than one of these; we need to check
             # which ones we unwrap to.
-            
+
             if len(interfacesSigs) > 0:
                 # The spec says that we should check for "platform objects
                 # implementing an interface", but it's enough to guard on these
@@ -686,7 +686,7 @@ def getJSToNativeConversionTemplate(type, descriptorProvider, failureCode=None,
                 value = "Some(%s)" % value
 
             default = (
-                "static data: [u8, ..%s] = [ %s ];\n"
+                "const data: [u8, ..%s] = [ %s ];\n"
                 "%s" %
                 (len(defaultValue.value) + 1,
                  ", ".join(["'" + char + "' as u8" for char in defaultValue.value] + ["0"]),
@@ -724,7 +724,7 @@ def getJSToNativeConversionTemplate(type, descriptorProvider, failureCode=None,
             handleInvalidEnumValueCode = exceptionCode
         else:
             handleInvalidEnumValueCode = "return 1;"
-            
+
         template = (
             "match FindEnumStringIndex(cx, ${val}, %(values)s) {\n"
             "  Err(_) => { %(exceptionCode)s },\n"
@@ -1146,7 +1146,7 @@ class PropertyDefiner:
         if specTerminator:
             specs.append(specTerminator)
 
-        return (("static %s: &'static [%s] = &[\n" +
+        return (("const %s: &'static [%s] = &[\n" +
                  ",\n".join(specs) + "\n" +
                  "];\n\n") % (name, specType))
 
@@ -1197,9 +1197,9 @@ class MethodDefiner(PropertyDefiner):
             return (m["name"], accessor, jitinfo, m["length"], m["flags"])
 
         def stringDecl(m):
-            return "static %s_name: [u8, ..%i] = %s;\n" % (m["name"], len(m["name"]) + 1,
+            return "const %s_name: [u8, ..%i] = %s;\n" % (m["name"], len(m["name"]) + 1,
                                                          str_to_const_array(m["name"]))
-        
+
         decls = ''.join([stringDecl(m) for m in array])
         return decls + self.generatePrefableArray(
             array, name,
@@ -1265,9 +1265,9 @@ class AttrDefiner(PropertyDefiner):
 
         def stringDecl(attr):
             name = attr.identifier.name
-            return "static %s_name: [u8, ..%i] = %s;\n" % (name, len(name) + 1,
+            return "const %s_name: [u8, ..%i] = %s;\n" % (name, len(name) + 1,
                                                          str_to_const_array(name))
-        
+
         decls = ''.join([stringDecl(m) for m in array])
 
         return decls + self.generatePrefableArray(
@@ -1296,8 +1296,8 @@ class ConstDefiner(PropertyDefiner):
 
         def stringDecl(const):
             name = const.identifier.name
-            return "static %s_name: &'static [u8] = &%s;\n" % (name, str_to_const_array(name))
-        
+            return "const %s_name: &'static [u8] = &%s;\n" % (name, str_to_const_array(name))
+
         decls = ''.join([stringDecl(m) for m in array])
 
         return decls + self.generatePrefableArray(
@@ -1442,8 +1442,8 @@ class CGDOMJSClass(CGThing):
             flags = "0"
             slots = "1"
         return """
-static Class_name: [u8, ..%i] = %s;
-static Class: DOMJSClass = DOMJSClass {
+const Class_name: [u8, ..%i] = %s;
+const Class: DOMJSClass = DOMJSClass {
   base: js::Class {
     name: &Class_name as *const u8 as *const libc::c_char,
     flags: JSCLASS_IS_DOMJSCLASS | %s | (((%s) & JSCLASS_RESERVED_SLOTS_MASK) << JSCLASS_RESERVED_SLOTS_SHIFT as uint), //JSCLASS_HAS_RESERVED_SLOTS(%s),
@@ -1526,8 +1526,8 @@ class CGPrototypeJSClass(CGThing):
 
     def define(self):
         return """
-static PrototypeClassName__: [u8, ..%s] = %s;
-static PrototypeClass: JSClass = JSClass {
+const PrototypeClassName__: [u8, ..%s] = %s;
+const PrototypeClass: JSClass = JSClass {
   name: &PrototypeClassName__ as *const u8 as *const libc::c_char,
   flags: (1 & JSCLASS_RESERVED_SLOTS_MASK) << JSCLASS_RESERVED_SLOTS_SHIFT as uint, //JSCLASS_HAS_RESERVED_SLOTS(1)
   addProperty: Some(JS_PropertyStub),
@@ -1559,7 +1559,7 @@ class CGInterfaceObjectJSClass(CGThing):
         ctorname = "0 as *const u8" if not self.descriptor.interface.ctor() else CONSTRUCT_HOOK_NAME
         hasinstance = HASINSTANCE_HOOK_NAME
         return """
-static InterfaceObjectClass: JSClass = {
+const InterfaceObjectClass: JSClass = {
   %s, 0,
   JS_PropertyStub,
   JS_PropertyStub,
@@ -1950,7 +1950,7 @@ class CGNativeProperties(CGThing):
 
         nativeProps = CGList([getField(array) for array in self.properties.arrayNames()], '\n')
         return CGWrapper(CGIndenter(nativeProps),
-                         pre="static sNativeProperties: NativeProperties = NativeProperties {\n",
+                         pre="const sNativeProperties: NativeProperties = NativeProperties {\n",
                          post="\n};\n").define()
 
 
@@ -2192,7 +2192,7 @@ class CGCallGenerator(CGThing):
         call = CGGeneric(nativeMethodName)
         if static:
             call = CGWrapper(call, pre="%s::" % descriptorProvider.interface.identifier.name)
-        else: 
+        else:
             call = CGWrapper(call, pre="%s." % object)
         call = CGList([call, CGWrapper(args, pre="(", post=")")])
 
@@ -2760,7 +2760,7 @@ pub enum valuelist {
   %s
 }
 
-pub static strings: &'static [&'static str] = &[
+pub const strings: &'static [&'static str] = &[
   %s,
 ];
 
@@ -2806,7 +2806,7 @@ class CGConstant(CGThing):
         def stringDecl(const):
             name = const.identifier.name
             value = convertConstIDLValueToRust(const.value)
-            return CGGeneric("pub static %s: %s = %s;\n" % (name, builtinNames[const.value.type.tag()], value))
+            return CGGeneric("pub const %s: %s = %s;\n" % (name, builtinNames[const.value.type.tag()], value))
 
         return CGIndenter(CGList(stringDecl(m) for m in self.constants)).define()
 
@@ -3888,7 +3888,7 @@ class CGDOMJSProxyHandler_obj_toString(CGAbstractExternMethod):
             return call.define() + """
 
 JSString* jsresult;
-return xpc_qsStringToJsstring(cx, result, &jsresult) ? jsresult : NULL;""" 
+return xpc_qsStringToJsstring(cx, result, &jsresult) ? jsresult : NULL;"""
 
         return """let s = "%s".to_c_str();
   _obj_toString(cx, s.as_ptr())""" % self.descriptor.name
