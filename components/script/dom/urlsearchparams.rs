@@ -109,8 +109,8 @@ impl URLSearchParamsHelpers for URLSearchParams {
                 let append = match *i {
                     0x20 => vec!(0x2B),
                     0x2A | 0x2D | 0x2E |
-                    0x30 .. 0x39 | 0x41 .. 0x5A |
-                    0x5F | 0x61..0x7A => vec!(*i),
+                    0x30 ... 0x39 | 0x41 ... 0x5A |
+                    0x5F | 0x61...0x7A => vec!(*i),
                     a => {
                         // http://url.spec.whatwg.org/#percent-encode
                         let mut encoded = vec!(0x25); // %

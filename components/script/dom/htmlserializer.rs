@@ -161,7 +161,7 @@ fn escape(string: &str, attr_mode: bool, html: &mut String) {
     for c in string.chars() {
         match c {
             '&' => html.push_str("&amp;"),
-            '\xA0' => html.push_str("&nbsp;"),
+            '\u00A0' => html.push_str("&nbsp;"),
             '"' if attr_mode => html.push_str("&quot;"),
             '<' if !attr_mode => html.push_str("&lt;"),
             '>' if !attr_mode => html.push_str("&gt;"),

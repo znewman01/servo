@@ -132,7 +132,7 @@ impl ByteString {
                         false
                     }
                 },
-                0..31 | 127 => false, // CTLs
+                0...31 | 127 => false, // CTLs
                 x if x > 127 => false, // non ASCII
                 _ if prev == Other || prev == SPHT => {
                     prev = Other;

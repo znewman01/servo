@@ -48,6 +48,7 @@ use servo_util::opts;
 use servo_util::time::{profile, TimeProfilerChan};
 use servo_util::{memory, time};
 use std::collections::HashMap;
+use std::collections::hash_map::{Occupied, Vacant};
 use std::path::Path;
 use std::rc::Rc;
 use time::{precise_time_ns, precise_time_s};
@@ -323,9 +324,14 @@ impl<Window: WindowMethods> IOCompositor<Window> {
     }
 
     fn change_ready_state(&mut self, pipeline_id: PipelineId, ready_state: ReadyState) {
-        self.ready_states.insert_or_update_with(pipeline_id,
-                                                ready_state,
-                                                |_key, value| *value = ready_state);
+        match self.ready_states.entry(pipeline_id) {
+            Occupied(entry) => {
+                *entry.into_mut() = ready_state;
+            }
+            Vacant(entry) => {
+                entry.set(ready_state);
+            }
+        }
         self.window.set_ready_state(self.get_earliest_pipeline_ready_state());
 
         // If we're rendering in headless mode, schedule a recomposite.
@@ -1170,4 +1176,3 @@ impl<Window> CompositorEventListener for IOCompositor<Window> where Window: Wind
         self.scrolling_timer.shutdown();
     }
 }
-
