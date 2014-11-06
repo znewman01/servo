@@ -153,7 +153,7 @@ class CGNativePropertyHooks(CGThing):
         }
 
         return string.Template(
-            "pub const sNativePropertyHooks: NativePropertyHooks = NativePropertyHooks {\n"
+            "pub static sNativePropertyHooks: NativePropertyHooks = NativePropertyHooks {\n"
             "    native_properties: &sNativeProperties,\n"
             "    proto_hooks: ${parentHooks},\n"
             "};\n").substitute(substitutions)
@@ -1443,7 +1443,7 @@ class CGDOMJSClass(CGThing):
             slots = "1"
         return """
 const Class_name: [u8, ..%i] = %s;
-const Class: DOMJSClass = DOMJSClass {
+static Class: DOMJSClass = DOMJSClass {
   base: js::Class {
     name: &Class_name as *const u8 as *const libc::c_char,
     flags: JSCLASS_IS_DOMJSCLASS | %s | (((%s) & JSCLASS_RESERVED_SLOTS_MASK) << JSCLASS_RESERVED_SLOTS_SHIFT as uint), //JSCLASS_HAS_RESERVED_SLOTS(%s),
@@ -1527,7 +1527,7 @@ class CGPrototypeJSClass(CGThing):
     def define(self):
         return """
 const PrototypeClassName__: [u8, ..%s] = %s;
-const PrototypeClass: JSClass = JSClass {
+static PrototypeClass: JSClass = JSClass {
   name: &PrototypeClassName__ as *const u8 as *const libc::c_char,
   flags: (1 & JSCLASS_RESERVED_SLOTS_MASK) << JSCLASS_RESERVED_SLOTS_SHIFT as uint, //JSCLASS_HAS_RESERVED_SLOTS(1)
   addProperty: Some(JS_PropertyStub),
@@ -1950,7 +1950,7 @@ class CGNativeProperties(CGThing):
 
         nativeProps = CGList([getField(array) for array in self.properties.arrayNames()], '\n')
         return CGWrapper(CGIndenter(nativeProps),
-                         pre="const sNativeProperties: NativeProperties = NativeProperties {\n",
+                         pre="static sNativeProperties: NativeProperties = NativeProperties {\n",
                          post="\n};\n").define()
 
 
