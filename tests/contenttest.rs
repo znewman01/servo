@@ -7,7 +7,8 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-#![deny(unused_imports, unused_variable)]
+#![deny(unused_imports)]
+#![deny(unused_variables)]
 
 extern crate getopts;
 extern crate regex;

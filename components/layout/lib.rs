@@ -7,7 +7,8 @@
 
 #![feature(globs, macro_rules, phase, thread_local, unsafe_destructor)]
 
-#![deny(unused_imports, unused_variable)]
+#![deny(unused_imports)]
+#![deny(unused_variables)]
 #![allow(unrooted_must_root)]
 
 #[phase(plugin, link)]

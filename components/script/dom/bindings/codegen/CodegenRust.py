@@ -1365,7 +1365,7 @@ class CGImports(CGWrapper):
             'non_uppercase_statics',
             'unnecessary_parens',
             'unused_imports',
-            'unused_variable',
+            'unused_variables',
             'unused_unsafe',
             'unused_mut',
             'dead_assignment',

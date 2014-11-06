@@ -7,7 +7,8 @@
 
 #![feature(globs, macro_rules, phase, thread_local)]
 
-#![deny(unused_imports, unused_variable)]
+#![deny(unused_imports)]
+#![deny(unused_variables)]
 
 #[phase(plugin, link)]
 extern crate log;
