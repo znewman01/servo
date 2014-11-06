@@ -45,19 +45,19 @@ fn parse_last_modified(timestamp: &str) -> String {
 
     // RFC 822, updated by RFC 1123
     match time::strptime(timestamp, "%a, %d %b %Y %T %Z") {
-        Ok(t) => return t.to_local().strftime(format),
+        Ok(t) => return t.to_local().strftime(format).unwrap(),
         Err(_) => ()
     }
 
     // RFC 850, obsoleted by RFC 1036
     match time::strptime(timestamp, "%A, %d-%b-%y %T %Z") {
-        Ok(t) => return t.to_local().strftime(format),
+        Ok(t) => return t.to_local().strftime(format).unwrap(),
         Err(_) => ()
     }
 
     // ANSI C's asctime() format
     match time::strptime(timestamp, "%c") {
-        Ok(t) => t.to_local().strftime(format),
+        Ok(t) => t.to_local().strftime(format).unwrap(),
         Err(_) => String::from_str("")
     }
 }
