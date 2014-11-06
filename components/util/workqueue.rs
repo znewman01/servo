@@ -105,7 +105,7 @@ impl<QueueData: Send, WorkData: Send> WorkerThread<QueueData, WorkData> {
                         let mut should_continue = true;
                         loop {
                             let victim = (self.rng.next_u32() as uint) % self.other_deques.len();
-                            match self.other_deques.get_mut(victim).steal() {
+                            match self.other_deques[victim].steal() {
                                 Empty | Abort => {
                                     // Continue.
                                 }
@@ -239,7 +239,7 @@ impl<QueueData: Send, WorkData: Send> WorkQueue<QueueData, WorkData> {
         for i in range(0, thread_count) {
             for j in range(0, thread_count) {
                 if i != j {
-                    threads.get_mut(i).other_deques.push(infos[j].thief.clone())
+                    threads[i].other_deques.push(infos[j].thief.clone())
                 }
             }
             assert!(threads[i].other_deques.len() == thread_count - 1)
@@ -268,7 +268,8 @@ impl<QueueData: Send, WorkData: Send> WorkQueue<QueueData, WorkData> {
     /// Enqueues a block into the work queue.
     #[inline]
     pub fn push(&mut self, work_unit: WorkUnit<QueueData, WorkData>) {
-        match self.workers.get_mut(0).deque {
+        let deque = &mut self.workers[0].deque;
+        match *deque {
             None => {
                 panic!("tried to push a block but we don't have the deque?!")
             }
@@ -297,7 +298,7 @@ impl<QueueData: Send, WorkData: Send> WorkQueue<QueueData, WorkData> {
         // Get our deques back.
         for _ in range(0, self.workers.len()) {
             match self.port.recv() {
-                ReturnDequeMsg(index, deque) => self.workers.get_mut(index).deque = Some(deque),
+                ReturnDequeMsg(index, deque) => self.workers[index].deque = Some(deque),
                 FinishedMsg => panic!("unexpected finished message!"),
             }
         }

@@ -8,6 +8,8 @@
 //! In release builds, `get` returns 0.  All of the other functions inline
 //! away to nothing.
 
+#![allow(non_upper_case_globals)]
+
 pub use self::imp::{initialize, get, enter, exit};
 
 bitflags! {
