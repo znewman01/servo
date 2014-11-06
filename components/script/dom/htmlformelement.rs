@@ -200,26 +200,26 @@ impl<'a> HTMLFormElementHelpers for JSRef<'a, HTMLFormElement> {
             for ch in s.chars() {
                 match ch {
                     '\n' if prev != '\r' => {
-                        buf.push_char('\r');
-                        buf.push_char('\n');
+                        buf.push('\r');
+                        buf.push('\n');
                     },
                     '\n' => {
-                        buf.push_char('\n');
+                        buf.push('\n');
                     },
                     // This character isn't LF but is
                     // preceded by CR
                     _ if prev == '\r' => {
-                        buf.push_char('\r');
-                        buf.push_char('\n');
-                        buf.push_char(ch);
+                        buf.push('\r');
+                        buf.push('\n');
+                        buf.push(ch);
                     },
-                    _ => buf.push_char(ch)
+                    _ => buf.push(ch)
                 };
                 prev = ch;
             }
             // In case the last character was CR
             if prev == '\r' {
-                buf.push_char('\n');
+                buf.push('\n');
             }
             buf
         }
