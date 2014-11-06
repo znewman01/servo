@@ -624,7 +624,7 @@ impl ScriptTask {
     }
 
     fn handle_new_layout(&self, new_layout_info: NewLayoutInfo) {
-        debug!("Script: new layout: {}", new_layout_info);
+        //debug!("Script: new layout: {}", new_layout_info);
         let NewLayoutInfo {
             old_pipeline_id,
             new_pipeline_id,
@@ -885,7 +885,7 @@ impl ScriptTask {
     fn handle_event(&self, pipeline_id: PipelineId, event: CompositorEvent) {
         match event {
             ResizeEvent(new_size) => {
-                debug!("script got resize event: {}", new_size);
+                //debug!("script got resize event: {}", new_size);
 
                 let window = {
                     let page = get_page(&*self.page.borrow(), pipeline_id);

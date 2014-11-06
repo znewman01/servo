@@ -32,11 +32,13 @@ struct StartedListenersReply {
 }
 
 #[deriving(Encodable)]
+#[allow(dead_code)]
 struct ConsoleAPIMessage {
     _type: String, //FIXME: should this be __type__ instead?
 }
 
 #[deriving(Encodable)]
+#[allow(dead_code)]
 struct PageErrorMessage {
     _type: String, //FIXME: should this be __type__ instead?
     errorMessage: String,
@@ -54,6 +56,7 @@ struct PageErrorMessage {
 }
 
 #[deriving(Encodable)]
+#[allow(dead_code)]
 struct LogMessage {
     _type: String, //FIXME: should this be __type__ instead?
     timeStamp: uint,
@@ -61,6 +64,7 @@ struct LogMessage {
 }
 
 #[deriving(Encodable)]
+#[allow(dead_code)]
 enum ConsoleMessageType {
     ConsoleAPIType(ConsoleAPIMessage),
     PageErrorType(PageErrorMessage),
