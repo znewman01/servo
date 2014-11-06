@@ -103,7 +103,7 @@ impl Font {
     pub fn shape_text(&mut self, text: &str, is_whitespace: bool) -> Arc<GlyphStore> {
         self.make_shaper();
         let shaper = &self.shaper;
-        match self.shape_cache.find_equiv(&text) {
+        match self.shape_cache.find_equiv(text) {
             None => {}
             Some(glyphs) => return (*glyphs).clone(),
         }

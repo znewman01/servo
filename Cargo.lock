@@ -266,9 +266,9 @@ source = "git+https://github.com/servo/rust-harfbuzz#1f1495d1e2d9ce9d03d45b24f35
 [[package]]
 name = "html5ever"
 version = "0.0.0"
-source = "git+https://github.com/servo/html5ever?ref=servo#0bdd6087dc8df6a92c96e1859bbb4ebbb0be7c1f"
+source = "git+https://github.com/servo/html5ever#8ca07dcfecdea1f31814fe966d17e18761e605de"
 dependencies = [
- "html5ever_macros 0.0.0 (git+https://github.com/servo/html5ever?ref=servo#0bdd6087dc8df6a92c96e1859bbb4ebbb0be7c1f)",
+ "html5ever_macros 0.0.0 (git+https://github.com/servo/html5ever#8ca07dcfecdea1f31814fe966d17e18761e605de)",
  "phf 0.0.0 (git+https://github.com/sfackler/rust-phf#18a5ecc028055c3dbd650cc5a064b6fb033d82ef)",
  "phf_mac 0.0.0 (git+https://github.com/sfackler/rust-phf#18a5ecc028055c3dbd650cc5a064b6fb033d82ef)",
  "string_cache 0.0.0 (git+https://github.com/servo/string-cache#25b3e28d354e0d0a6f45246a96ecd82f807327ab)",
@@ -278,7 +278,7 @@ dependencies = [
 [[package]]
 name = "html5ever_macros"
 version = "0.0.0"
-source = "git+https://github.com/servo/html5ever?ref=servo#0bdd6087dc8df6a92c96e1859bbb4ebbb0be7c1f"
+source = "git+https://github.com/servo/html5ever#8ca07dcfecdea1f31814fe966d17e18761e605de"
 
 [[package]]
 name = "http"
@@ -447,7 +447,7 @@ dependencies = [
  "encoding 0.1.0 (git+https://github.com/lifthrasiir/rust-encoding#a739425a3f3174a31fe38c158dcaf22ea1d856f4)",
  "geom 0.1.0 (git+https://github.com/servo/rust-geom#649e3215808d2a05dafa6bc761093bdfbccd1fbc)",
  "gfx 0.0.1",
- "html5ever 0.0.0 (git+https://github.com/servo/html5ever?ref=servo#0bdd6087dc8df6a92c96e1859bbb4ebbb0be7c1f)",
+ "html5ever 0.0.0 (git+https://github.com/servo/html5ever#8ca07dcfecdea1f31814fe966d17e18761e605de)",
  "http 0.1.0-pre (git+https://github.com/servo/rust-http?ref=servo#383cbdfacfeaf31bb83b64dcb34f406f2351fd04)",
  "js 0.1.0 (git+https://github.com/servo/rust-mozjs#384ff80359d8aa1497b09496ec8afcd46371e0cf)",
  "msg 0.0.1",

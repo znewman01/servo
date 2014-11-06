@@ -61,7 +61,7 @@ impl<K: Clone + PartialEq + Eq + Hash, V: Clone> Cache<K,V> for HashCache<K,V> {
 }
 
 impl<K,V> HashCache<K,V> where K: Clone + PartialEq + Eq + Hash, V: Clone {
-    pub fn find_equiv<'a,Q>(&'a self, key: &Q) -> Option<&'a V> where Q: Hash + Equiv<K> {
+    pub fn find_equiv<'a,Sized? Q>(&'a self, key: &Q) -> Option<&'a V> where Q: Hash + Equiv<K> {
         self.entries.find_equiv(key)
     }
 }

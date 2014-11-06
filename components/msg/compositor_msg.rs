@@ -33,7 +33,7 @@ pub enum ReadyState {
 }
 
 /// A newtype struct for denoting the age of messages; prevents race conditions.
-#[deriving(PartialEq)]
+#[deriving(PartialEq, Show)]
 pub struct Epoch(pub uint);
 
 impl Epoch {
