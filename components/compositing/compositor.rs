@@ -700,7 +700,6 @@ impl<Window: WindowMethods> IOCompositor<Window> {
             return;
         }
 
-        debug!("osmain: window resized to {}", new_size);
         self.window_size = new_size;
 
         self.scene.set_root_layer_size(new_size.as_f32());
@@ -845,10 +844,17 @@ impl<Window: WindowMethods> IOCompositor<Window> {
             HashMap<PipelineId, (RenderChan, Vec<RenderRequest>)> = HashMap::new();
 
         for (layer, mut layer_requests) in requests.into_iter() {
-            let pipeline_id = layer.extra_data.borrow().pipeline.id;
-            let &(_, ref mut vec) = results.find_or_insert_with(pipeline_id, |_| {
-                (layer.extra_data.borrow().pipeline.render_chan.clone(), Vec::new())
-            });
+            let &(_, ref mut vec) =
+                match results.entry(layer.extra_data.borrow().pipeline.id) {
+                    Occupied(entry) => {
+                        *entry.get_mut() =
+                            (layer.extra_data.borrow().pipeline.render_chan.clone(), vec!());
+                        entry.into_mut()
+                    }
+                    Vacant(entry) => {
+                        entry.set((layer.extra_data.borrow().pipeline.render_chan.clone(), vec!()))
+                    }
+                };
 
             // All the BufferRequests are in layer/device coordinates, but the render task
             // wants to know the page coordinates. We scale them before sending them.
