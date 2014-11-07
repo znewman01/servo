@@ -32,7 +32,7 @@ use floats::Floats;
 use flow_list::{FlowList, FlowListIterator, MutFlowListIterator};
 use flow_ref::FlowRef;
 use fragment::{Fragment, FragmentBoundsIterator, TableRowFragment, TableCellFragment};
-use incremental::{ReconstructFlow, Reflow, ReflowOutOfFlow, RestyleDamage};
+use incremental::{RECONSTRUCT_FLOW, REFLOW, REFLOW_OUT_OF_FLOW, RestyleDamage};
 use inline::InlineFlow;
 use model::{CollapsibleMargins, IntrinsicISizes, MarginCollapseInfo};
 use parallel::FlowParallelInfo;
@@ -201,7 +201,7 @@ pub trait Flow: fmt::Show + ToString + Sync {
         let impacted = base(&*self).flags.impacted_by_floats();
         if impacted {
             self.assign_block_size(layout_context);
-            mut_base(&mut *self).restyle_damage.remove(ReflowOutOfFlow | Reflow);
+            mut_base(&mut *self).restyle_damage.remove(REFLOW_OUT_OF_FLOW | REFLOW);
         }
         impacted
     }
@@ -884,7 +884,7 @@ impl BaseFlow {
 
         // New flows start out as fully damaged.
         let mut damage = RestyleDamage::all();
-        damage.remove(ReconstructFlow);
+        damage.remove(RECONSTRUCT_FLOW);
 
         BaseFlow {
             ref_count: AtomicUint::new(1),

@@ -286,9 +286,7 @@ impl ScriptTaskFactory for ScriptTask {
     }
 }
 
-unsafe extern "C" fn debug_gc_callback(rt: *mut JSRuntime, status: JSGCStatus) {
-    js::rust::gc_callback(rt, status);
-
+unsafe extern "C" fn debug_gc_callback(_rt: *mut JSRuntime, status: JSGCStatus) {
     match status {
         JSGC_BEGIN => task_state::enter(task_state::InGC),
         JSGC_END   => task_state::exit(task_state::InGC),

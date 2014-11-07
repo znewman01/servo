@@ -25,7 +25,7 @@
 //!
 //!   http://dev.w3.org/csswg/css-sizing/
 
-#![deny(unsafe_block)]
+#![deny(unsafe_blocks)]
 
 use construct::FlowConstructor;
 use context::LayoutContext;
@@ -37,7 +37,7 @@ use flow::{MutableFlowUtils, PreorderFlowTraversal, PostorderFlowTraversal, mut_
 use flow;
 use fragment::{Fragment, ImageFragment, InlineBlockFragment, FragmentBoundsIterator};
 use fragment::ScannedTextFragment;
-use incremental::{Reflow, ReflowOutOfFlow};
+use incremental::{REFLOW, REFLOW_OUT_OF_FLOW};
 use layout_debug;
 use model::{Auto, IntrinsicISizes, MarginCollapseInfo, MarginsCollapse, MarginsCollapseThrough};
 use model::{MaybeAuto, NoCollapsibleMargins, Specified, specified, specified_or_none};
@@ -441,7 +441,7 @@ impl<'a> PreorderFlowTraversal for AbsoluteAssignBSizesTraversal<'a> {
         }
 
         assert!(block_flow.base.flags.is_absolutely_positioned());
-        if !block_flow.base.restyle_damage.intersects(ReflowOutOfFlow | Reflow) {
+        if !block_flow.base.restyle_damage.intersects(REFLOW_OUT_OF_FLOW | REFLOW) {
             return
         }
 
@@ -551,7 +551,7 @@ pub struct BlockFlow {
 bitflags! {
     flags BlockFlowFlags: u8 {
         #[doc="If this is set, then this block flow is the root flow."]
-        const IsRoot = 0x01,
+        const IS_ROOT = 0x01,
     }
 }
 
@@ -827,7 +827,7 @@ impl BlockFlow {
                                             margins_may_collapse: MarginsMayCollapseFlag) {
         let _scope = layout_debug_scope!("assign_block_size_block_base {:x}", self.base.debug_id());
 
-        if self.base.restyle_damage.contains(Reflow) {
+        if self.base.restyle_damage.contains(REFLOW) {
             // Our current border-box position.
             let mut cur_b = Au(0);
 
@@ -1064,7 +1064,7 @@ impl BlockFlow {
         // size has not yet been computed. (See `assign_inline_position_for_formatting_context()`.)
         if !self.base.flags.is_absolutely_positioned() &&
                 self.formatting_context_type() == NonformattingContext {
-            self.base.restyle_damage.remove(ReflowOutOfFlow | Reflow);
+            self.base.restyle_damage.remove(REFLOW_OUT_OF_FLOW | REFLOW);
         }
     }
 
@@ -1213,7 +1213,7 @@ impl BlockFlow {
         self.fragment.border_box.size.block = block_size;
         self.base.position.size.block = block_size;
 
-        self.base.restyle_damage.remove(ReflowOutOfFlow | Reflow);
+        self.base.restyle_damage.remove(REFLOW_OUT_OF_FLOW | REFLOW);
     }
 
     // Our inline-size was set to the inline-size of the containing block by the flow's parent.
@@ -1405,7 +1405,7 @@ impl BlockFlow {
     fn assign_inline_position_for_formatting_context(&mut self) {
         debug_assert!(self.formatting_context_type() != NonformattingContext);
 
-        if !self.base.restyle_damage.intersects(ReflowOutOfFlow | Reflow) {
+        if !self.base.restyle_damage.intersects(REFLOW_OUT_OF_FLOW | REFLOW) {
             return
         }
 
@@ -1538,7 +1538,7 @@ impl Flow for BlockFlow {
     fn assign_inline_sizes(&mut self, layout_context: &LayoutContext) {
         let _scope = layout_debug_scope!("block::assign_inline_sizes {:x}", self.base.debug_id());
 
-        if !self.base.restyle_damage.intersects(ReflowOutOfFlow | Reflow) {
+        if !self.base.restyle_damage.intersects(REFLOW_OUT_OF_FLOW | REFLOW) {
             return
         }
 
@@ -1619,7 +1619,7 @@ impl Flow for BlockFlow {
         }
 
         if self.base.flags.impacted_by_floats() {
-            if self.base.restyle_damage.intersects(ReflowOutOfFlow | Reflow) {
+            if self.base.restyle_damage.intersects(REFLOW_OUT_OF_FLOW | REFLOW) {
                 self.assign_block_size(layout_context);
                 // Don't remove the restyle damage; `assign_block_size` decides whether that is
                 // appropriate (which in the case of e.g. absolutely-positioned flows, it is not).
@@ -1735,7 +1735,7 @@ impl Flow for BlockFlow {
     }
 
     fn mark_as_root(&mut self) {
-        self.flags.insert(IsRoot)
+        self.flags.insert(IS_ROOT)
     }
 
     /// Return true if store overflow is delayed for this flow.
@@ -1746,7 +1746,7 @@ impl Flow for BlockFlow {
     }
 
     fn is_root(&self) -> bool {
-        self.flags.contains(IsRoot)
+        self.flags.contains(IS_ROOT)
     }
 
     fn is_float(&self) -> bool {

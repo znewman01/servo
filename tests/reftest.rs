@@ -30,11 +30,11 @@ use url::Url;
 
 bitflags!(
     flags RenderMode: u32 {
-        const CpuRendering  = 0x00000001,
-        const GpuRendering  = 0x00000010,
-        const LinuxTarget   = 0x00000100,
-        const MacOsTarget   = 0x00001000,
-        const AndroidTarget = 0x00010000
+        const CPU_RENDERING  = 0x00000001,
+        const GPU_RENDERING  = 0x00000010,
+        const LINUX_TARGET   = 0x00000100,
+        const MACOS_TARGET   = 0x00001000,
+        const ANDROID_TARGET = 0x00010000
     }
 )
 
@@ -53,18 +53,18 @@ fn main() {
     };
 
     let mut render_mode = match render_mode_string.as_slice() {
-        "cpu" => CpuRendering,
-        "gpu" => GpuRendering,
+        "cpu" => CPU_RENDERING,
+        "gpu" => GPU_RENDERING,
         _ => panic!("First argument must specify cpu or gpu as rendering mode")
     };
     if cfg!(target_os = "linux") {
-        render_mode.insert(LinuxTarget);
+        render_mode.insert(LINUX_TARGET);
     }
     if cfg!(target_os = "macos") {
-        render_mode.insert(MacOsTarget);
+        render_mode.insert(MACOS_TARGET);
     }
     if cfg!(target_os = "android") {
-        render_mode.insert(AndroidTarget);
+        render_mode.insert(ANDROID_TARGET);
     }
 
     let mut all_tests = vec!();
@@ -175,10 +175,10 @@ fn parse_lists(file: &Path, servo_args: &[String], render_mode: RenderMode, id_o
         let mut fragment_identifier = None;
         for condition in conditions_list {
             match condition {
-                "flaky_cpu" => flakiness.insert(CpuRendering),
-                "flaky_gpu" => flakiness.insert(GpuRendering),
-                "flaky_linux" => flakiness.insert(LinuxTarget),
-                "flaky_macos" => flakiness.insert(MacOsTarget),
+                "flaky_cpu" => flakiness.insert(CPU_RENDERING),
+                "flaky_gpu" => flakiness.insert(GPU_RENDERING),
+                "flaky_linux" => flakiness.insert(LINUX_TARGET),
+                "flaky_macos" => flakiness.insert(MACOS_TARGET),
                 "experimental" => experimental = true,
                 _ => (),
             }
@@ -234,10 +234,10 @@ fn capture(reftest: &Reftest, side: uint) -> (u32, u32, Vec<u8>) {
             url.to_string()
         });
     // CPU rendering is the default
-    if reftest.render_mode.contains(CpuRendering) {
+    if reftest.render_mode.contains(CPU_RENDERING) {
         command.arg("-c");
     }
-    if reftest.render_mode.contains(GpuRendering) {
+    if reftest.render_mode.contains(GPU_RENDERING) {
         command.arg("-g");
     }
     if reftest.experimental {

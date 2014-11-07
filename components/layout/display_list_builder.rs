@@ -8,7 +8,7 @@
 //! list building, as the actual painting does not happen here—only deciding *what* we're going to
 //! paint.
 
-#![deny(unsafe_block)]
+#![deny(unsafe_blocks)]
 
 use block::BlockFlow;
 use context::LayoutContext;

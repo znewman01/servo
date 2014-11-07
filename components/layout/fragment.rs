@@ -4,7 +4,7 @@
 
 //! The `Fragment` type, which represents the leaves of the layout tree.
 
-#![deny(unsafe_block)]
+#![deny(unsafe_blocks)]
 
 use css::node_style::StyledNode;
 use construct::FlowConstructor;
@@ -639,18 +639,18 @@ impl Fragment {
                 QuantitiesIncludedInIntrinsicInlineSizes::all()
             }
             TableFragment | TableCellFragment => {
-                IntrinsicInlineSizeIncludesPadding |
-                    IntrinsicInlineSizeIncludesBorder |
-                    IntrinsicInlineSizeIncludesSpecified
+                INTRINSIC_INLINE_SIZE_INCLUDES_PADDING |
+                    INTRINSIC_INLINE_SIZE_INCLUDES_BORDER |
+                    INTRINSIC_INLINE_SIZE_INCLUDES_SPECIFIED
             }
             TableWrapperFragment => {
-                IntrinsicInlineSizeIncludesMargins |
-                    IntrinsicInlineSizeIncludesBorder |
-                    IntrinsicInlineSizeIncludesSpecified
+                INTRINSIC_INLINE_SIZE_INCLUDES_MARGINS |
+                    INTRINSIC_INLINE_SIZE_INCLUDES_BORDER |
+                    INTRINSIC_INLINE_SIZE_INCLUDES_SPECIFIED
             }
             TableRowFragment => {
-                IntrinsicInlineSizeIncludesBorder |
-                    IntrinsicInlineSizeIncludesSpecified
+                INTRINSIC_INLINE_SIZE_INCLUDES_BORDER |
+                    INTRINSIC_INLINE_SIZE_INCLUDES_SPECIFIED
             }
             ScannedTextFragment(_) | TableColumnFragment(_) | UnscannedTextFragment(_) |
             InlineAbsoluteHypotheticalFragment(_) => {
@@ -670,7 +670,7 @@ impl Fragment {
         // FIXME(pcwalton): Percentages should be relative to any definite size per CSS-SIZING.
         // This will likely need to be done by pushing down definite sizes during selector
         // cascading.
-        let margin = if flags.contains(IntrinsicInlineSizeIncludesMargins) {
+        let margin = if flags.contains(INTRINSIC_INLINE_SIZE_INCLUDES_MARGINS) {
             let margin = style.logical_margin();
             (MaybeAuto::from_style(margin.inline_start, Au(0)).specified_or_zero() +
              MaybeAuto::from_style(margin.inline_end, Au(0)).specified_or_zero())
@@ -681,7 +681,7 @@ impl Fragment {
         // FIXME(pcwalton): Percentages should be relative to any definite size per CSS-SIZING.
         // This will likely need to be done by pushing down definite sizes during selector
         // cascading.
-        let padding = if flags.contains(IntrinsicInlineSizeIncludesPadding) {
+        let padding = if flags.contains(INTRINSIC_INLINE_SIZE_INCLUDES_PADDING) {
             let padding = style.logical_padding();
             (model::specified(padding.inline_start, Au(0)) +
              model::specified(padding.inline_end, Au(0)))
@@ -689,7 +689,7 @@ impl Fragment {
             Au(0)
         };
 
-        let border = if flags.contains(IntrinsicInlineSizeIncludesBorder) {
+        let border = if flags.contains(INTRINSIC_INLINE_SIZE_INCLUDES_BORDER) {
             self.border_width().inline_start_end()
         } else {
             Au(0)
@@ -703,7 +703,7 @@ impl Fragment {
     fn style_specified_intrinsic_inline_size(&self) -> IntrinsicISizesContribution {
         let flags = self.quantities_included_in_intrinsic_inline_size();
         let style = self.style();
-        let specified = if flags.contains(IntrinsicInlineSizeIncludesSpecified) {
+        let specified = if flags.contains(INTRINSIC_INLINE_SIZE_INCLUDES_SPECIFIED) {
             MaybeAuto::from_style(style.content_inline_size(), Au(0)).specified_or_zero()
         } else {
             Au(0)
@@ -1501,10 +1501,10 @@ impl fmt::Show for Fragment {
 
 bitflags! {
     flags QuantitiesIncludedInIntrinsicInlineSizes: u8 {
-        const IntrinsicInlineSizeIncludesMargins = 0x01,
-        const IntrinsicInlineSizeIncludesPadding = 0x02,
-        const IntrinsicInlineSizeIncludesBorder = 0x04,
-        const IntrinsicInlineSizeIncludesSpecified = 0x08,
+        const INTRINSIC_INLINE_SIZE_INCLUDES_MARGINS = 0x01,
+        const INTRINSIC_INLINE_SIZE_INCLUDES_PADDING = 0x02,
+        const INTRINSIC_INLINE_SIZE_INCLUDES_BORDER = 0x04,
+        const INTRINSIC_INLINE_SIZE_INCLUDES_SPECIFIED = 0x08,
     }
 }
 
