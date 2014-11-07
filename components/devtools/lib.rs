@@ -70,7 +70,7 @@ pub fn start_server(port: u16) -> Sender<DevtoolsControlMsg> {
 static POLL_TIMEOUT: u64 = 300;
 
 fn run_server(receiver: Receiver<DevtoolsControlMsg>, port: u16) {
-    let listener = TcpListener::bind("127.0.0.1", port);
+    let listener = TcpListener::bind(format!("{}:{}", "127.0.0.1", port).as_slice());
 
     // bind the listener to the specified address
     let mut acceptor = listener.listen().unwrap();

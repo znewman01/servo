@@ -7,7 +7,7 @@ use servo_util::range;
 use servo_util::range::{Range, RangeIndex, IntRangeIndex, EachIndex};
 use servo_util::geometry::Au;
 
-use std::cmp::{PartialOrd, PartialEq};
+use std::cmp::PartialOrd;
 use std::num::{NumCast, Zero};
 use std::mem;
 use std::u16;

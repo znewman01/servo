@@ -12,7 +12,6 @@
 use std::ascii::{AsciiExt, OwnedAsciiExt};
 use std::from_str::FromStr;
 use std::io::BufReader;
-use std::str::StrSlice;
 use time;
 use time::{now, Timespec};
 

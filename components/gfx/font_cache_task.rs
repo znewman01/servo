@@ -170,7 +170,7 @@ impl FontCache {
     }
 
     fn transform_family(&self, family: &LowercaseString) -> LowercaseString {
-        match self.generic_fonts.find(family) {
+        match self.generic_fonts.get(family) {
             None => family.clone(),
             Some(mapped_family) => (*mapped_family).clone()
         }

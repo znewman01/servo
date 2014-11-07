@@ -183,7 +183,7 @@ impl DisplayList {
     /// Appends the given item to the display list.
     #[inline]
     pub fn push(&mut self, item: DisplayItem) {
-        self.list.push(item);
+        self.list.push_back(item);
     }
 
     /// Appends the items in the given display list to this one, removing them in the process.

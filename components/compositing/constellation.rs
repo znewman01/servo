@@ -439,7 +439,7 @@ impl<LTF: LayoutTaskFactory, STF: ScriptTaskFactory> Constellation<LTF, STF> {
             unsafe { libc::exit(1); }
         }
 
-        let old_pipeline = match self.pipelines.find(&pipeline_id) {
+        let old_pipeline = match self.pipelines.get(&pipeline_id) {
             None => {
                 debug!("no existing pipeline found; bailing out of failure recovery.");
                 return; // already failed?
@@ -616,7 +616,7 @@ impl<LTF: LayoutTaskFactory, STF: ScriptTaskFactory> Constellation<LTF, STF> {
 
         // Compare the pipeline's url to the new url. If the origin is the same,
         // then reuse the script task in creating the new pipeline
-        let source_pipeline = self.pipelines.find(&source_pipeline_id).expect("Constellation:
+        let source_pipeline = self.pipelines.get(&source_pipeline_id).expect("Constellation:
             source Id of LoadIframeUrlMsg does have an associated pipeline in
             constellation. This should be impossible.").clone();
 
@@ -641,7 +641,7 @@ impl<LTF: LayoutTaskFactory, STF: ScriptTaskFactory> Constellation<LTF, STF> {
             LoadData::new(url)
         );
 
-        let rect = self.pending_sizes.pop(&(source_pipeline_id, subpage_id));
+        let rect = self.pending_sizes.remove(&(source_pipeline_id, subpage_id));
         for frame_tree in frame_trees.iter() {
             frame_tree.children.borrow_mut().push(ChildFrameTree {
                 frame_tree: Rc::new(FrameTree {
@@ -810,7 +810,7 @@ impl<LTF: LayoutTaskFactory, STF: ScriptTaskFactory> Constellation<LTF, STF> {
                         let subpage_id = to_add.pipeline.subpage_id
                             .expect("Constellation:
                             Child frame's subpage id is None. This should be impossible.");
-                        let rect = self.pending_sizes.pop(&(parent.id, subpage_id));
+                        let rect = self.pending_sizes.remove(&(parent.id, subpage_id));
                         let parent = next_frame_tree.find(parent.id).expect(
                             "Constellation: pending frame has a parent frame that is not
                             active. This is a bug.");
