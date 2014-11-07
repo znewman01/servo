@@ -392,7 +392,7 @@ pub trait NodeHelpers<'a> {
     fn child_elements(self) -> ChildElementIterator<'a>;
     fn following_siblings(self) -> NodeChildrenIterator<'a>;
     fn is_in_doc(self) -> bool;
-    fn is_inclusive_ancestor_of(self, parent: JSRef<Node>) -> bool;
+    fn is_inclusive_ancestor_of<'a>(self, parent: JSRef<'a, Node>) -> bool;
     fn is_parent_of(self, child: JSRef<Node>) -> bool;
 
     fn type_id(self) -> NodeTypeId;
@@ -678,7 +678,7 @@ impl<'a> NodeHelpers<'a> for JSRef<'a, Node> {
         }
     }
 
-    fn is_inclusive_ancestor_of(self, parent: JSRef<Node>) -> bool {
+    fn is_inclusive_ancestor_of<'a>(self, parent: JSRef<'a, Node>) -> bool {
         self == parent || parent.ancestors().any(|ancestor| ancestor == self)
     }
 

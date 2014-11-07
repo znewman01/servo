@@ -19,7 +19,7 @@ use std::ascii::AsciiExt;
 use string_cache::{Atom, Namespace};
 
 pub trait CollectionFilter : JSTraceable {
-    fn filter(&self, elem: JSRef<Element>, root: JSRef<Node>) -> bool;
+    fn filter<'a>(&self, elem: JSRef<'a, Element>, root: JSRef<'a, Node>) -> bool;
 }
 
 #[jstraceable]
