@@ -305,7 +305,7 @@ source = "git+https://github.com/servo/rust-harfbuzz#8aab215463214647b7a81f66011
 [[package]]
 name = "html5ever"
 version = "0.0.0"
-source = "git+https://github.com/servo/html5ever#8ca07dcfecdea1f31814fe966d17e18761e605de"
+source = "git+https://github.com/servo/html5ever#49e9da50ed81510b1f44b4033387e6094b169141"
 dependencies = [
  "html5ever_macros 0.0.0 (git+https://github.com/servo/html5ever)",
  "phf 0.0.0 (git+https://github.com/sfackler/rust-phf)",
@@ -317,7 +317,7 @@ dependencies = [
 [[package]]
 name = "html5ever_macros"
 version = "0.0.0"
-source = "git+https://github.com/servo/html5ever#8ca07dcfecdea1f31814fe966d17e18761e605de"
+source = "git+https://github.com/servo/html5ever#49e9da50ed81510b1f44b4033387e6094b169141"
 
 [[package]]
 name = "http"
@@ -357,7 +357,7 @@ source = "git+https://github.com/bjz/gl-rs.git#678346eb5f8ba95f50a8d0f7ff9d87a73
 [[package]]
 name = "layers"
 version = "0.1.0"
-source = "git+https://github.com/servo/rust-layers#d59a6e34b13fd6d09bca6cc207b446fa148a9956"
+source = "git+https://github.com/servo/rust-layers#36bcefcdc791bd6fa4ab389f472e449ce2e1e159"
 dependencies = [
  "cgl 0.0.1 (git+https://github.com/servo/rust-cgl)",
  "core_foundation 0.1.0 (git+https://github.com/servo/rust-core-foundation)",
