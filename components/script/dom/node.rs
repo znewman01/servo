@@ -392,7 +392,7 @@ pub trait NodeHelpers<'a> {
     fn child_elements(self) -> ChildElementIterator<'a>;
     fn following_siblings(self) -> NodeChildrenIterator<'a>;
     fn is_in_doc(self) -> bool;
-    fn is_inclusive_ancestor_of<'a>(self, parent: JSRef<'a, Node>) -> bool;
+    fn is_inclusive_ancestor_of(self, parent: JSRef<'a, Node>) -> bool;
     fn is_parent_of(self, child: JSRef<Node>) -> bool;
 
     fn type_id(self) -> NodeTypeId;
@@ -678,7 +678,7 @@ impl<'a> NodeHelpers<'a> for JSRef<'a, Node> {
         }
     }
 
-    fn is_inclusive_ancestor_of<'a>(self, parent: JSRef<'a, Node>) -> bool {
+    fn is_inclusive_ancestor_of(self, parent: JSRef<'a, Node>) -> bool {
         self == parent || parent.ancestors().any(|ancestor| ancestor == self)
     }
 
@@ -1319,7 +1319,7 @@ impl Node {
 
         // Step 7-8.
         let referenceChild = match child {
-            Some(child) if child == node => node.next_sibling().map(|node| (*node.root()).clone()),
+            Some(child) if child.clone() == node => node.next_sibling().map(|node| (*node.root()).clone()),
             _ => child
         };
 
@@ -1911,7 +1911,7 @@ impl<'a> NodeMethods for JSRef<'a, Node> {
         }
 
         // Ok if not caught by previous error checks.
-        if node == child {
+        if node.clone() == child {
             return Ok(Temporary::from_rooted(child));
         }
 
@@ -2067,7 +2067,7 @@ impl<'a> NodeMethods for JSRef<'a, Node> {
 
     // http://dom.spec.whatwg.org/#dom-node-comparedocumentposition
     fn CompareDocumentPosition(self, other: JSRef<Node>) -> u16 {
-        if self == other {
+        if self.clone() == other {
             // step 2.
             0
         } else {

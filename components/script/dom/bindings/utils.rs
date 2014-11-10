@@ -17,7 +17,6 @@ use libc;
 use libc::c_uint;
 use std::cell::Cell;
 use std::mem;
-use std::cmp::PartialEq;
 use std::ptr;
 use js::glue::{js_IsObjectProxyClass, js_IsFunctionProxyClass, IsProxyHandlerFamily};
 use js::glue::{UnwrapObject, GetProxyHandlerExtra};
