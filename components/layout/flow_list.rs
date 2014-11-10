@@ -65,7 +65,7 @@ impl FlowList {
     ///
     /// O(1)
     pub fn push_back(&mut self, new_tail: FlowRef) {
-        self.flows.push(new_tail);
+        self.flows.push_back(new_tail);
     }
 
     /// Create an empty list

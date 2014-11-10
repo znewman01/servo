@@ -461,7 +461,7 @@ impl<'a> FlowConstructor<'a> {
                                                                     whitespace_style,
                                                                     whitespace_damage,
                                                                     fragment_info);
-                inline_fragment_accumulator.fragments.push(fragment);
+                inline_fragment_accumulator.fragments.push_back(fragment);
             }
             ConstructionItemConstructionResult(TableColumnFragmentConstructionItem(_)) => {
                 // TODO: Implement anonymous table objects for missing parents
@@ -490,7 +490,7 @@ impl<'a> FlowConstructor<'a> {
            node.type_id() == Some(ElementNodeTypeId(HTMLInputElementTypeId)) {
             let fragment_info = UnscannedTextFragment(UnscannedTextFragmentInfo::new(node));
             let fragment = Fragment::new_from_specific_info(node, fragment_info);
-            inline_fragment_accumulator.fragments.push(fragment);
+            inline_fragment_accumulator.fragments.push_back(fragment);
             first_fragment = false;
         }
 
@@ -586,7 +586,7 @@ impl<'a> FlowConstructor<'a> {
                                 InlineFragmentsAccumulator::from_inline_node(node)).to_dlist(),
                         flow: flow,
                     };
-                    opt_inline_block_splits.push(split);
+                    opt_inline_block_splits.push_back(split);
                     abs_descendants.push_descendants(kid_abs_descendants);
                 }
                 ConstructionItemConstructionResult(InlineFragmentsConstructionItem(
@@ -611,7 +611,7 @@ impl<'a> FlowConstructor<'a> {
                                     .to_dlist(),
                             flow: kid_flow,
                         };
-                        opt_inline_block_splits.push(split)
+                        opt_inline_block_splits.push_back(split)
                     }
 
                     // Push residual fragments.
@@ -629,7 +629,7 @@ impl<'a> FlowConstructor<'a> {
                                                                         whitespace_style,
                                                                         whitespace_damage,
                                                                         fragment_info);
-                    fragment_accumulator.fragments.push(fragment)
+                    fragment_accumulator.fragments.push_back(fragment)
                 }
                 ConstructionItemConstructionResult(TableColumnFragmentConstructionItem(_)) => {
                     // TODO: Implement anonymous table objects for missing parents
@@ -684,7 +684,7 @@ impl<'a> FlowConstructor<'a> {
         };
 
         let mut fragments = DList::new();
-        fragments.push(fragment);
+        fragments.push_back(fragment);
 
         let construction_item = InlineFragmentsConstructionItem(InlineFragmentsConstructionResult {
             splits: DList::new(),
@@ -706,7 +706,7 @@ impl<'a> FlowConstructor<'a> {
         let fragment = Fragment::new_from_specific_info(node, fragment_info);
 
         let mut fragment_accumulator = InlineFragmentsAccumulator::from_inline_node(node);
-        fragment_accumulator.fragments.push(fragment);
+        fragment_accumulator.fragments.push_back(fragment);
 
         let construction_item = InlineFragmentsConstructionItem(InlineFragmentsConstructionResult {
             splits: DList::new(),
@@ -731,7 +731,7 @@ impl<'a> FlowConstructor<'a> {
         let fragment = Fragment::new_from_specific_info(node, fragment_info);
 
         let mut fragment_accumulator = InlineFragmentsAccumulator::from_inline_node(node);
-        fragment_accumulator.fragments.push(fragment);
+        fragment_accumulator.fragments.push_back(fragment);
 
         let construction_item = InlineFragmentsConstructionItem(InlineFragmentsConstructionResult {
             splits: DList::new(),
@@ -1285,7 +1285,7 @@ pub fn strip_ignorable_whitespace_from_end(this: &mut DList<Fragment>) {
 
     while !this.is_empty() && this.back().as_ref().unwrap().is_ignorable_whitespace() {
         debug!("stripping ignorable whitespace from end");
-        drop(this.pop());
+        drop(this.pop_back());
     }
 }
 

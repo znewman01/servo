@@ -678,7 +678,7 @@ impl BlockFlowDisplayListBuilding for BlockFlow {
             background_color: color::rgba(1.0, 1.0, 1.0, 0.0),
             scroll_policy: scroll_policy,
         };
-        self.base.layers.push(new_layer)
+        self.base.layers.push_back(new_layer)
     }
 
     fn build_display_list_for_floating_block(&mut self, layout_context: &LayoutContext) {

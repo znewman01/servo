@@ -301,26 +301,6 @@ pub trait Flow: fmt::Show + ToString + Sync {
     fn repair_style(&mut self, new_style: &Arc<ComputedValues>);
 }
 
-impl<'a, E, S: Encoder<E>> Encodable<S, E> for &'a Flow + 'a {
-    fn encode(&self, e: &mut S) -> Result<(), E> {
-        e.emit_struct("flow", 0, |e| {
-            try!(e.emit_struct_field("class", 0, |e| self.class().encode(e)))
-            e.emit_struct_field("data", 1, |e| {
-                match self.class() {
-                    BlockFlowClass => self.as_immutable_block().encode(e),
-                    InlineFlowClass => self.as_immutable_inline().encode(e),
-                    TableFlowClass => self.as_immutable_table().encode(e),
-                    TableWrapperFlowClass => self.as_immutable_table_wrapper().encode(e),
-                    TableRowGroupFlowClass => self.as_immutable_table_rowgroup().encode(e),
-                    TableRowFlowClass => self.as_immutable_table_row().encode(e),
-                    TableCellFlowClass => self.as_immutable_table_cell().encode(e),
-                    _ => { Ok(()) }     // TODO: Support captions
-                }
-            })
-        })
-    }
-}
-
 // Base access
 
 #[inline(always)]
@@ -832,7 +812,24 @@ impl<E, S: Encoder<E>> Encodable<S, E> for BaseFlow {
             e.emit_struct_field("children", 4, |e| {
                 e.emit_seq(self.children.len(), |e| {
                     for (i, c) in self.children.iter().enumerate() {
-                        try!(e.emit_seq_elt(i, |e| c.encode(e)))
+                        try!(e.emit_seq_elt(i, |e| {
+                            try!(e.emit_struct("flow", 0, |e| {
+                                try!(e.emit_struct_field("class", 0, |e| c.class().encode(e)))
+                                e.emit_struct_field("data", 1, |e| {
+                                    match c.class() {
+                                        BlockFlowClass => c.as_immutable_block().encode(e),
+                                        InlineFlowClass => c.as_immutable_inline().encode(e),
+                                        TableFlowClass => c.as_immutable_table().encode(e),
+                                        TableWrapperFlowClass => c.as_immutable_table_wrapper().encode(e),
+                                        TableRowGroupFlowClass => c.as_immutable_table_rowgroup().encode(e),
+                                        TableRowFlowClass => c.as_immutable_table_row().encode(e),
+                                        TableCellFlowClass => c.as_immutable_table_cell().encode(e),
+                                        _ => { Ok(()) }     // TODO: Support captions
+                                    }
+                                })
+                            }))
+                            Ok(())
+                        }))
                     }
                     Ok(())
                 })
