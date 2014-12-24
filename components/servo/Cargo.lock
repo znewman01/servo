@@ -57,6 +57,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "chrono"
+version = "0.1.5"
+source = "git+https://github.com/lifthrasiir/rust-chrono.git#7f5f176ccee675277480383c4a85196983f6c4e4"
+dependencies = [
+ "time 0.1.0 (git+https://github.com/rust-lang/time)",
+]
+
+[[package]]
 name = "cocoa"
 version = "0.1.1"
 source = "git+https://github.com/servo/rust-cocoa#bf53a53ce306279fc1cae0d56fdd5e7216696420"
@@ -369,6 +377,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "har"
+version = "0.0.1"
+source = "git+https://github.com/znewman01/rust-har#b6821560739fc587f447f38ec9a777bacf015570"
+dependencies = [
+ "chrono 0.1.5 (git+https://github.com/lifthrasiir/rust-chrono.git)",
+]
+
+[[package]]
 name = "harfbuzz"
 version = "0.1.0"
 source = "git+https://github.com/servo/rust-harfbuzz#8aab215463214647b7a81f66011da552bbb1121c"
@@ -602,6 +618,7 @@ dependencies = [
  "encoding 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "geom 0.1.0 (git+https://github.com/servo/rust-geom)",
  "gfx 0.0.1",
+ "har 0.0.1 (git+https://github.com/znewman01/rust-har)",
  "html5ever 0.0.0 (git+https://github.com/servo/html5ever)",
  "hyper 0.0.1 (git+https://github.com/servo/hyper?ref=servo)",
  "js 0.1.0 (git+https://github.com/servo/rust-mozjs)",
