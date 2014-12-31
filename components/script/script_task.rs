@@ -745,6 +745,7 @@ impl ScriptTask {
     /// The entry point to document loading. Defines bindings, sets up the window and document
     /// objects, parses HTML and CSS, and kicks off initial layout.
     fn load(&self, pipeline_id: PipelineId, load_data: LoadData) {
+        // TODO(zjn)
         let url = load_data.url.clone();
         debug!("ScriptTask: loading {} on page {}", url, pipeline_id);
 
@@ -878,6 +879,7 @@ impl ScriptTask {
         // https://html.spec.whatwg.org/multipage/#the-end step 7
         document.r().set_ready_state(DocumentReadyState::Complete);
 
+        // TODO(zjn)
         let event = Event::new(GlobalRef::Window(window.r()), "load".into_string(),
                                EventBubbles::DoesNotBubble,
                                EventCancelable::NotCancelable).root();

@@ -55,5 +55,8 @@ git = "https://github.com/servo/rust-core-text"
 [dependencies.gleam]
 git = "https://github.com/servo/gleam"
 
+[dependencies.har]
+git = "https://github.com/znewman01/rust-har"
+
 [dependencies.time]
 git = "https://github.com/rust-lang/time"

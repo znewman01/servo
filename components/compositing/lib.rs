@@ -25,6 +25,7 @@ extern crate "net" as servo_net;
 extern crate "util" as servo_util;
 extern crate gleam;
 
+extern crate har;
 extern crate libc;
 extern crate time;
 extern crate url;

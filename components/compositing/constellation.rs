@@ -11,6 +11,7 @@ use devtools_traits::DevtoolsControlChan;
 use geom::rect::{Rect, TypedRect};
 use geom::scale_factor::ScaleFactor;
 use gfx::font_cache_task::FontCacheTask;
+use har;
 use layers::geometry::DevicePixel;
 use layout_traits::LayoutTaskFactory;
 use libc;
@@ -87,6 +88,8 @@ pub struct Constellation<LTF, STF> {
     pub time_profiler_chan: TimeProfilerChan,
 
     pub window_size: WindowSizeData,
+
+    har: har::Log
 }
 
 /// A unique ID used to identify a frame.
@@ -371,6 +374,10 @@ impl<LTF: LayoutTaskFactory, STF: ScriptTaskFactory> Constellation<LTF, STF> {
                     initial_viewport: opts::get().initial_window_size.as_f32() * ScaleFactor(1.0),
                     device_pixel_ratio: ScaleFactor(1.0),
                 },
+                har: har::Log::new(
+                    Some(har::Browser::new("Servo".into_string(), "1.0".into_string(), None)),
+                    None
+                )
             };
             constellation.run();
         });
