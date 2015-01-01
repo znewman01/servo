@@ -64,6 +64,7 @@ use servo_util::task::spawn_named_with_send_on_failure;
 use servo_util::task_state;
 
 use geom::point::Point2D;
+use har;
 use hyper::header::{Header, HeaderFormat};
 use hyper::header::common::util as header_util;
 use js::jsapi::{JS_SetWrapObjectCallbacks, JS_SetGCZeal, JS_DEFAULT_ZEAL_FREQ, JS_GC};
@@ -83,7 +84,9 @@ use std::fmt::{mod, Show};
 use std::mem::replace;
 use std::rc::Rc;
 use std::u32;
-use time::{Tm, strptime};
+use time::{Tm, strptime, precise_time_ns, now_utc};
+
+static NS_PER_MS: u64 = 1000000 as u64;
 
 thread_local!(pub static STACK_ROOTS: Cell<Option<RootCollectionPtr>> = Cell::new(None))
 
@@ -745,7 +748,8 @@ impl ScriptTask {
     /// The entry point to document loading. Defines bindings, sets up the window and document
     /// objects, parses HTML and CSS, and kicks off initial layout.
     fn load(&self, pipeline_id: PipelineId, load_data: LoadData) {
-        // TODO(zjn)
+        let started_date_time = now_utc();
+        let started_date_ms = precise_time_ns() / NS_PER_MS;
         let url = load_data.url.clone();
         debug!("ScriptTask: loading {} on page {}", url, pipeline_id);
 
@@ -850,6 +854,7 @@ impl ScriptTask {
 
         parse_html(document.r(), parser_input, &final_url);
 
+        let on_content_load_ms = (precise_time_ns() / NS_PER_MS) - started_date_ms;
         document.r().set_ready_state(DocumentReadyState::Interactive);
         self.compositor.borrow_mut().set_ready_state(pipeline_id, PerformingLayout);
 
@@ -879,7 +884,14 @@ impl ScriptTask {
         // https://html.spec.whatwg.org/multipage/#the-end step 7
         document.r().set_ready_state(DocumentReadyState::Complete);
 
-        // TODO(zjn)
+        let on_load_ms = (precise_time_ns() / NS_PER_MS) - started_date_ms;
+        har::Page::new(started_date_time.rfc3339().to_string(),
+                       "page_id".into_string(),
+                       "Page Title".into_string(),
+                       har::PageTimings::new(Some(on_content_load_ms as int),
+                                             Some(on_load_ms as int),
+                                             None),
+                       None);
         let event = Event::new(GlobalRef::Window(window.r()), "load".into_string(),
                                EventBubbles::DoesNotBubble,
                                EventCancelable::NotCancelable).root();
