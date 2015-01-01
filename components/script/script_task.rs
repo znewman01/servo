@@ -885,13 +885,16 @@ impl ScriptTask {
         document.r().set_ready_state(DocumentReadyState::Complete);
 
         let on_load_ms = (precise_time_ns() / NS_PER_MS) - started_date_ms;
-        har::Page::new(started_date_time.rfc3339().to_string(),
-                       "page_id".into_string(),
-                       "Page Title".into_string(),
-                       har::PageTimings::new(Some(on_content_load_ms as int),
-                                             Some(on_load_ms as int),
-                                             None),
-                       None);
+        let har_page = har::Page::new(started_date_time.rfc3339().to_string(),
+                                      "page_id".into_string(),
+                                      "Page Title".into_string(),
+                                      har::PageTimings::new(Some(on_content_load_ms as int),
+                                                            Some(on_load_ms as int),
+                                                            None),
+                                      None);
+        let ConstellationChan(ref chan) = self.constellation_chan;
+        chan.send(ConstellationMsg::HarPage(har_page));
+
         let event = Event::new(GlobalRef::Window(window.r()), "load".into_string(),
                                EventBubbles::DoesNotBubble,
                                EventCancelable::NotCancelable).root();

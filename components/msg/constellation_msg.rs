@@ -6,8 +6,9 @@
 //! reduce coupling between these two components.
 
 use geom::rect::Rect;
-use geom::size::TypedSize2D;
 use geom::scale_factor::ScaleFactor;
+use geom::size::TypedSize2D;
+use har;
 use hyper::header::Headers;
 use hyper::method::Method;
 use layers::geometry::DevicePixel;
@@ -213,6 +214,8 @@ pub enum Msg {
     GetPipelineTitle(PipelineId),
     /// Requests that the constellation inform the compositor of the a cursor change.
     SetCursor(Cursor),
+    /// Transmits page timing information
+    HarPage(har::Page),
 }
 
 /// Similar to net::resource_task::LoadData

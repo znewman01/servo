@@ -513,6 +513,10 @@ impl<LTF: LayoutTaskFactory, STF: ScriptTaskFactory> Constellation<LTF, STF> {
                 debug!("constellation got get-pipeline-title message");
                 self.handle_get_pipeline_title_msg(pipeline_id);
             }
+            ConstellationMsg::HarPage(page) => {
+                debug!("constellation got har-page message");
+                self.har.add_page(page);
+            }
         }
         true
     }

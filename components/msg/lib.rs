@@ -8,6 +8,7 @@
 
 extern crate azure;
 extern crate geom;
+extern crate har;
 extern crate hyper;
 extern crate layers;
 extern crate serialize;
