@@ -854,7 +854,8 @@ impl ScriptTask {
 
         parse_html(document.r(), parser_input, &final_url);
 
-        let on_content_load_ms = (precise_time_ns() / NS_PER_MS) - started_date_ms;
+        let on_content_load = har::OptionalTiming::TimedContent(
+            ((precise_time_ns() / NS_PER_MS) - started_date_ms) as uint);
         document.r().set_ready_state(DocumentReadyState::Interactive);
         self.compositor.borrow_mut().set_ready_state(pipeline_id, PerformingLayout);
 
@@ -884,13 +885,12 @@ impl ScriptTask {
         // https://html.spec.whatwg.org/multipage/#the-end step 7
         document.r().set_ready_state(DocumentReadyState::Complete);
 
-        let on_load_ms = (precise_time_ns() / NS_PER_MS) - started_date_ms;
+        let on_load = har::OptionalTiming::TimedContent(
+            ((precise_time_ns() / NS_PER_MS) - started_date_ms) as uint);
         let har_page = har::Page::new(started_date_time.rfc3339().to_string(),
                                       "page_id".into_string(),
                                       document.Title(),
-                                      har::PageTimings::new(Some(on_content_load_ms as int),
-                                                            Some(on_load_ms as int),
-                                                            None),
+                                      har::PageTimings::new(on_content_load, on_load, None),
                                       None);
         let ConstellationChan(ref chan) = self.constellation_chan;
         chan.send(ConstellationMsg::HarPage(har_page));

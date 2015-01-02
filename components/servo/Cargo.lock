@@ -78,7 +78,7 @@ dependencies = [
  "geom 0.1.0 (git+https://github.com/servo/rust-geom)",
  "gfx 0.0.1",
  "gleam 0.0.1 (git+https://github.com/servo/gleam)",
- "har 0.0.3 (git+https://github.com/znewman01/rust-har)",
+ "har 0.0.4 (git+https://github.com/znewman01/rust-har)",
  "layers 0.1.0 (git+https://github.com/servo/rust-layers)",
  "layout_traits 0.0.1",
  "msg 0.0.1",
@@ -371,8 +371,8 @@ dependencies = [
 
 [[package]]
 name = "har"
-version = "0.0.3"
-source = "git+https://github.com/znewman01/rust-har#626ab8a95eea8ce740618d269cc532ec9de80128"
+version = "0.0.4"
+source = "git+https://github.com/znewman01/rust-har#ab9b3c0c8331afa31e0a762971b400f6595dea93"
 
 [[package]]
 name = "harfbuzz"
@@ -608,7 +608,7 @@ dependencies = [
  "encoding 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "geom 0.1.0 (git+https://github.com/servo/rust-geom)",
  "gfx 0.0.1",
- "har 0.0.3 (git+https://github.com/znewman01/rust-har)",
+ "har 0.0.4 (git+https://github.com/znewman01/rust-har)",
  "html5ever 0.0.0 (git+https://github.com/servo/html5ever)",
  "hyper 0.0.1 (git+https://github.com/servo/hyper?ref=servo)",
  "js 0.1.0 (git+https://github.com/servo/rust-mozjs)",
