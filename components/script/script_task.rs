@@ -887,7 +887,7 @@ impl ScriptTask {
         let on_load_ms = (precise_time_ns() / NS_PER_MS) - started_date_ms;
         let har_page = har::Page::new(started_date_time.rfc3339().to_string(),
                                       "page_id".into_string(),
-                                      "Page Title".into_string(),
+                                      document.Title(),
                                       har::PageTimings::new(Some(on_content_load_ms as int),
                                                             Some(on_load_ms as int),
                                                             None),
